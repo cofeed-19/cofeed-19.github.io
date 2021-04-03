@@ -74,6 +74,13 @@ export default function Home() {
     }
   }
 
+  function onRemoveClick(feedUrl: string, feedTitle?: string) {
+    if (confirm(`Delete ${feedTitle} from feeds?`)) {
+      localStorage.removeItem(feedUrl);
+      window.location.reload();
+    }
+  }
+
   function onCopyClick() {
     const feedUrls = Object.keys(feedArchive);
     navigator.clipboard.writeText(feedUrls.join(",")).then(() => {
@@ -95,11 +102,16 @@ export default function Home() {
       <Header />
       <main>
         <NewFeedForm onSubmit={onSubmit} />
-        {Object.keys(feedArchive).map((feedKey) => {
-          const feed = feedArchive[feedKey];
+        {Object.keys(feedArchive).map((feedUrl) => {
+          const feed = feedArchive[feedUrl];
           return (
-            <div key={feedKey}>
-              <h2>{feed?.title}</h2>
+            <section key={feedUrl}>
+              <h2>
+                {feed?.title}{" "}
+                <button onClick={() => onRemoveClick(feedUrl, feed?.title)}>
+                  X
+                </button>
+              </h2>
               {feed?.items
                 .filter((item) => item.link && !feed.old[item.link])
                 .map((item) =>
@@ -108,7 +120,7 @@ export default function Home() {
                       key={item.link}
                       title={item.title}
                       link={item.link}
-                      onClick={() => onLinkClick(feedKey, item.link)}
+                      onClick={() => onLinkClick(feedUrl, item.link)}
                     />
                   ) : null
                 )}
@@ -123,13 +135,13 @@ export default function Home() {
                           key={item.link}
                           title={item.title}
                           link={item.link}
-                          onClick={() => onLinkClick(feedKey, item.link)}
+                          onClick={() => onLinkClick(feedUrl, item.link)}
                         />
                       ) : null
                     )}
                 </details>
               ) : null}
-            </div>
+            </section>
           );
         })}
         <button onClick={onCopyClick}>Copy feed urls</button>

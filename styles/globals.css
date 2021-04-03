@@ -36,3 +36,20 @@ main,
 footer {
   max-width: 70ch;
 }
+
+section {
+  margin: 1em auto;
+}
+
+h2 {
+  display: flex;
+}
+
+h2 button {
+  margin: auto 1em;
+  display: none;
+}
+
+h2:hover button {
+  display: inline-block;
+}
