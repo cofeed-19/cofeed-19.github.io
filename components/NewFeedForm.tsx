@@ -18,7 +18,13 @@ export function NewFeedForm({ onSubmit }: Props) {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <input type="text" value={newFeed} onChange={onInputChange} />
+      <input
+        placeholder="https://strdr4605.github.io/rss.xml,"
+        type="text"
+        size={50}
+        value={newFeed}
+        onChange={onInputChange}
+      />
       <button type="submit">Add feed</button>
     </form>
   );

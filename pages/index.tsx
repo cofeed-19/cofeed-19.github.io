@@ -35,21 +35,32 @@ export default function Home() {
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
 
   async function onSubmit(newFeed: string): Promise<void> {
-    try {
-      const feed = await rssParser.parseURL(newFeed);
-      if (!localStorage.getItem(newFeed)) {
-        const feedToAdd: Feed = {
-          ...feed,
-          old: {},
-        };
-        localStorage.setItem(newFeed, JSON.stringify(feedToAdd));
+    const newFeeds = newFeed.split(",").filter(Boolean);
+
+    const errors = [];
+
+    for (const feedUrl of newFeeds) {
+      try {
+        const feed = await rssParser.parseURL(feedUrl);
+        if (!localStorage.getItem(feedUrl)) {
+          const feedToAdd: Feed = {
+            ...feed,
+            old: {},
+          };
+          localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
+        }
+      } catch (_e) {
+        errors.push(feedUrl);
       }
-    } catch (e) {
-      alert(newFeed + " does not allow CORS");
     }
+    if (errors.length) {
+      alert(`Could not add:${errors.join("\n")}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!`);
+
+    }
+    window.location.reload();
   }
 
-  function onLinkClick(feedUrl?: string, itemLink?: string) {
+  function onLinkClick(feedUrl: string, itemLink?: string) {
     if (!feedUrl || !itemLink) {
       return;
     }
@@ -79,7 +90,7 @@ export default function Home() {
         <h1>Free web feed</h1>
         <p style={{ color: "red" }}>
           This app works only on the browser. Some web feeds are blocked by CORS
-          policy.
+          policy😢.
         </p>
         <hr />
         <NewFeedForm onSubmit={onSubmit} />
@@ -93,9 +104,10 @@ export default function Home() {
                 .map((item) =>
                   item.title && item.link ? (
                     <PostLink
+                      key={item.link}
                       title={item.title}
                       link={item.link}
-                      onClick={() => onLinkClick(feed.feedUrl, item.link)}
+                      onClick={() => onLinkClick(feedKey, item.link)}
                     />
                   ) : null
                 )}
@@ -107,9 +119,10 @@ export default function Home() {
                     .map((item) =>
                       item.title && item.link ? (
                         <PostLink
+                          key={item.link}
                           title={item.title}
                           link={item.link}
-                          onClick={() => onLinkClick(feed.feedUrl, item.link)}
+                          onClick={() => onLinkClick(feedKey, item.link)}
                         />
                       ) : null
                     )}
@@ -119,9 +132,9 @@ export default function Home() {
           );
         })}
       </main>
-
+      <hr />
       <footer>
-        <hr />© {new Date().getFullYear()}{" "}
+        © {new Date().getFullYear()}{" "}
         <a
           href="https://github.com/strdr4605/"
           rel="noopener noreferrer"
@@ -129,7 +142,8 @@ export default function Home() {
         >
           @strdr4605
         </a>
-        .
+        . Try <code>https://strdr4605.github.io/rss.xml</code> as your first web
+        feed.
       </footer>
     </div>
   );
