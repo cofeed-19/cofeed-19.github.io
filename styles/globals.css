@@ -16,7 +16,7 @@ body {
 
 footer,
 details {
-  margin-top: 1em;
+  margin: 1em;
 }
 
 details > div {
@@ -31,10 +31,10 @@ a {
   color: #0000ee;
 }
 
-head,
+header,
 main,
 footer {
-  max-width: 70ch;
+  max-width: 65ch;
 }
 
 section {
