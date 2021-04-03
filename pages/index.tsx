@@ -74,10 +74,16 @@ export default function Home() {
     }
   }
 
+  function onCopyClick() {
+    const feedUrls = Object.keys(feedArchive);
+    navigator.clipboard.writeText(feedUrls.join(",")).then(() => {
+      alert("Feed urls copied to clipboard");
+    });
+  }
+
   useEffect(() => {
     const storage = allStorage();
     setFeedArchive(storage);
-    console.log({ storage });
   }, []);
 
   return (
@@ -126,6 +132,7 @@ export default function Home() {
             </div>
           );
         })}
+        <button onClick={onCopyClick}>Copy feed urls</button>
       </main>
       <Footer />
     </div>
