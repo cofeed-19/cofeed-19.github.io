@@ -1,19 +1,16 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import { PostLink } from "../components/PostLink";
 
 import { NewFeedForm } from "../components/NewFeedForm";
-import { STORAGE_PREFIX } from "../constants";
+import { Footer } from "../components/Footer";
+import { Header } from "../components/Header";
 
 const rssParser = new RSSParser();
 
 function allStorage(): FeedArchiveType {
   const archive: FeedArchiveType = {};
-
-  const FWFStorageKeys = Object.keys(localStorage).filter((k) =>
-    k.startsWith(STORAGE_PREFIX)
-  );
 
   for (const key of Object.keys(localStorage)) {
     const item = localStorage.getItem(key);
@@ -54,8 +51,11 @@ export default function Home() {
       }
     }
     if (errors.length) {
-      alert(`Could not add:${errors.join("\n")}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!`);
-
+      alert(
+        `Could not add:${errors.join(
+          "\n"
+        )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!`
+      );
     }
     window.location.reload();
   }
@@ -86,13 +86,8 @@ export default function Home() {
         <title>Free web feed</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Header />
       <main>
-        <h1>Free web feed</h1>
-        <p style={{ color: "red" }}>
-          This app works only on the browser. Some web feeds are blocked by CORS
-          policy😢.
-        </p>
-        <hr />
         <NewFeedForm onSubmit={onSubmit} />
         {Object.keys(feedArchive).map((feedKey) => {
           const feed = feedArchive[feedKey];
@@ -132,19 +127,7 @@ export default function Home() {
           );
         })}
       </main>
-      <hr />
-      <footer>
-        © {new Date().getFullYear()}{" "}
-        <a
-          href="https://github.com/strdr4605/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          @strdr4605
-        </a>
-        . Try <code>https://strdr4605.github.io/rss.xml</code> as your first web
-        feed.
-      </footer>
+      <Footer />
     </div>
   );
 }

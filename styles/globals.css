@@ -28,9 +28,11 @@ details > summary {
 }
 
 a {
-  color: #0000EE;
+  color: #0000ee;
 }
 
-main {
+head,
+main,
+footer {
   max-width: 70ch;
 }
