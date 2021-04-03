@@ -13,6 +13,9 @@ function allStorage(): FeedArchiveType {
   const archive: FeedArchiveType = {};
 
   for (const key of Object.keys(localStorage)) {
+    if (!key.startsWith("http")) {
+      continue;
+    }
     const item = localStorage.getItem(key);
     if (item) {
       archive[key] = JSON.parse(item);
