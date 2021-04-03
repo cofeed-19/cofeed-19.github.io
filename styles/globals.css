@@ -1,15 +1,22 @@
 html,
 body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-main {
-  margin: 40px;
-}
-
 * {
   box-sizing: border-box;
+}
+
+footer {
+  margin-top: 1em;
+}
+
+a {
+  text-decoration: none;
 }
