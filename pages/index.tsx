@@ -52,7 +52,7 @@ export default function Home() {
     }
     if (errors.length) {
       alert(
-        `Could not add:${errors.join(
+        `Could not add:\n${errors.join(
           "\n"
         )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!`
       );
@@ -107,7 +107,7 @@ export default function Home() {
           return (
             <section key={feedUrl}>
               <h2>
-                {feed?.title}{" "}
+                {feed?.title || feedUrl}{" "}
                 <button onClick={() => onRemoveClick(feedUrl, feed?.title)}>
                   X
                 </button>
@@ -115,10 +115,10 @@ export default function Home() {
               {feed?.items
                 .filter((item) => item.link && !feed.old[item.link])
                 .map((item) =>
-                  item.title && item.link ? (
+                  item.link ? (
                     <PostLink
                       key={item.link}
-                      title={item.title}
+                      title={item.title || item.link}
                       link={item.link}
                       onClick={() => onLinkClick(feedUrl, item.link)}
                     />
@@ -126,14 +126,14 @@ export default function Home() {
                 )}
               {Object.keys(feed.old).length ? (
                 <details>
-                  <summary>Visited from {feed?.title}</summary>
+                  <summary>Visited from {feed?.title || feedUrl}</summary>
                   {feed?.items
                     .filter((item) => item.link && feed.old[item.link])
                     .map((item) =>
-                      item.title && item.link ? (
+                      item.link ? (
                         <PostLink
                           key={item.link}
-                          title={item.title}
+                          title={item.title || item.link}
                           link={item.link}
                           onClick={() => onLinkClick(feedUrl, item.link)}
                         />
