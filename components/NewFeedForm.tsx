@@ -13,7 +13,7 @@ export function NewFeedForm({ onSubmit }: Props) {
 
   function onFormSubmit(e: FormEvent) {
     e.preventDefault();
-    onSubmit(newFeed);
+    newFeed && onSubmit(newFeed);
   }
 
   return (
@@ -25,7 +25,7 @@ export function NewFeedForm({ onSubmit }: Props) {
         value={newFeed}
         onChange={onInputChange}
       />
-      <button type="submit">Add feed</button>
+      <button type="submit">Add feeds</button>
     </form>
   );
 }
