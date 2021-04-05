@@ -53,3 +53,7 @@ h2 button {
 h2:hover button {
   display: inline-block;
 }
+
+input {
+  width: 70%;
+}
