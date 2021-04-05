@@ -26,7 +26,7 @@ function allStorage(): FeedArchiveType {
 }
 
 interface Feed extends RSSParser.Output<RSSParser.Item> {
-  old: Record<string, boolean>;
+  visited: Record<string, boolean>;
 }
 
 type FeedArchiveType = Record<string, Feed>;
@@ -45,7 +45,7 @@ export default function Home() {
         if (!localStorage.getItem(feedUrl)) {
           const feedToAdd: Feed = {
             ...feed,
-            old: {},
+            visited: {},
           };
           localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
         }
@@ -71,8 +71,9 @@ export default function Home() {
     if (rawFeed) {
       const feed: Feed = JSON.parse(rawFeed);
       console.log(feed);
-
-      feed.old[itemLink] = true;
+      if (feed.visited) {
+        feed.visited[itemLink] = true;
+      }
       localStorage.setItem(feedUrl, JSON.stringify(feed));
     }
   }
@@ -99,7 +100,7 @@ export default function Home() {
           const feed = await rssParser.parseURL(feedUrl);
           const feedToUpdate: Feed = {
             ...feed,
-            old: storage[feedUrl].old,
+            visited: storage[feedUrl].visited || {},
           };
           localStorage.setItem(feedUrl, JSON.stringify(feedToUpdate));
           storage[feedUrl] = feedToUpdate;
@@ -133,7 +134,10 @@ export default function Home() {
                 </button>
               </h2>
               {feed?.items
-                .filter((item) => item.link && !feed.old[item.link])
+                .filter(
+                  (item) =>
+                    item.link && (!feed.visited || !feed.visited[item.link])
+                )
                 .map((item) =>
                   item.link ? (
                     <PostLink
@@ -144,11 +148,14 @@ export default function Home() {
                     />
                   ) : null
                 )}
-              {Object.keys(feed.old).length ? (
+              {Object.keys(feed.visited || {}).length ? (
                 <details>
                   <summary>Visited from {feed?.title || feedUrl}</summary>
                   {feed?.items
-                    .filter((item) => item.link && feed.old[item.link])
+                    .filter(
+                      (item) =>
+                        item.link && feed.visited && feed.visited[item.link]
+                    )
                     .map((item) =>
                       item.link ? (
                         <PostLink
