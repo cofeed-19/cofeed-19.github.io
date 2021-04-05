@@ -92,8 +92,25 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const storage = allStorage();
-    setFeedArchive(storage);
+    async function updateFeeds() {
+      const storage = allStorage();
+      for (const feedUrl of Object.keys(storage)) {
+        try {
+          const feed = await rssParser.parseURL(feedUrl);
+          const feedToUpdate: Feed = {
+            ...feed,
+            old: storage[feedUrl].old,
+          };
+          localStorage.setItem(feedUrl, JSON.stringify(feedToUpdate));
+          storage[feedUrl] = feedToUpdate;
+        } catch (_e) {
+          console.error(`Could not update feed for ${feedUrl}`);
+        }
+      }
+      setFeedArchive(storage);
+    }
+
+    updateFeeds();
   }, []);
 
   return (

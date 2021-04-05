@@ -9,7 +9,7 @@ export function Header() {
       </p>
       <details>
         <summary>Usage</summary>
-        <p>
+        <div>
           <ul>
             <li>
               Should work with any <u>https://[some name].github.io</u> site
@@ -20,7 +20,7 @@ export function Header() {
             </li>
             <li>If it's a personal blog, maybe ask the owner to enable CORS</li>
           </ul>
-        </p>
+        </div>
       </details>
       <hr />
     </header>
