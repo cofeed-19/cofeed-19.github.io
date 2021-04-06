@@ -6,6 +6,7 @@ import { PostLink } from "../components/PostLink";
 import { NewFeedForm } from "../components/NewFeedForm";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
+import { HeadMeta } from "../components/HeadMeta";
 
 const rssParser = new RSSParser();
 
@@ -116,10 +117,7 @@ export default function Home() {
 
   return (
     <div>
-      <Head>
-        <title>Free web feed</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <HeadMeta />
       <Header />
       <main>
         <NewFeedForm onSubmit={onSubmit} />

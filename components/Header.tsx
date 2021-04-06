@@ -1,7 +1,7 @@
 export function Header() {
   return (
     <header>
-      <h1>Client-only Feed Reader</h1>
+      <h1><span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader</h1>
       <p>No backend! All your feeds are stored in this browser!</p>
       <p style={{ color: "red" }}>
         Because we do cross-origin requests most of web feeds are blocked by
