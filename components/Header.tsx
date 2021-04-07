@@ -1,11 +1,13 @@
 export function Header() {
   return (
     <header>
-      <h1><span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader</h1>
+      <h1>
+        <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
+      </h1>
       <p>No backend! All your feeds are stored in this browser!</p>
       <p style={{ color: "red" }}>
-        Because we do cross-origin requests most of web feeds are blocked by
-        CORS policy😢.
+        Because we do cross-origin requests some web feeds are blocked by CORS
+        policy😢.
       </p>
       <details>
         <summary>Usage</summary>
@@ -13,7 +15,8 @@ export function Header() {
           <ul>
             <li>
               Should work with any <u>https://[some name].github.io</u> site
-              which has web feed (RSS/Atom).
+              which has web <br />
+              feed (RSS/Atom).
             </li>
             <li>
               Try <u>http</u> and <u>https</u>.
