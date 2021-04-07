@@ -1,4 +1,3 @@
-import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import { PostLink } from "../components/PostLink";
@@ -9,6 +8,8 @@ import { Header } from "../components/Header";
 import { HeadMeta } from "../components/HeadMeta";
 
 const rssParser = new RSSParser();
+
+const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/";
 
 function allStorage(): FeedArchiveType {
   const archive: FeedArchiveType = {};
@@ -41,17 +42,23 @@ export default function Home() {
     const errors = [];
 
     for (const feedUrl of newFeeds) {
+      let feed;
       try {
-        const feed = await rssParser.parseURL(feedUrl);
-        if (!localStorage.getItem(feedUrl)) {
-          const feedToAdd: Feed = {
-            ...feed,
-            visited: {},
-          };
-          localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
-        }
+        feed = await rssParser.parseURL(feedUrl);
       } catch (_e) {
-        errors.push(feedUrl);
+        try {
+          console.warn("Trying CORS_PROXY");
+          feed = await rssParser.parseURL(CORS_PROXY + feedUrl);
+        } catch (_e) {
+          errors.push(feedUrl);
+        }
+      }
+      if (feed && !localStorage.getItem(feedUrl)) {
+        const feedToAdd: Feed = {
+          ...feed,
+          visited: {},
+        };
+        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
       }
     }
     if (errors.length) {
@@ -97,16 +104,24 @@ export default function Home() {
     async function updateFeeds() {
       const storage = allStorage();
       for (const feedUrl of Object.keys(storage)) {
+        let feed;
         try {
-          const feed = await rssParser.parseURL(feedUrl);
+          feed = await rssParser.parseURL(feedUrl);
+        } catch (_e) {
+          try {
+            console.warn("Trying CORS_PROXY");
+            feed = await rssParser.parseURL(CORS_PROXY + feedUrl);
+          } catch (_e) {
+            console.error(`Could not update feed for ${feedUrl}`);
+          }
+        }
+        if (feed) {
           const feedToUpdate: Feed = {
             ...feed,
             visited: storage[feedUrl].visited || {},
           };
           localStorage.setItem(feedUrl, JSON.stringify(feedToUpdate));
           storage[feedUrl] = feedToUpdate;
-        } catch (_e) {
-          console.error(`Could not update feed for ${feedUrl}`);
         }
       }
       setFeedArchive(storage);
@@ -116,7 +131,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <>
       <HeadMeta />
       <Header />
       <main>
@@ -131,39 +146,43 @@ export default function Home() {
                   X
                 </button>
               </h2>
-              {feed?.items
-                .filter(
-                  (item) =>
-                    item.link && (!feed.visited || !feed.visited[item.link])
-                )
-                .map((item) =>
-                  item.link ? (
-                    <PostLink
-                      key={item.link}
-                      title={item.title || item.link}
-                      link={item.link}
-                      onClick={() => onLinkClick(feedUrl, item.link)}
-                    />
-                  ) : null
-                )}
+              <ul>
+                {feed?.items
+                  .filter(
+                    (item) =>
+                      item.link && (!feed.visited || !feed.visited[item.link])
+                  )
+                  .map((item) =>
+                    item.link ? (
+                      <PostLink
+                        key={item.link}
+                        title={item.title || item.link}
+                        link={item.link}
+                        onClick={() => onLinkClick(feedUrl, item.link)}
+                      />
+                    ) : null
+                  )}
+              </ul>
               {Object.keys(feed.visited || {}).length ? (
                 <details>
                   <summary>Visited from {feed?.title || feedUrl}</summary>
-                  {feed?.items
-                    .filter(
-                      (item) =>
-                        item.link && feed.visited && feed.visited[item.link]
-                    )
-                    .map((item) =>
-                      item.link ? (
-                        <PostLink
-                          key={item.link}
-                          title={item.title || item.link}
-                          link={item.link}
-                          onClick={() => onLinkClick(feedUrl, item.link)}
-                        />
-                      ) : null
-                    )}
+                  <ul>
+                    {feed?.items
+                      .filter(
+                        (item) =>
+                          item.link && feed.visited && feed.visited[item.link]
+                      )
+                      .map((item) =>
+                        item.link ? (
+                          <PostLink
+                            key={item.link}
+                            title={item.title || item.link}
+                            link={item.link}
+                            onClick={() => onLinkClick(feedUrl, item.link)}
+                          />
+                        ) : null
+                      )}
+                  </ul>
                 </details>
               ) : null}
             </section>
@@ -172,6 +191,6 @@ export default function Home() {
         <button onClick={onCopyClick}>Copy feed urls</button>
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

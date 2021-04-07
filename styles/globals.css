@@ -30,12 +30,17 @@ a {
   color: #0000ee;
 }
 
+details a {
+  color: #551a8b;
+}
+
 header,
 main,
 footer {
   max-width: 65ch;
 }
 
+footer,
 section {
   margin: 1em auto;
 }

@@ -6,7 +6,7 @@ export interface Props {
 
 export function PostLink({ title, link, onClick }: Props) {
   return (
-    <div>
+    <li>
       <a
         href={link}
         rel="noopener noreferrer"
@@ -15,6 +15,6 @@ export function PostLink({ title, link, onClick }: Props) {
       >
         {title}
       </a>
-    </div>
+    </li>
   );
 }

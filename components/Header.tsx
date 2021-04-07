@@ -7,7 +7,8 @@ export function Header() {
       <p>No backend! All your feeds are stored in this browser!</p>
       <p style={{ color: "red" }}>
         Because we do cross-origin requests some web feeds are blocked by CORS
-        policy😢.
+        policy😢. <br />
+        For now we use a free CORS proxy as a fallback but don't rely on it.
       </p>
       <details>
         <summary>Usage</summary>
@@ -43,7 +44,6 @@ export function Header() {
               <li>CORS issue</li>
               <li>No sync with other devices</li>
               <li>Minimalist</li>
-              <li>Stupid?</li>
             </ul>
           </div>
         </details>
