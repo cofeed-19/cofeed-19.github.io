@@ -4,27 +4,33 @@ export function Header() {
       <h1>
         <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
       </h1>
-      <p>No backend! All your feeds are stored in this browser!</p>
-      <p style={{ color: "red" }}>
-        Because we do cross-origin requests some web feeds are blocked by CORS
-        policy😢. <br />
-        For now we use a free CORS proxy as a fallback but don't rely on it.
+      <p>
+        No backend! All your feeds are stored in this browser!
+        <a
+          className="github-button"
+          href="https://github.com/cofeed-19/cofeed-19.github.io"
+          data-icon="octicon-star"
+          data-show-count="true"
+          aria-label="Star cofeed-19/cofeed-19.github.io on GitHub"
+        >
+          Star
+        </a>
       </p>
+
       <details>
         <summary>Usage</summary>
-        <div>
-          <ul>
-            <li>
-              Should work with any <u>https://[some name].github.io</u> site
-              which has web <br />
-              feed (RSS/Atom).
-            </li>
-            <li>
-              Try <u>http</u> and <u>https</u>.
-            </li>
-            <li>If it's a personal blog, maybe ask the owner to enable CORS</li>
-          </ul>
-        </div>
+        <ul>
+          <li style={{ color: "red" }}>
+            Because we do cross-origin requests some web feeds are blocked by
+            CORS policy😢. For now we use a free CORS proxy as a fallback, but
+            don't rely on it.
+          </li>
+          <li>Supports RSS and Atom feeds.</li>
+          <li>
+            Try <u>http</u> and <u>https</u>.
+          </li>
+          <li>If it's a personal blog, maybe ask the owner to enable CORS</li>
+        </ul>
         <details>
           <summary>Why to use?</summary>
           <div>
