@@ -135,6 +135,12 @@ export default function Home() {
         <NewFeedForm onSubmit={onSubmit} />
         {Object.keys(feedArchive).map((feedUrl) => {
           const feed = feedArchive[feedUrl];
+          const newItems = feed?.items.filter(
+            (item) => item.link && (!feed.visited || !feed.visited[item.link])
+          );
+          const vizitedItems = feed?.items.filter(
+            (item) => item.link && feed.visited && feed.visited[item.link]
+          );
           return (
             <section key={feedUrl}>
               <h2>
@@ -144,45 +150,50 @@ export default function Home() {
                 </button>
               </h2>
               <ul>
-                {feed?.items
-                  .filter(
-                    (item) =>
-                      item.link && (!feed.visited || !feed.visited[item.link])
-                  )
-                  .map((item) =>
-                    item.link ? (
-                      <li>
-                        <ExternalLink
-                          key={item.link}
-                          title={item.title || item.link}
-                          link={item.link}
-                          onClick={() => onLinkClick(feedUrl, item.link)}
-                        />
-                      </li>
-                    ) : null
-                  )}
+                {newItems?.map((item) =>
+                  item.link ? (
+                    <li>
+                      <ExternalLink
+                        key={item.link}
+                        title={item.title || item.link}
+                        link={item.link}
+                        onClick={() => onLinkClick(feedUrl, item.link)}
+                      />
+                    </li>
+                  ) : null
+                )}
               </ul>
+              {newItems.length ? (
+                <button
+                  onClick={() => {
+                    if (
+                      confirm(`Mark all ${feed?.title || feedUrl} as visited?`)
+                    ) {
+                      newItems.forEach((item) =>
+                        onLinkClick(feedUrl, item.link)
+                      );
+                    }
+                  }}
+                >
+                  Mark all as visited
+                </button>
+              ) : null}
               {Object.keys(feed.visited || {}).length ? (
                 <details>
                   <summary>Visited from {feed?.title || feedUrl}</summary>
                   <ul>
-                    {feed?.items
-                      .filter(
-                        (item) =>
-                          item.link && feed.visited && feed.visited[item.link]
-                      )
-                      .map((item) =>
-                        item.link ? (
-                          <li>
-                            <ExternalLink
-                              key={item.link}
-                              title={item.title || item.link}
-                              link={item.link}
-                              onClick={() => onLinkClick(feedUrl, item.link)}
-                            />
-                          </li>
-                        ) : null
-                      )}
+                    {vizitedItems?.map((item) =>
+                      item.link ? (
+                        <li>
+                          <ExternalLink
+                            key={item.link}
+                            title={item.title || item.link}
+                            link={item.link}
+                            onClick={() => onLinkClick(feedUrl, item.link)}
+                          />
+                        </li>
+                      ) : null
+                    )}
                   </ul>
                 </details>
               ) : null}
