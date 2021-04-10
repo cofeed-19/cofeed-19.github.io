@@ -10,15 +10,14 @@ export function Header() {
       </Link>
       <p>
         No backend! All your feeds are stored in this browser!
-        <a
-          className="github-button"
-          href="https://github.com/cofeed-19/cofeed-19.github.io"
-          data-icon="octicon-star"
-          data-show-count="true"
-          aria-label="Star cofeed-19/cofeed-19.github.io on GitHub"
-        >
-          Star
-        </a>
+        <iframe
+          src="https://ghbtns.com/github-btn.html?user=cofeed-19&repo=cofeed-19.github.io&type=star&count=true"
+          frameBorder="0"
+          scrolling="0"
+          width="110"
+          height="20"
+          title="GitHub"
+        ></iframe>
       </p>
 
       <details>

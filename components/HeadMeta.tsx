@@ -45,7 +45,6 @@ export function HeadMeta() {
         href="https://cofeed-19.github.io/favicon-16x16.png"
       />
       <link rel="manifest" href="/site.webmanifest" />
-      <script async defer src="https://buttons.github.io/buttons.js"></script>
     </Head>
   );
 }
