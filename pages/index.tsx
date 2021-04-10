@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import { PostLink } from "../components/PostLink";
+import { ExternalLink } from "../components/ExternalLink";
 
 import { NewFeedForm } from "../components/NewFeedForm";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { HeadMeta } from "../components/HeadMeta";
+import { Feed } from "../types";
 
 const rssParser = new RSSParser();
 
@@ -25,10 +26,6 @@ function allStorage(): FeedArchiveType {
   }
 
   return archive;
-}
-
-interface Feed extends RSSParser.Output<RSSParser.Item> {
-  visited: Record<string, boolean>;
 }
 
 type FeedArchiveType = Record<string, Feed>;
@@ -154,12 +151,14 @@ export default function Home() {
                   )
                   .map((item) =>
                     item.link ? (
-                      <PostLink
-                        key={item.link}
-                        title={item.title || item.link}
-                        link={item.link}
-                        onClick={() => onLinkClick(feedUrl, item.link)}
-                      />
+                      <li>
+                        <ExternalLink
+                          key={item.link}
+                          title={item.title || item.link}
+                          link={item.link}
+                          onClick={() => onLinkClick(feedUrl, item.link)}
+                        />
+                      </li>
                     ) : null
                   )}
               </ul>
@@ -174,12 +173,14 @@ export default function Home() {
                       )
                       .map((item) =>
                         item.link ? (
-                          <PostLink
-                            key={item.link}
-                            title={item.title || item.link}
-                            link={item.link}
-                            onClick={() => onLinkClick(feedUrl, item.link)}
-                          />
+                          <li>
+                            <ExternalLink
+                              key={item.link}
+                              title={item.title || item.link}
+                              link={item.link}
+                              onClick={() => onLinkClick(feedUrl, item.link)}
+                            />
+                          </li>
                         ) : null
                       )}
                   </ul>

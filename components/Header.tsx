@@ -1,9 +1,13 @@
+import Link from "next/link";
+
 export function Header() {
   return (
     <header>
-      <h1>
-        <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
-      </h1>
+      <Link href="/">
+        <h1>
+          <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
+        </h1>
+      </Link>
       <p>
         No backend! All your feeds are stored in this browser!
         <a
@@ -30,6 +34,9 @@ export function Header() {
             Try <u>http</u> and <u>https</u>.
           </li>
           <li>If it's a personal blog, maybe ask the owner to enable CORS</li>
+          <li>
+            <Link href="/feeds">Feeds added by users</Link>
+          </li>
         </ul>
         <details>
           <summary>Why to use?</summary>

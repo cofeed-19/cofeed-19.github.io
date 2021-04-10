@@ -44,6 +44,14 @@ section {
   margin: 1em auto;
 }
 
+h1 {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 h2 {
   display: flex;
 }

@@ -1,20 +1,18 @@
 export interface Props {
-  title: string;
   link: string;
-  onClick: () => void;
+  title?: string;
+  onClick?: () => void;
 }
 
-export function PostLink({ title, link, onClick }: Props) {
+export function ExternalLink({ title, link, onClick }: Props) {
   return (
-    <li>
       <a
         href={link}
         rel="noopener noreferrer"
         target="_blank"
         onClick={onClick}
       >
-        {title}
+        {title || link}
       </a>
-    </li>
   );
 }
