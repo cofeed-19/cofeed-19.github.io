@@ -1,0 +1,12 @@
+[
+  {
+    "siteUrl": "https://strdr4605.github.io",
+    "feedUrl": "https://strdr4605.github.io/rss.xml",
+    "description": "Cool guy"
+  },
+  {
+    "siteUrl": "https://tonsky.me/blog",
+    "feedUrl": "https://tonsky.me/blog/atom.xml",
+    "description": "I’m Nikita. Here I write about programming and UI design"
+  }
+]
