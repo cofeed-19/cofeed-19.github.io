@@ -1,6 +1,30 @@
 import Link from "next/link";
+import { ChangeEvent, useEffect, useState } from "react";
+import { setDarkMode, setLightMode } from "../utils";
 
 export function Header() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  function onDarkModeChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.checked) {
+      setIsDarkMode(true);
+      setDarkMode();
+      localStorage.setItem("dark-mode", "true");
+    } else {
+      setIsDarkMode(false);
+      setLightMode();
+      localStorage.removeItem("dark-mode");
+    }
+  }
+
+  useEffect(() => {
+    const isDarkMode = localStorage.getItem("dark-mode");
+    if (isDarkMode) {
+      setDarkMode();
+      setIsDarkMode(true);
+    }
+  }, []);
+
   return (
     <header>
       <Link href="/">
@@ -19,7 +43,6 @@ export function Header() {
           title="GitHub"
         ></iframe>
       </p>
-
       <details>
         <summary>Usage</summary>
         <ul>
@@ -35,6 +58,16 @@ export function Header() {
           <li>If it's a personal blog, maybe ask the owner to enable CORS</li>
           <li>
             <Link href="/feeds">Feeds added by users</Link>
+          </li>
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                checked={isDarkMode}
+                onChange={onDarkModeChange}
+              />
+              Dark mode
+            </label>
           </li>
         </ul>
         <details>
