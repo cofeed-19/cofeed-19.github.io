@@ -1,7 +1,9 @@
+import { MouseEvent } from 'react';
+
 export interface Props {
   link: string;
   title?: string;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export function ExternalLink({ title, link, onClick }: Props) {

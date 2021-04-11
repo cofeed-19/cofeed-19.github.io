@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { MouseEvent, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import { ExternalLink } from "../components/ExternalLink";
 
@@ -68,18 +68,24 @@ export default function Home() {
     window.location.reload();
   }
 
-  function onLinkClick(feedUrl: string, itemLink?: string) {
+  function onLinkClick(
+    e: MouseEvent<HTMLAnchorElement> | undefined,
+    feedUrl: string,
+    itemLink?: string
+  ) {
     if (!feedUrl || !itemLink) {
       return;
     }
     const rawFeed: string | null = localStorage.getItem(feedUrl);
     if (rawFeed) {
       const feed: Feed = JSON.parse(rawFeed);
-      console.log(feed);
       if (feed.visited) {
         feed.visited[itemLink] = true;
       }
       localStorage.setItem(feedUrl, JSON.stringify(feed));
+      if (e) {
+        e.currentTarget.style.color = "var(--link-visited-color)";
+      }
     }
   }
 
@@ -152,12 +158,11 @@ export default function Home() {
               <ul>
                 {newItems?.map((item) =>
                   item.link ? (
-                    <li>
+                    <li key={item.link}>
                       <ExternalLink
-                        key={item.link}
                         title={item.title || item.link}
                         link={item.link}
-                        onClick={() => onLinkClick(feedUrl, item.link)}
+                        onClick={(e) => onLinkClick(e, feedUrl, item.link)}
                       />
                     </li>
                   ) : null
@@ -170,7 +175,7 @@ export default function Home() {
                       confirm(`Mark all ${feed?.title || feedUrl} as visited?`)
                     ) {
                       newItems.forEach((item) =>
-                        onLinkClick(feedUrl, item.link)
+                        onLinkClick(undefined, feedUrl, item.link)
                       );
                     }
                   }}
@@ -184,12 +189,11 @@ export default function Home() {
                   <ul>
                     {vizitedItems?.map((item) =>
                       item.link ? (
-                        <li>
+                        <li key={item.link}>
                           <ExternalLink
-                            key={item.link}
                             title={item.title || item.link}
                             link={item.link}
-                            onClick={() => onLinkClick(feedUrl, item.link)}
+                            onClick={(e) => onLinkClick(e, feedUrl, item.link)}
                           />
                         </li>
                       ) : null
