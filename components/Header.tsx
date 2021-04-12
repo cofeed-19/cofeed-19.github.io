@@ -48,8 +48,7 @@ export function Header() {
         <ul>
           <li style={{ color: "red" }}>
             Because we do cross-origin requests some web feeds are blocked by
-            CORS policy😢. For now we use a free CORS proxy as a fallback, but
-            don't rely on it.
+            CORS policy😢.
           </li>
           <li>Supports RSS and Atom feeds.</li>
           <li>
