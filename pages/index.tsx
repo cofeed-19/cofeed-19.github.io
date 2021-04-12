@@ -34,7 +34,7 @@ export default function Home() {
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
 
   async function onSubmit(newFeed: string): Promise<void> {
-    const newFeeds = newFeed.split(",").filter(Boolean);
+    const newFeeds = newFeed.trim().split(",").filter(Boolean);
 
     const errors = [];
 
