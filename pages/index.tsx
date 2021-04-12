@@ -177,6 +177,7 @@ export default function Home() {
                       newItems.forEach((item) =>
                         onLinkClick(undefined, feedUrl, item.link)
                       );
+                      window.location.reload();
                     }
                   }}
                 >
