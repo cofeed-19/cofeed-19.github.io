@@ -15,7 +15,7 @@
     "description": "I’m Yegor Bugayenko, a programmer, founder, investor, and philanthropist."
   },
   {
-    "siteUrl": "https://tonsky.me/blog",
+    "siteUrl": "https://tonsky.me",
     "feedUrl": "https://tonsky.me/blog/atom.xml",
     "description": "I’m Nikita. Here I write about programming and UI design."
   }
