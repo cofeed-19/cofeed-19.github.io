@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { setDarkMode, setLightMode } from "../utils";
+import { ExternalLink } from "./ExternalLink";
 
 export function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -54,7 +55,13 @@ export function Header() {
           <li>
             Try <u>http</u> and <u>https</u>.
           </li>
-          <li>If it's a personal blog, maybe ask the owner to enable CORS</li>
+          <li>
+            If it's a personal blog, maybe ask the owner to{" "}
+            <ExternalLink
+              link={"https://enable-cors.org/server.html"}
+              title={"enable CORS"}
+            />
+          </li>
           <li>
             <Link href="/feeds">Feeds added by users</Link>
           </li>
