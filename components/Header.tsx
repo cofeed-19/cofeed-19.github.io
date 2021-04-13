@@ -49,11 +49,11 @@ export function Header() {
         <ul>
           <li style={{ color: "red" }}>
             Because we do cross-origin requests some web feeds are blocked by
-            CORS policy😢.
+            CORS policy😢
           </li>
-          <li>Supports RSS and Atom feeds.</li>
+          <li>Supports RSS and Atom feeds</li>
           <li>
-            Try <u>http</u> and <u>https</u>.
+            Try <u>http</u> and <u>https</u>
           </li>
           <li>
             If it's a personal blog, maybe ask the owner to{" "}
