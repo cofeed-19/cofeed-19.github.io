@@ -22,7 +22,7 @@ export function HeadMeta() {
       />
       <meta property="og:url" content="https://cofeed-19.github.io/" />
 
-      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="https://cofeed-19.github.io/" />
       <meta name="twitter:creator" content="@strdr4605" />
 
