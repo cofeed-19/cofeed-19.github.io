@@ -62,7 +62,7 @@ export default function Home() {
       alert(
         `Could not add:\n${errors.join(
           "\n"
-        )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!`
+        )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!\nOr install browser extension to allow CORS: https://mybrowseraddon.com/access-control-allow-origin.html`
       );
     }
     window.location.reload();
