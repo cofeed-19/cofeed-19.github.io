@@ -49,7 +49,7 @@ export function Header() {
         <ul>
           <li style={{ color: "red" }}>
             Because we do cross-origin requests some web feeds are blocked by
-            CORS policy😢
+            CORS policy😢. But you can install <a href="https://mybrowseraddon.com/access-control-allow-origin.html">a browser extension that allow CORS</a>😊.
           </li>
           <li>Supports RSS and Atom feeds</li>
           <li>
