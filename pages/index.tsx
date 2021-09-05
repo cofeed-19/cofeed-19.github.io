@@ -6,6 +6,7 @@ import { NewFeedForm } from "../components/NewFeedForm";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { HeadMeta } from "../components/HeadMeta";
+import { ProgressLoader } from "../components/ProgressLoader";
 import { Feed } from "../types";
 
 const rssParser = new RSSParser();
@@ -32,6 +33,10 @@ type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
+  const [loadedFeeds, setLoadedFeeds] = useState<{
+    total: number;
+    loaded: number;
+  }>({ total: 0, loaded: 0 });
 
   async function onSubmit(newFeed: string): Promise<void> {
     const newFeeds = newFeed.trim().split(",").filter(Boolean);
@@ -106,7 +111,10 @@ export default function Home() {
   useEffect(() => {
     async function updateFeeds() {
       const storage = allStorage();
+      const feedsCount = Object.keys(storage).length;
+      setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
       for (const feedUrl of Object.keys(storage)) {
+        setLoadedFeeds((s) => ({ ...s, loaded: s.loaded + 1 }));
         let feed;
         try {
           feed = await rssParser.parseURL(feedUrl);
@@ -139,6 +147,7 @@ export default function Home() {
       <Header />
       <main>
         <NewFeedForm onSubmit={onSubmit} />
+        <ProgressLoader loadedFeeds={loadedFeeds} />
         {Object.keys(feedArchive).map((feedUrl) => {
           const feed = feedArchive[feedUrl];
           const newItems = feed?.items.filter(
