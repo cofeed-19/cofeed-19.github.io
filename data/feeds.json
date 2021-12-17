@@ -18,5 +18,10 @@
     "siteUrl": "https://tonsky.me",
     "feedUrl": "https://tonsky.me/blog/atom.xml",
     "description": "I’m Nikita. Here I write about programming and UI design."
+  },
+  {
+    "siteUrl": "https://www.nytimes.com/",
+    "feedUrl": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "description": "The New York Times - Top Stories"
   }
 ]

@@ -1,5 +1,5 @@
 name: CORS Test
-on: 
+on:
   pull_request:
     paths:
       - data/feeds.json
