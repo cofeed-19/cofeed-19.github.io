@@ -4,6 +4,9 @@ jobs:
   Test-CORS:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: chmod +x scripts/cors-test.sh
       - run: chmod +x scripts/test-feed-data.sh
       - run: bash scripts/cors-test.sh
