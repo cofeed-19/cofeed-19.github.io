@@ -1,0 +1,9 @@
+name: CORS Test
+on: [push]
+jobs:
+  Test-CORS:
+    runs-on: ubuntu-latest
+    steps:
+      - run: chmod +x {{ github.workspace }}/scripts/cors-test.sh
+      - run: chmod +x {{ github.workspace }}/scripts/test-feed-data.sh
+      - run: bash {{ github.workspace }}/scripts/cors-test.sh
