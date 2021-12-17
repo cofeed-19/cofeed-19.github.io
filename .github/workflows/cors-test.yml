@@ -10,6 +10,6 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: cd ${{ github.workspace }}
-      - run: chmod +x scripts/cors-test.sh
-      - run: chmod +x scripts/test-feed-data.sh
-      - run: bash scripts/cors-test.sh
+      - run: chmod +x ${{ github.workspace }}/scripts/cors-test.sh
+      - run: chmod +x ${{ github.workspace }}/scripts/test-feed-data.sh
+      - run: bash ${{ github.workspace }}/scripts/cors-test.sh

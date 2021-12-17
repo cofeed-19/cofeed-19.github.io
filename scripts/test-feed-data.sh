@@ -1,6 +1,6 @@
 cat data/feeds.json | grep feedUrl | sed  's/"feedUrl"://g' | cut -d '"' -f2 > /tmp/feeds.txt
 while read URL; do
-    scripts/corstest.sh $URL
+    ${{ github.workspace }}/scripts/corstest.sh $URL
     if [ $? -eq 0 ]; then
         # Nothing...
         sleep 0
