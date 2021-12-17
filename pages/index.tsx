@@ -38,6 +38,38 @@ export default function Home() {
     loaded: number;
   }>({ total: 0, loaded: 0 });
 
+  async function updateFeeds() {
+    const storage = allStorage();
+    const feedsCount = Object.keys(storage).length;
+    setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
+    for (const feedUrl of Object.keys(storage)) {
+      let feed;
+      try {
+        feed = await rssParser.parseURL(feedUrl);
+      } catch (_e) {
+        try {
+          console.warn("Trying CORS_PROXY");
+          feed = await rssParser.parseURL(CORS_PROXY + feedUrl);
+        } catch (_e) {
+          console.error(`Could not update feed for ${feedUrl}`);
+        }
+      }
+      if (feed) {
+        const feedToUpdate: Feed = {
+          ...feed,
+          visited: storage[feedUrl].visited || {},
+        };
+        localStorage.setItem(feedUrl, JSON.stringify(feedToUpdate));
+        storage[feedUrl] = feedToUpdate;
+      }
+      setLoadedFeeds((s) => ({
+        ...s,
+        loaded: s.loaded + 1,
+      }));
+    }
+    setFeedArchive(storage);
+  }
+
   async function onSubmit(newFeed: string): Promise<void> {
     const newFeeds = newFeed.trim().split(",").filter(Boolean);
 
@@ -70,7 +102,8 @@ export default function Home() {
         )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!\nOr install browser extension to allow CORS: https://mybrowseraddon.com/access-control-allow-origin.html`
       );
     }
-    window.location.reload();
+
+    updateFeeds();
   }
 
   function onLinkClick(
@@ -97,7 +130,7 @@ export default function Home() {
   function onRemoveClick(feedUrl: string, feedTitle?: string) {
     if (confirm(`Delete ${feedTitle} from feeds?`)) {
       localStorage.removeItem(feedUrl);
-      window.location.reload();
+      updateFeeds();
     }
   }
 
@@ -109,37 +142,14 @@ export default function Home() {
   }
 
   useEffect(() => {
-    async function updateFeeds() {
-      const storage = allStorage();
-      const feedsCount = Object.keys(storage).length;
-      setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
-      for (const feedUrl of Object.keys(storage)) {
-        setLoadedFeeds((s) => ({ ...s, loaded: s.loaded + 1 }));
-        let feed;
-        try {
-          feed = await rssParser.parseURL(feedUrl);
-        } catch (_e) {
-          try {
-            console.warn("Trying CORS_PROXY");
-            feed = await rssParser.parseURL(CORS_PROXY + feedUrl);
-          } catch (_e) {
-            console.error(`Could not update feed for ${feedUrl}`);
-          }
-        }
-        if (feed) {
-          const feedToUpdate: Feed = {
-            ...feed,
-            visited: storage[feedUrl].visited || {},
-          };
-          localStorage.setItem(feedUrl, JSON.stringify(feedToUpdate));
-          storage[feedUrl] = feedToUpdate;
-        }
-      }
-      setFeedArchive(storage);
-    }
-
     updateFeeds();
   }, []);
+
+  useEffect(() => {
+    if (loadedFeeds.loaded > loadedFeeds.total) {
+      setLoadedFeeds({ ...loadedFeeds, loaded: loadedFeeds.total });
+    }
+  }, [loadedFeeds]);
 
   return (
     <>
@@ -186,7 +196,7 @@ export default function Home() {
                       newItems.forEach((item) =>
                         onLinkClick(undefined, feedUrl, item.link)
                       );
-                      window.location.reload();
+                      updateFeeds();
                     }
                   }}
                 >
