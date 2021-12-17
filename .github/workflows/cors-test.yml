@@ -9,4 +9,4 @@ jobs:
       - run: cd ${{ github.workspace }}
       - run: chmod +x ${{ github.workspace }}/scripts/corstest.sh
       - run: chmod +x ${{ github.workspace }}/scripts/test-feed-data.sh
-      - run: bash ${{ github.workspace }}/scripts/corstest.sh
+      - run: bash ${{ github.workspace }}/scripts/test-feed-data.sh
