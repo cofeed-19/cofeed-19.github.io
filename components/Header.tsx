@@ -19,7 +19,7 @@ export function Header() {
   }
 
   useEffect(() => {
-    const isDarkMode = localStorage.getItem("dark-mode") === "true" || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const isDarkMode = (!localStorage.getItem("dark-mode") && (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)) || localStorage.getItem("dark-mode") === "true";
     if (isDarkMode) {
       setDarkMode();
       setIsDarkMode(true);
