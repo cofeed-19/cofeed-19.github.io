@@ -14,12 +14,12 @@ export function Header() {
     } else {
       setIsDarkMode(false);
       setLightMode();
-      localStorage.removeItem("dark-mode");
+      localStorage.setItem("dark-mode", "false");
     }
   }
 
   useEffect(() => {
-    const isDarkMode = localStorage.getItem("dark-mode");
+    const isDarkMode = localStorage.getItem("dark-mode") === "true" || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
     if (isDarkMode) {
       setDarkMode();
       setIsDarkMode(true);
