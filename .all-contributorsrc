@@ -25,6 +25,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "zvonimirr",
+      "name": "Zvonimir Rudinski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18758022?v=4",
+      "profile": "http://zvonimirr.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
