@@ -16,6 +16,15 @@
         "infra",
         "mentoring"
       ]
+    },
+    {
+      "login": "UmanetAlexandru",
+      "name": "Alexandru Umanet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17477765?v=4",
+      "profile": "https://github.com/UmanetAlexandru",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
