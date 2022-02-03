@@ -1,4 +1,4 @@
-export interface Props {
+type Props = {
   loadedFeeds: { loaded: number; total: number };
 }
 

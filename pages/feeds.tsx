@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import { ExternalLink } from "../components/ExternalLink";
-import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
-import { HeadMeta } from "../components/HeadMeta";
+
+import { ExternalLink, Footer, Header, HeadMeta } from "../components";
 
 import JSONFeeds from "../data/feeds.json";
 import { Feed } from "../types";
