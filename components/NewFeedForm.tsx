@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 
-export interface Props {
+type Props = {
   onSubmit: (newFeed: string) => void;
 }
 
