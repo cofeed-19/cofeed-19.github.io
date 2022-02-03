@@ -9,7 +9,7 @@ export function Footer() {
       >
         @strdr4605
       </a>
-      . Try <code>https://strdr4605.github.io/rss.xml</code> as your first web
+      . Try <code>https://strdr4605.com/feed/rss.xml</code> as your first web
       feed. <br />
     </footer>
   );
