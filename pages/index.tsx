@@ -1,12 +1,7 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import { ExternalLink } from "../components/ExternalLink";
 
-import { NewFeedForm } from "../components/NewFeedForm";
-import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
-import { HeadMeta } from "../components/HeadMeta";
-import { ProgressLoader } from "../components/ProgressLoader";
+import {ExternalLink, NewFeedForm, Footer, Header, HeadMeta, ProgressLoader } from "../components";
 import { Feed } from "../types";
 
 const rssParser = new RSSParser();
