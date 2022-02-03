@@ -19,7 +19,7 @@ export function NewFeedForm({ onSubmit }: Props) {
   return (
     <form onSubmit={onFormSubmit}>
       <input
-        placeholder="https://strdr4605.github.io/rss.xml,http://example.com/atom.xml"
+        placeholder="https://strdr4605.com/feed/rss.xml,http://example.com/atom.xml"
         type="text"
         value={newFeed}
         onChange={onInputChange}
