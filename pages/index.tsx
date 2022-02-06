@@ -23,7 +23,6 @@ function allStorage(): FeedArchiveType {
     }
   }
 
-  // console
   return archive;
 }
 
@@ -31,7 +30,9 @@ type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
 
-  const {initDatabase, insertUserFeed} = useDBService();
+  const {initDatabase, insertUserFeed, getUserFeed} = useDBService();
+
+  const [userFeed, setUserFeed] = useState<UserFeed>();
 
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
@@ -145,14 +146,16 @@ export default function Home() {
   function onTestClick() {
 
     
-    var userFieldToTest: UserFeed = {SiteUrl: "ameno11111@gmail.com", Visited: ["dasdasdaf", "asdasa"]};
+    var userFieldToTest: UserFeed = {SiteUrl: "ameno11das111@gmail.com", Visited: ["dasdadasaaaaf", "asdasa"]};
     insertUserFeed(userFieldToTest);
     // console.log("click");
   }
 
   function onTestClickPrint() {
 
+    // getUserFeed(setUserFeed);
     
+    // console.log(userFeed);
     // console.log(siteUrls);
     // console.log("click");
   }
