@@ -1,4 +1,4 @@
 export interface UserFeed {
     SiteUrl: string;
-    VisitedPaths: string[];
+    Visited: string[];
 }
