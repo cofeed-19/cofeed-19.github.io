@@ -3,6 +3,8 @@ import RSSParser from "rss-parser";
 
 import {ExternalLink, NewFeedForm, Footer, Header, HeadMeta, ProgressLoader } from "../components";
 import { Feed } from "../types";
+import { useDBService } from "../services";
+import { UserFeed } from "../models";
 
 const rssParser = new RSSParser();
 
@@ -21,12 +23,16 @@ function allStorage(): FeedArchiveType {
     }
   }
 
+  // console
   return archive;
 }
 
 type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
+
+  const {initDatabase, insertUserFeed} = useDBService();
+
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
     total: number;
@@ -136,8 +142,26 @@ export default function Home() {
     });
   }
 
+  function onTestClick() {
+
+    
+    var userFieldToTest: UserFeed = {SiteUrl: "ameno11111@gmail.com", Visited: ["dasdasdaf", "asdasa"]};
+    insertUserFeed(userFieldToTest);
+    // console.log("click");
+  }
+
+  function onTestClickPrint() {
+
+    
+    // console.log(siteUrls);
+    // console.log("click");
+  }
   useEffect(() => {
     updateFeeds();
+    initDatabase();
+    // useDBService().then(db => {
+    //   setDatabase(db)
+    //   console.log(db)});
   }, []);
 
   useEffect(() => {
@@ -146,6 +170,7 @@ export default function Home() {
     }
   }, [loadedFeeds]);
 
+  
   return (
     <>
       <HeadMeta />
@@ -220,6 +245,9 @@ export default function Home() {
           );
         })}
         <button onClick={onCopyClick}>Copy feed urls</button>
+        <button onClick={onTestClick}>Test Click</button>
+        <button onClick={onTestClickPrint}>Print Click</button>
+
       </main>
       <Footer />
     </>
