@@ -10,7 +10,7 @@ export const useCRUD = () => {
 
     }
 
-    async function insertValues(db: any, tableName: string, values: object[]) {
+    async function insert(db: any, tableName: string, values: object[]) {
 
         const transaction = db.transaction(tableName, 'readwrite');        
         const objectStore = transaction.objectStore(tableName);
@@ -18,7 +18,7 @@ export const useCRUD = () => {
         values.forEach(async value => await objectStore.add(value));
     }
 
-    async function getValueByColumnName(db: any, tableName: string, fieldNameToSearch: string, value: string) {
+    async function getByColumnName(db: any, tableName: string, fieldNameToSearch: string, value: string) {
 
         var result = await new Promise(resolve => {
             const transaction = db.transaction([tableName], 'readonly');
@@ -31,43 +31,44 @@ export const useCRUD = () => {
 
           return result;
     } 
-    // async function getValue(db: any, tableName: string, id: number){
 
-    //     const tx = db.transaction(tableName, 'readonly');
-    //     const store = tx.objectStore(tableName);
-    //     const result = await store.get(id);
-    //     // console.log('Get Data ', JSON.stringify(result));
-    //     return result;
-    // }
-    
-    // async function getAllValue(tableName: string) {
-    //     const tx = db.transaction(tableName, 'readonly');
-    //     const store = tx.objectStore(tableName);
-    //     const result = await store.getAll();
-    //     console.log('Get All Data', JSON.stringify(result));
-    //     return result;
-    // }
+    async function getAll(db: any, tableName: string) {
 
-    // async function deleteValue(tableName: string, id: number) {
-    //     const tx = db.transaction(tableName, 'readwrite');
-    //     const store = tx.objectStore(tableName);
-    //     const result = await store.get(id);
-    //     if (!result) {
-    //         console.log('Id not found', id);
-    //         return result;
-    //     }
-    //     await store.delete(id);
-    //     console.log('Deleted Data', id);
-    //     return id;
-    // }
+        var result = await new Promise(resolve => {
+            const transaction = db.transaction([tableName], 'readonly');
+            const objectStore = transaction.objectStore(tableName);
 
+            var getRequest = objectStore.getAll();
+            getRequest.onsuccess = () => resolve(getRequest.result);
+          });
+
+          return result;
+    }    
+
+    async function deleteByID(db: any, tableName: string, id: number) {
+        const transaction = db.transaction(tableName, 'readwrite');
+        const objectStore = transaction.objectStore(tableName);
+        const result = await objectStore.get(id);
+        if (!result) {
+            console.log('ID not found', id);
+        }
+        await objectStore.delete(id);
+    }
+
+    async function update(db: any, tableName: string, value: object) {
+
+        const transaction = db.transaction(tableName, 'readwrite');        
+        const objectStore = transaction.objectStore(tableName);
+
+        await objectStore.put(value)
+    }
 
     return {
         createTable,
-        insertValues,
-        // putValue,
-        getValueByColumnName,
-        // getAllValue,
-        // deleteValue
+        insert,
+        getByColumnName,
+        getAll,
+        deleteByID,
+        update
     }
 }
