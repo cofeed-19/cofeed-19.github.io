@@ -152,7 +152,7 @@ export default function Home() {
 
     
 
-    var userFieldToTest: UserFeed = {AddedSiteUrl: "ameno11das111@gmail.com", SiteFeed: [{Url: "dasdadasaaaaf", IsVisited: true}, {Url: "asdasa", IsVisited: true}]};
+    var userFieldToTest: UserFeed = {AddedSite: {Url: "ameno11das111@gmail.com", Author: "Amen"}, SiteFeed: [{Url: "dasdadasaaaaf", IsVisited: true, Title: "title"}, {Url: "asdasa", IsVisited: true}]};
     // console.log(userFieldToTest)
     insertUserFeed(userFieldToTest);
     // console.log("click");

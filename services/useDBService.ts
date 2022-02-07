@@ -44,13 +44,13 @@ export const useDBService = () => {
         request.onsuccess = async () => {
             const db = request.result;
             
-            let siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSiteUrl) as AddedSite;
+            let siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSite.Url) as AddedSite;
 
             if(!siteUrl){
-                const siteUrlObj: AddedSite[] = [{ Url:  userFeed.AddedSiteUrl}]
+                const siteUrlObj: AddedSite[] = [{ Url:  userFeed.AddedSite.Url, Author: userFeed.AddedSite.Author}]
                 await insert(db, AddedSiteParams.Name, siteUrlObj);
 
-                siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSiteUrl) as AddedSite;
+                siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSite.Url) as AddedSite;
             }
 
             let visitedSites: SiteFeed[] = [];
