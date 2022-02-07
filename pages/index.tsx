@@ -5,6 +5,7 @@ import {ExternalLink, NewFeedForm, Footer, Header, HeadMeta, ProgressLoader } fr
 import { Feed } from "../types";
 import { useDBService } from "../services";
 import { UserFeed } from "../models";
+import link from "next/link";
 
 const rssParser = new RSSParser();
 
@@ -161,12 +162,11 @@ export default function Home() {
   function onTestClickPrint() {
 
     getUserFeed(setUserFeed);
-    console.log(userFeed);
-    
-    // console.log(userFeed);
-    // console.log(siteUrls);
-    // console.log("click");
+    console.log(userFeed)
+    // testExtractStorage();
   }
+
+
   useEffect(() => {
     updateFeeds();
     initDatabase();
