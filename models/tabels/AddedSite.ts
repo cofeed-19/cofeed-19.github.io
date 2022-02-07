@@ -1,4 +1,4 @@
-export interface SiteUrl {
+export interface AddedSite {
     ID?: number;
     Url: string;
 }

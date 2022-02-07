@@ -22,7 +22,8 @@ function allStorage(): FeedArchiveType {
       archive[key] = JSON.parse(item);
     }
   }
-
+  
+  // console.log(archive)
   return archive;
 }
 
@@ -43,6 +44,8 @@ export default function Home() {
   async function updateFeeds() {
     const storage = allStorage();
     const feedsCount = Object.keys(storage).length;
+
+    console.log(feedsCount)
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
     for (const feedUrl of Object.keys(storage)) {
       let feed;
@@ -149,15 +152,16 @@ export default function Home() {
 
     
 
-    var userFieldToTest: UserFeed = {SiteUrl: "ameno11das111@gmail.com", Visited: ["dasdadasaaaaf", "asdasa"]};
+    var userFieldToTest: UserFeed = {AddedSiteUrl: "ameno11das111@gmail.com", SiteFeed: [{Url: "dasdadasaaaaf", IsVisited: true}, {Url: "asdasa", IsVisited: true}]};
+    // console.log(userFieldToTest)
     insertUserFeed(userFieldToTest);
     // console.log("click");
   }
 
   function onTestClickPrint() {
 
+    getUserFeed(setUserFeed);
     console.log(userFeed);
-    // getUserFeed(setUserFeed);
     
     // console.log(userFeed);
     // console.log(siteUrls);
