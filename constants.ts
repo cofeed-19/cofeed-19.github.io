@@ -12,8 +12,8 @@ export enum AddedSiteParams{
 
 export enum SiteFeedParams{
     Name = "VisitedUrls",
-    AddedSiteRef = "SiteUrlRef",
-    Url = "FeedUrl",
+    AddedSiteRef = "AddedSiteRef",
+    Url = "Url",
     IsVisited = "IsVisited",
     Title = "Title"
 }
