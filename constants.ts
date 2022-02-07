@@ -3,16 +3,13 @@ export const STORAGE_PREFIX = "FWF_";
 export const databaseName = 'FeedDb';
 export const databaseVersion = 1;
 
-export enum TableNames{
-    SiteUrls = "SiteUrls",
-    VisitedUrls = "VisitedUrls"
-}
-
-export enum SiteUrlsFields{
+export enum SiteUrlParams{
+    Name = "SiteUrls",
     Url = "Url"
 }
 
-export enum VisitedUrlsFields{
+export enum VisitedUrlParams{
+    Name = "VisitedUrls",
     SiteUrlRef = "SiteUrlRef",
     FeedUrl = "FeedUrl"
 }
