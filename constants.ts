@@ -6,7 +6,8 @@ export const databaseVersion = 1;
 export enum AddedSiteParams{
     Name = "SiteUrls",
     Url = "Url",
-    Author = "Author"
+    Author = "Author",
+    Title = "Title"
 }
 
 export enum SiteFeedParams{
