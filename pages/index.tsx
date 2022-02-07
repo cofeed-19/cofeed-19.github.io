@@ -32,7 +32,7 @@ type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
 
-  const {initDatabase, insertUserFeed, getUserFeed} = useDBService();
+  const {initDatabase, insertUserFeed, getUserFeed, deleteFeed} = useDBService();
 
   const [userFeed, setUserFeed] = useState<UserFeed[]>([]);
 
@@ -161,8 +161,10 @@ export default function Home() {
 
   function onTestClickPrint() {
 
-    getUserFeed(setUserFeed);
-    console.log(userFeed)
+    deleteFeed("https://tonsky.me/blog/atom.xml")
+    
+    // getUserFeed(setUserFeed);
+    // console.log(userFeed)
     // testExtractStorage();
   }
 
