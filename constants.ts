@@ -5,12 +5,14 @@ export const databaseVersion = 1;
 
 export enum AddedSiteParams{
     Name = "SiteUrls",
-    Url = "Url"
+    Url = "Url",
+    Author = "Author"
 }
 
 export enum SiteFeedParams{
     Name = "VisitedUrls",
     AddedSiteRef = "SiteUrlRef",
     Url = "FeedUrl",
-    IsVisited = "IsVisited"
+    IsVisited = "IsVisited",
+    Title = "Title"
 }

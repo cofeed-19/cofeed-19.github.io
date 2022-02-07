@@ -42,9 +42,10 @@ export default function Feeds({ list }: Props) {
         visited: {},
       };
       // delete localstorage !!
+      console.log(feed.items)
       localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
 
-      insertUserFeed({AddedSiteUrl: feedUrl});
+      // insertUserFeed({AddedSiteUrl: feedUrl});
       // console.log(`feedurl: ${feedUrl}, feedToAdd: ${JSON.stringify(feedToAdd.visited)}`);
     }
     setAdded(feedUrl);
