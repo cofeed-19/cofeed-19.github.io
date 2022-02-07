@@ -4,8 +4,6 @@ import RSSParser from "rss-parser";
 import {ExternalLink, NewFeedForm, Footer, Header, HeadMeta, ProgressLoader } from "../components";
 import { Feed } from "../types";
 import { useDBService } from "../services";
-import { UserFeed } from "../models";
-import link from "next/link";
 
 const rssParser = new RSSParser();
 
@@ -24,7 +22,6 @@ function allStorage(): FeedArchiveType {
     }
   }
   
-  // console.log(archive)
   return archive;
 }
 
@@ -34,7 +31,6 @@ export default function Home() {
 
   const {initDatabase, insertUserFeed, getUserFeed, deleteFeed} = useDBService();
 
-  const [userFeed, setUserFeed] = useState<UserFeed[]>([]);
 
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
@@ -46,7 +42,6 @@ export default function Home() {
     const storage = allStorage();
     const feedsCount = Object.keys(storage).length;
 
-    console.log(feedsCount)
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
     for (const feedUrl of Object.keys(storage)) {
       let feed;
@@ -149,32 +144,10 @@ export default function Home() {
     });
   }
 
-  function onTestClick() {
-
-    
-
-    var userFieldToTest: UserFeed = {AddedSite: {Url: "ameno11das111@gmail.com", Author: "Amen"}, SiteFeed: [{Url: "dasdadasaaaaf", IsVisited: true, Title: "title"}, {Url: "asdasa", IsVisited: true}]};
-    // console.log(userFieldToTest)
-    insertUserFeed(userFieldToTest);
-    // console.log("click");
-  }
-
-  function onTestClickPrint() {
-
-    deleteFeed("https://tonsky.me/blog/atom.xml")
-    
-    // getUserFeed(setUserFeed);
-    // console.log(userFeed)
-    // testExtractStorage();
-  }
-
 
   useEffect(() => {
     updateFeeds();
     initDatabase();
-    // useDBService().then(db => {
-    //   setDatabase(db)
-    //   console.log(db)});
   }, []);
 
   useEffect(() => {
@@ -258,9 +231,6 @@ export default function Home() {
           );
         })}
         <button onClick={onCopyClick}>Copy feed urls</button>
-        <button onClick={onTestClick}>Test Click</button>
-        <button onClick={onTestClickPrint}>Print Click</button>
-
       </main>
       <Footer />
     </>
