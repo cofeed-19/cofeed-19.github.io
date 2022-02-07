@@ -1,8 +1,11 @@
 export const useCRUD = () => {
 
-    async function createTable(db: any, tableName: string, fieldNames: string[] = []) {
+    async function createTable(db: any, tableEnum: any) {
         
-        const objectStore = db.createObjectStore(tableName, {keyPath: "ID", autoIncrement: true });
+
+        const objectStore = db.createObjectStore(tableEnum.Name, {keyPath: "ID", autoIncrement: true });
+
+        const fieldNames = Object.values(tableEnum).splice(1);
 
         fieldNames.forEach( fieldName => {
             objectStore.createIndex(fieldName, fieldName, { unique: false })

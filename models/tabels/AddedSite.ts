@@ -1,5 +1,6 @@
 export interface AddedSite {
     ID?: number;
-    Author: string;
     Url: string;
+    Author: string;
+    Title?: string;
 }
