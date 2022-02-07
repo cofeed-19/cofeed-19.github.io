@@ -47,7 +47,7 @@ export const useDBService = () => {
             let siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSite.Url) as AddedSite;
 
             if(!siteUrl){
-                const siteUrlObj: AddedSite[] = [{ Url:  userFeed.AddedSite.Url, Author: userFeed.AddedSite.Author}]
+                const siteUrlObj: AddedSite[] = [{ Url:  userFeed.AddedSite.Url, Author: userFeed.AddedSite.Author, Title: userFeed.AddedSite.Title}]
                 await insert(db, AddedSiteParams.Name, siteUrlObj);
 
                 siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSite.Url) as AddedSite;
@@ -58,7 +58,7 @@ export const useDBService = () => {
             userFeed.SiteFeed?.forEach( async (site, index) => {
                 const visitedSite = await getByColumnName(db, SiteFeedParams.Name, SiteFeedParams.Url, site.Url);
                 if(!visitedSite){
-                    visitedSites.push({AddedSiteRef: siteUrl.ID, Url: site.Url, IsVisited: site.IsVisited})                    
+                    visitedSites.push({AddedSiteRef: siteUrl.ID, Url: site.Url, IsVisited: site.IsVisited, Title: site.Title})                    
                 }
                 console.log(userFeed.SiteFeed);
                 console.log(visitedSites.length)
