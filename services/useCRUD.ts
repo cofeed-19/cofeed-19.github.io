@@ -1,7 +1,6 @@
 export const useCRUD = () => {
 
-    async function createTable(db: any, tableEnum: any) {
-        
+    async function createTable(db: any, tableEnum: any) {        
 
         const objectStore = db.createObjectStore(tableEnum.Name, {keyPath: "ID", autoIncrement: true });
 

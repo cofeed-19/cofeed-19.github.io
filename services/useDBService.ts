@@ -13,6 +13,7 @@ export const useDBService = () => {
         const request = indexedDB.open(databaseName, databaseVersion);
 
         request.onupgradeneeded = event => {
+            // uncomment to check versions
             // alert(`upgrade is called. old version = ${e.oldVersion}, new version ${e.newVersion}`);
 
             const db = request.result;
@@ -22,18 +23,17 @@ export const useDBService = () => {
                     V1_init_database(db);
                 case 1:
                     V2_smt(db);
-                case 2: 
             }
 
             db.close();
         }
             
         request.onsuccess = () => {
-            // alert("succes is called");
+            console.log("Database was successful created.");
         }
 
         request.onerror = () => {
-            // alert("Error occurred")
+            console.log("An error occurred initDatabase() function.");
         }
     }
 
@@ -70,8 +70,9 @@ export const useDBService = () => {
                 }
             });           
         }
+        
         request.onerror = () => {
-            alert("error")
+            console.log("An error occurred insertUserFeed() function.")
         }
     }
 
@@ -85,7 +86,13 @@ export const useDBService = () => {
             const sitesLinks = await getAll(db, AddedSiteParams.Name) as AddedSite[];
             const visitedLinks = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
 
-            setState(feedConverter(visitedLinks, sitesLinks));            
+            setState(feedConverter(visitedLinks, sitesLinks));
+
+            db.close();
+        }
+
+        request.onerror = () => {
+            console.log("An error occurred getUserFeed() function.")
         }
     }
 
@@ -97,7 +104,7 @@ export const useDBService = () => {
 
             const addedSiteToDelete = await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, siteName) as AddedSite;
 
-            await deleteByID(db, AddedSiteParams.Name, addedSiteToDelete.ID as number)
+            await deleteByID(db, AddedSiteParams.Name, addedSiteToDelete.ID as number);
 
             const sitefeedToDelete = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
 
@@ -105,7 +112,13 @@ export const useDBService = () => {
                 if(site.AddedSiteRef === addedSiteToDelete.ID){
                     await deleteByID(db, SiteFeedParams.Name, site.ID as number)
                 }
-            })
+            });
+
+            db.close();
+        }
+
+        request.onerror = () => {
+            console.log("An error occurred deleteFeed() function.")
         }
     }
     return {

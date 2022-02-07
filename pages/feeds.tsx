@@ -5,8 +5,6 @@ import { ExternalLink, Footer, Header, HeadMeta } from "../components";
 
 import JSONFeeds from "../data/feeds.json";
 import { Feed } from "../types";
-// import { UserFeed } from "../models";
-import { useDBService } from "../services";
 
 const rssParser = new RSSParser();
 
@@ -15,9 +13,6 @@ interface Props {
 }
 
 export default function Feeds({ list }: Props) {
-
-  // const [userFeed, setUserFeed] = useState<UserFeed>();
-  const { insertUserFeed } = useDBService();
 
   const [added, setAdded] = useState("");
 
@@ -41,11 +36,8 @@ export default function Feeds({ list }: Props) {
         ...feed,
         visited: {},
       };
-      // delete localstorage !!
-      console.log(feed)
       localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
 
-      // insertUserFeed({AddedSiteUrl: feedUrl});
       // console.log(`feedurl: ${feedUrl}, feedToAdd: ${JSON.stringify(feedToAdd.visited)}`);
     }
     setAdded(feedUrl);
