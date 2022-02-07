@@ -1,7 +1,7 @@
 import { V1_init_database, V2_smt } from "./migrations";
-import { databaseName, databaseVersion, SiteUrlParams, VisitedUrlParams} from "../constants";
+import { databaseName, databaseVersion, AddedSiteParams, SiteFeedParams} from "../constants";
 import { useCRUD, FeedManager } from ".";
-import { UserFeed, SiteUrl, VisitedUrl } from "../models";
+import { UserFeed, AddedSite, SiteFeed } from "../models";
 
 export const useDBService = () => {
 
@@ -40,36 +40,38 @@ export const useDBService = () => {
     async function insertUserFeed(userFeed: UserFeed){
 
         const request = indexedDB.open(databaseName, databaseVersion);
-
+        
         request.onsuccess = async () => {
-
             const db = request.result;
             
-            let siteUrl =  await getByColumnName(db, SiteUrlParams.Name, SiteUrlParams.Url, userFeed.SiteUrl) as SiteUrl;
+            let siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSiteUrl) as AddedSite;
 
             if(!siteUrl){
-                const siteUrlObj: SiteUrl[] = [{ Url:  userFeed.SiteUrl}]
-                await insert(db, SiteUrlParams.Name, siteUrlObj);
+                const siteUrlObj: AddedSite[] = [{ Url:  userFeed.AddedSiteUrl}]
+                await insert(db, AddedSiteParams.Name, siteUrlObj);
 
-                siteUrl =  await getByColumnName(db, SiteUrlParams.Name, SiteUrlParams.Url, userFeed.SiteUrl) as SiteUrl;
+                siteUrl =  await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, userFeed.AddedSiteUrl) as AddedSite;
             }
 
-            let visitedSites: VisitedUrl[] = [];
+            let visitedSites: SiteFeed[] = [];
             
-            userFeed.Visited?.forEach( async (site, index) => {
-                const visitedSite = await getByColumnName(db, VisitedUrlParams.Name, VisitedUrlParams.FeedUrl, site);
+            userFeed.SiteFeed?.forEach( async (site, index) => {
+                const visitedSite = await getByColumnName(db, SiteFeedParams.Name, SiteFeedParams.Url, site.Url);
                 if(!visitedSite){
-                    visitedSites.push({SiteUrlRef: siteUrl.ID, FeedUrl: site})                    
+                    visitedSites.push({AddedSiteRef: siteUrl.ID, Url: site.Url, IsVisited: site.IsVisited})                    
                 }
-                console.log(userFeed.Visited);
+                console.log(userFeed.SiteFeed);
                 console.log(visitedSites.length)
 
-                if(userFeed.Visited && visitedSites.length && (userFeed?.Visited.length - 1) === index){
+                if(userFeed.SiteFeed && visitedSites.length && (userFeed?.SiteFeed.length - 1) === index){
                     console.log(visitedSites)
-                    await insert(db, VisitedUrlParams.Name, visitedSites);
+                    await insert(db, SiteFeedParams.Name, visitedSites);
                     db.close();
                 }
             });           
+        }
+        request.onerror = () => {
+            alert("error")
         }
     }
 
@@ -80,8 +82,8 @@ export const useDBService = () => {
 
             const db = request.result;
 
-            const visitedLinks = await getAll(db, VisitedUrlParams.Name) as VisitedUrl[];
-            const sitesLinks = await getAll(db, SiteUrlParams.Name) as SiteUrl[];
+            const visitedLinks = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
+            const sitesLinks = await getAll(db, AddedSiteParams.Name) as AddedSite[];
 
             setState(feedConverter(visitedLinks, sitesLinks));            
         }

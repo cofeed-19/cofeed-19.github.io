@@ -1,4 +1,6 @@
+import { SiteFeed } from ".";
+
 export interface UserFeed {
-    SiteUrl: string;
-    Visited?: string[];
+    AddedSiteUrl: string;
+    SiteFeed?: SiteFeed[];
 }

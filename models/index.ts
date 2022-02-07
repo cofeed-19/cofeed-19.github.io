@@ -1,4 +1,4 @@
 export * from "./UserFeed";
 export * from "./SuggestedFeed";
-export * from "./tabels/SiteUrl";
-export * from "./tabels/VisitedUrl";
+export * from "./tabels/AddedSite";
+export * from "./tabels/SiteFeed";

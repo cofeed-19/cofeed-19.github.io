@@ -1,16 +1,16 @@
-import { UserFeed, SiteUrl, VisitedUrl } from "../models";
+import { UserFeed, AddedSite, SiteFeed } from "../models";
 
 export const FeedManager = () => {
 
-    function feedConverter(visitedLinks: VisitedUrl[], sitesLinks: SiteUrl[]) {
+    function feedConverter(visitedLinks: SiteFeed[], sitesLinks: AddedSite[]) {
 
         let userFeeds: UserFeed[] = [];
 
         sitesLinks.map(sitesLink => {
-            let userFeed: UserFeed = {SiteUrl: sitesLink.Url, Visited: []}
+            let userFeed: UserFeed = {AddedSiteUrl: sitesLink.Url, SiteFeed: []}
             visitedLinks.map(visitedLink => {
-                if(visitedLink.SiteUrlRef == sitesLink.ID){
-                    userFeed.Visited?.push(visitedLink.FeedUrl)
+                if(visitedLink.AddedSiteRef == sitesLink.ID){
+                    userFeed.SiteFeed?.push({Url: visitedLink.Url, IsVisited: visitedLink.IsVisited})
                 }
             })
             userFeeds.push(userFeed);
