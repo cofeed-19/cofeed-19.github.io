@@ -1,4 +1,4 @@
 export interface SiteUrl {
-    ID: number;
+    ID?: number;
     Url: string;
 }

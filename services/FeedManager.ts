@@ -10,7 +10,7 @@ export const FeedManager = () => {
             let userFeed: UserFeed = {SiteUrl: sitesLink.Url, Visited: []}
             visitedLinks.map(visitedLink => {
                 if(visitedLink.SiteUrlRef == sitesLink.ID){
-                    userFeed.Visited.push(visitedLink.FeedUrl)
+                    userFeed.Visited?.push(visitedLink.FeedUrl)
                 }
             })
             userFeeds.push(userFeed);
