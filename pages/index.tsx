@@ -32,7 +32,7 @@ export default function Home() {
 
   const {initDatabase, insertUserFeed, getUserFeed} = useDBService();
 
-  const [userFeed, setUserFeed] = useState<UserFeed>();
+  const [userFeed, setUserFeed] = useState<UserFeed[]>([]);
 
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
@@ -94,7 +94,9 @@ export default function Home() {
           ...feed,
           visited: {},
         };
-        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
+        // setUserFeed((userFeed) => [...userFeed, {SiteUrl: feedUrl}]);
+        
+        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd)); // +++++++++++
       }
     }
     if (errors.length) {
@@ -146,6 +148,7 @@ export default function Home() {
   function onTestClick() {
 
     
+
     var userFieldToTest: UserFeed = {SiteUrl: "ameno11das111@gmail.com", Visited: ["dasdadasaaaaf", "asdasa"]};
     insertUserFeed(userFieldToTest);
     // console.log("click");
@@ -153,6 +156,7 @@ export default function Home() {
 
   function onTestClickPrint() {
 
+    console.log(userFeed);
     // getUserFeed(setUserFeed);
     
     // console.log(userFeed);
