@@ -21,14 +21,14 @@ export const useCRUD = () => {
         values.forEach(async value => await objectStore.add(value));
     }
 
-    async function getByColumnName(db: any, tableName: string, fieldNameToSearch: string, value: string) {
+    async function getByColumnName(db: any, tableName: string, fieldNameToSearch: string, value: any) {
 
         var result = await new Promise(resolve => {
             const transaction = db.transaction([tableName], 'readonly');
             const objectStore = transaction.objectStore(tableName);
 
-            var myIndex = objectStore.index(fieldNameToSearch);
-            var getRequest = myIndex.get(value);
+            var indexDb = objectStore.index(fieldNameToSearch);
+            var getRequest = indexDb.get(value);
             getRequest.onsuccess = () => resolve(getRequest.result);
           });
 
@@ -58,6 +58,7 @@ export const useCRUD = () => {
         await objectStore.delete(id);
     }
 
+
     async function update(db: any, tableName: string, value: object) {
 
         const transaction = db.transaction(tableName, 'readwrite');        
@@ -71,7 +72,7 @@ export const useCRUD = () => {
         insert,
         getByColumnName,
         getAll,
+        update,
         deleteByID,
-        update
     }
 }
