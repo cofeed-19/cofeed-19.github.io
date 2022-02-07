@@ -5,7 +5,7 @@ import { UserFeed, AddedSite, SiteFeed } from "../models";
 
 export const useDBService = () => {
 
-    const { insert, getByColumnName, getAll } = useCRUD();
+    const { insert, getByColumnName, getAll, deleteByID } = useCRUD();
     const { feedConverter } = FeedManager();
 
     async function initDatabase() {
@@ -82,16 +82,36 @@ export const useDBService = () => {
 
             const db = request.result;
 
-            const visitedLinks = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
             const sitesLinks = await getAll(db, AddedSiteParams.Name) as AddedSite[];
+            const visitedLinks = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
 
             setState(feedConverter(visitedLinks, sitesLinks));            
         }
     }
 
+    async function deleteFeed(siteName: string) {
+        
+        const request = indexedDB.open(databaseName, databaseVersion);
+        request.onsuccess = async () => {
+            const db = request.result;
+
+            const addedSiteToDelete = await getByColumnName(db, AddedSiteParams.Name, AddedSiteParams.Url, siteName) as AddedSite;
+
+            await deleteByID(db, AddedSiteParams.Name, addedSiteToDelete.ID as number)
+
+            const sitefeedToDelete = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
+
+            sitefeedToDelete.forEach( async site => {
+                if(site.AddedSiteRef === addedSiteToDelete.ID){
+                    await deleteByID(db, SiteFeedParams.Name, site.ID as number)
+                }
+            })
+        }
+    }
     return {
         initDatabase,
         insertUserFeed,
-        getUserFeed
+        getUserFeed,
+        deleteFeed
     }
 }
