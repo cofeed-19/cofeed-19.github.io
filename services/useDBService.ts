@@ -26,7 +26,7 @@ export const useDBService = () => {
             }
 
             db.close();
-    }
+        }
             
         request.onsuccess = () => {
             // alert("succes is called");
