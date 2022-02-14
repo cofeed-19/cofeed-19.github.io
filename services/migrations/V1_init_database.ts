@@ -3,7 +3,7 @@ import { SiteFeed } from "../../models";
 import { indexeddbCRUD } from "../index";
 import { indexeddbService } from "../indexeddbService";
 
-export async function V1_init_database(db: any){
+export async function V1_init_database(db: IDBDatabase){
 
     const { createTable } = indexeddbCRUD();
 
