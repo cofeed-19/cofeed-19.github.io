@@ -5,7 +5,7 @@ import { SiteFeed } from "../models";
 
 export const indexeddbService = () => {
 
-    const { insert, getAll, update } = indexeddbCRUD();
+    const { insert, getAll, update, deleteByName } = indexeddbCRUD();
 
     async function initDatabase() {
 
@@ -71,7 +71,7 @@ export const indexeddbService = () => {
         }
     }
 
-    // can be used to update or to delete data
+    // siteFeed must contain entire class, both old and new visited sites !!
     async function updateSiteFeed(siteFeed: SiteFeed) {
         
         const request = indexedDB.open(databaseName, databaseVersion);
@@ -89,10 +89,28 @@ export const indexeddbService = () => {
         }
     }
 
+    async function deleteSiteFeed(siteName: string) {
+
+        const request = indexedDB.open(databaseName, databaseVersion);
+
+        request.onsuccess = async () => {
+            const db = request.result;
+
+            await deleteByName(db, SiteFeedParams.Name, siteName)
+
+            db.close();
+        }
+
+        request.onerror = async () => {
+            console.log("An error occurred deleteSiteFeed() function.");
+        }
+    }
+
     return {
         initDatabase,
         getSitesFeed,
         insertSiteFeed,
-        updateSiteFeed
+        updateSiteFeed,
+        deleteSiteFeed
     }
 }
