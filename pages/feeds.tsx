@@ -37,8 +37,6 @@ export default function Feeds({ list }: Props) {
         visited: {},
       };
       localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
-
-      // console.log(`feedurl: ${feedUrl}, feedToAdd: ${JSON.stringify(feedToAdd.visited)}`);
     }
     setAdded(feedUrl);
   }

@@ -93,9 +93,8 @@ export default function Home() {
           ...feed,
           visited: {},
         };
-        // setUserFeed((userFeed) => [...userFeed, {SiteUrl: feedUrl}]);
         
-        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd)); // +++++++++++
+        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd)); 
       }
     }
     if (errors.length) {

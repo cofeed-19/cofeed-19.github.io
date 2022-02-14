@@ -1,10 +1,10 @@
 export const useCRUD = () => {
 
-    async function createTable(db: any, tableEnum: any) {        
+    async function createTable(db: IDBDatabase, tableEnum: any) {        
 
         const objectStore = db.createObjectStore(tableEnum.Name, {keyPath: "ID", autoIncrement: true });
 
-        const fieldNames = Object.values(tableEnum).splice(1);
+        const fieldNames = Object.values(tableEnum).splice(1) as string[];
 
         fieldNames.forEach( fieldName => {
             objectStore.createIndex(fieldName, fieldName, { unique: false })
@@ -12,7 +12,7 @@ export const useCRUD = () => {
 
     }
 
-    async function insert(db: any, tableName: string, values: object[]) {
+    async function insert(db: IDBDatabase, tableName: string, values: object[]) {
 
         const transaction = db.transaction(tableName, 'readwrite');        
         const objectStore = transaction.objectStore(tableName);
@@ -20,7 +20,7 @@ export const useCRUD = () => {
         values.forEach(async value => await objectStore.add(value));
     }
 
-    async function getByColumnName(db: any, tableName: string, fieldNameToSearch: string, value: any) {
+    async function getByColumnName(db: IDBDatabase, tableName: string, fieldNameToSearch: string, value: any) {
 
         var result = await new Promise(resolve => {
             const transaction = db.transaction([tableName], 'readonly');
@@ -34,7 +34,7 @@ export const useCRUD = () => {
           return result;
     } 
 
-    async function getAll(db: any, tableName: string) {
+    async function getAll(db: IDBDatabase, tableName: string) {
 
         var result = await new Promise(resolve => {
             const transaction = db.transaction([tableName], 'readonly');
@@ -47,7 +47,7 @@ export const useCRUD = () => {
           return result;
     }    
 
-    async function deleteByID(db: any, tableName: string, id: number) {
+    async function deleteByID(db: IDBDatabase, tableName: string, id: number) {
         const transaction = db.transaction(tableName, 'readwrite');
         const objectStore = transaction.objectStore(tableName);
         const result = await objectStore.get(id);
@@ -58,7 +58,7 @@ export const useCRUD = () => {
     }
 
 
-    async function update(db: any, tableName: string, value: object) {
+    async function update(db: IDBDatabase, tableName: string, value: object) {
 
         const transaction = db.transaction(tableName, 'readwrite');        
         const objectStore = transaction.objectStore(tableName);
