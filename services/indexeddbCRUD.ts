@@ -1,6 +1,6 @@
-export const useCRUD = () => {
+export const indexeddbCRUD = () => {
 
-    async function createTable(db: IDBDatabase, tableEnum: any) {        
+    async function createIndexedTable(db: IDBDatabase, tableEnum: any) {        
 
         const objectStore = db.createObjectStore(tableEnum.Name, {keyPath: "ID", autoIncrement: true });
 
@@ -9,6 +9,12 @@ export const useCRUD = () => {
         fieldNames.forEach( fieldName => {
             objectStore.createIndex(fieldName, fieldName, { unique: false })
         })
+
+    }
+
+    async function createTable(db: IDBDatabase, tableEnum: any) {        
+
+        db.createObjectStore(tableEnum.Name, {keyPath: Object.keys(tableEnum)[1]});
 
     }
 
@@ -67,6 +73,7 @@ export const useCRUD = () => {
     }
 
     return {
+        createIndexedTable,
         createTable,
         insert,
         getByColumnName,

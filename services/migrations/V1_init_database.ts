@@ -1,18 +1,17 @@
-import { AddedSiteParams, SiteFeedParams} from "../../constants";
-import { UserFeed } from "../../models";
-import { useCRUD } from "../index";
-import { useDBService } from "../useDBService";
+import { SiteFeedParams} from "../../constants";
+import { SiteFeed } from "../../models";
+import { indexeddbCRUD } from "../index";
+import { indexeddbService } from "../indexeddbService";
 
 export async function V1_init_database(db: any){
 
-    const { createTable } = useCRUD();
-    const { insertUserFeed } = useDBService();
+    const { createTable } = indexeddbCRUD();
 
-    await createTable(db, AddedSiteParams);
     await createTable(db, SiteFeedParams);
+    const { insertSiteFeed } = indexeddbService();
 
     const localStorageData = extractFromLocalStorage();
-    localStorageData.forEach(data => insertUserFeed(data))
+    localStorageData.forEach(data => insertSiteFeed(data))
     
 }
 
@@ -22,29 +21,27 @@ interface LocalStorage {
     visited: any
   }
 
-  interface LocalStorageFeed{
+interface LocalStorageFeed{
     title: string;
     link: string;
     author: string;
   }
 
-  function extractFromLocalStorage(): UserFeed[] {
+function extractFromLocalStorage(): SiteFeed[] {
 
-    const userFeedCollection: UserFeed[] = [];
-      
-    for (const key of Object.keys(localStorage)) {
-      if (!key.startsWith("http")) {
-        continue;
-      }
-      const container: LocalStorage = JSON.parse(localStorage.getItem(key) as string);
+  const userFeedCollection: SiteFeed[] = [];
+    
+  for (const key of Object.keys(localStorage)) {
+    if (!key.startsWith("http")) {
+      continue;
+    }
+    const container: LocalStorage = JSON.parse(localStorage.getItem(key) as string);
+    
+    let visited = {} as any;
+    Object.keys(container.visited).forEach(visitedLink => visited[visitedLink] = true)
 
-      var userFeed: UserFeed = {AddedSite: {Url: key, Author: container.items[0].author}, SiteFeed: []}
+    userFeedCollection.push({Url: key, Visited: visited});
 
-      container.items.forEach(item => userFeed.SiteFeed?.push({Url: item.link, IsVisited: false, Title: item.title}));
-
-      Object.keys(container.visited).forEach(visitedLink => userFeed.SiteFeed?.push({Url: visitedLink, IsVisited: true}))
-      userFeedCollection.push(userFeed)
-
-      }
-      return userFeedCollection;
-  }
+    }
+  return userFeedCollection;
+}
