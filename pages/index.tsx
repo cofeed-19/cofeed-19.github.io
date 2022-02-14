@@ -30,7 +30,7 @@ type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
 
-  const {initDatabase, getSitesFeed, insertSiteFeed, updateSiteFeed } = indexeddbService();
+  const {initDatabase, getSitesFeed, insertSiteFeed, updateSiteFeed, deleteSiteFeed } = indexeddbService();
 
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{

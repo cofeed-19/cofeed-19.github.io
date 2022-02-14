@@ -53,16 +53,16 @@ export const indexeddbCRUD = () => {
           return result;
     }    
 
-    async function deleteByID(db: IDBDatabase, tableName: string, id: number) {
+    async function deleteByName(db: IDBDatabase, tableName: string, fieldName: string) {
         const transaction = db.transaction(tableName, 'readwrite');
         const objectStore = transaction.objectStore(tableName);
-        const result = await objectStore.get(id);
+        const result = await objectStore.get(fieldName);
         if (!result) {
-            console.log('ID not found', id);
+            console.log('ID not found', fieldName);
+            return;
         }
-        await objectStore.delete(id);
+        await objectStore.delete(fieldName);
     }
-
 
     async function update(db: IDBDatabase, tableName: string, value: object) {
 
@@ -79,6 +79,6 @@ export const indexeddbCRUD = () => {
         getByColumnName,
         getAll,
         update,
-        deleteByID,
+        deleteByName,
     }
 }
