@@ -13,8 +13,8 @@ export const useDBService = () => {
         const request = indexedDB.open(databaseName, databaseVersion);
 
         request.onupgradeneeded = event => {
-            // uncomment to check versions
-            // alert(`upgrade is called. old version = ${e.oldVersion}, new version ${e.newVersion}`);
+
+            console.log(`upgrade is called. old version = ${event.oldVersion}, new version ${event.newVersion}`);
 
             const db = request.result;
             
