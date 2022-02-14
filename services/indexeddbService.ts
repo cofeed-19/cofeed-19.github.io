@@ -1,4 +1,4 @@
-import { V1_init_database, V2_smt } from "./migrations";
+import { executeMigrations} from "./migrations";
 import { databaseName, databaseVersion, SiteFeedParams} from "../constants";
 import { indexeddbCRUD } from ".";
 import { SiteFeed } from "../models";
@@ -17,12 +17,7 @@ export const indexeddbService = () => {
 
             const db = request.result;
             
-            switch(event.oldVersion){
-                case 0:
-                    V1_init_database(db);
-                case 1:
-                    V2_smt(db);
-            }
+            executeMigrations(event.oldVersion, db)
 
             db.close();
         }
