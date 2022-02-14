@@ -1,3 +1,2 @@
-export * from './useDBService';
-export * from './useCRUD';
-export * from './FeedManager'
+export * from './indexeddbService';
+export * from './indexeddbCRUD';

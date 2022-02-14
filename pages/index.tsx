@@ -3,7 +3,8 @@ import RSSParser from "rss-parser";
 
 import {ExternalLink, NewFeedForm, Footer, Header, HeadMeta, ProgressLoader } from "../components";
 import { Feed } from "../types";
-import { useDBService } from "../services";
+import { indexeddbService } from "../services";
+import { SiteFeed } from "../models";
 
 const rssParser = new RSSParser();
 
@@ -29,8 +30,7 @@ type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
 
-  const {initDatabase, insertUserFeed, getUserFeed, deleteFeed} = useDBService();
-
+  const {initDatabase, getSitesFeed, insertSiteFeed, updateSiteFeed } = indexeddbService();
 
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
@@ -142,7 +142,6 @@ export default function Home() {
       alert("Feed urls copied to clipboard");
     });
   }
-
 
   useEffect(() => {
     updateFeeds();
