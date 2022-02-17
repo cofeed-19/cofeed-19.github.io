@@ -1,6 +1,6 @@
 # [cofeed-19.github.io](https://cofeed-19.github.io) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcofeed-19%2Fcofeed-19.github.io&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 **C**lient-**o**nly **Feed** Reader
@@ -29,6 +29,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://strdr4605.github.io"><img src="https://avatars.githubusercontent.com/u/16056918?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dragoș Străinu</b></sub></a><br /><a href="#ideas-strdr4605" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=strdr4605" title="Code">💻</a> <a href="#infra-strdr4605" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#mentoring-strdr4605" title="Mentoring">🧑‍🏫</a></td>
     <td align="center"><a href="https://github.com/UmanetAlexandru"><img src="https://avatars.githubusercontent.com/u/17477765?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alexandru Umanet</b></sub></a><br /><a href="#design-UmanetAlexandru" title="Design">🎨</a></td>
     <td align="center"><a href="http://zvonimirr.github.io"><img src="https://avatars.githubusercontent.com/u/18758022?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zvonimir Rudinski</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=zvonimirr" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/maximvolosenco"><img src="https://avatars.githubusercontent.com/u/46067883?v=4?s=100" width="100px;" alt=""/><br /><sub><b>maximvolosenco</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=maximvolosenco" title="Code">💻</a></td>
   </tr>
 </table>
 
