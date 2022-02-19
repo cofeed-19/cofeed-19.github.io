@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-
 import { ExternalLink, Footer, Header, HeadMeta } from "../components";
-
 import JSONFeeds from "../data/feeds.json";
-import { Feed } from "../types";
+import { insertSiteFeed } from "../services/indexeddbService";
 
 const rssParser = new RSSParser();
 
@@ -13,7 +11,6 @@ interface Props {
 }
 
 export default function Feeds({ list }: Props) {
-
   const [added, setAdded] = useState("");
 
   useEffect(() => {
@@ -27,17 +24,7 @@ export default function Feeds({ list }: Props) {
   }, [added]);
 
   async function onAdd(feedUrl: string) {
-    let feed;
-    try {
-      feed = await rssParser.parseURL(feedUrl);
-    } catch (_e) {}
-    if (feed && !localStorage.getItem(feedUrl)) {
-      const feedToAdd: Feed = {
-        ...feed,
-        visited: {},
-      };
-      localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
-    }
+    await insertSiteFeed({ url: feedUrl, visited: {} });
     setAdded(feedUrl);
   }
 
