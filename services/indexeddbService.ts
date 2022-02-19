@@ -1,111 +1,101 @@
-import { executeMigrations} from "./migrations";
-import { databaseName, databaseVersion, SiteFeedParams} from "../constants";
-import { indexeddbCRUD } from ".";
+import { databaseName, databaseVersion, SiteFeedParams } from "../constants";
 import { SiteFeed } from "../models";
+import { deleteByName, getAll, insert, update } from "./indexeddbCRUD";
+import { executeMigrations } from "./migrations";
 
-export const indexeddbService = () => {
+export async function initDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(databaseName, databaseVersion);
 
-    const { insert, getAll, update, deleteByName } = indexeddbCRUD();
+    request.onupgradeneeded = (event) => {
+      console.log(
+        `upgrade is called. old version = ${event.oldVersion}, new version ${event.newVersion}`
+      );
 
-    async function initDatabase() {
+      const db = request.result;
 
-        const request = indexedDB.open(databaseName, databaseVersion);
+      executeMigrations(event.oldVersion, db).then((done: boolean) => {
+        console.log({ done });
+        resolve(done);
+        db.close();
+      });
+    };
 
-        request.onupgradeneeded = event => {
+    request.onsuccess = () => {
+      console.log("Database was successful created.");
+      resolve(true);
+    };
 
-            console.log(`upgrade is called. old version = ${event.oldVersion}, new version ${event.newVersion}`);
+    request.onerror = () => {
+      console.log("An error occurred initDatabase() function.");
+      reject(false);
+    };
+  });
+}
 
-            const db = request.result;
-            
-            executeMigrations(event.oldVersion, db)
+export async function getSitesFeed(setState: Function) {
+  const request = indexedDB.open(databaseName, databaseVersion);
 
-            db.close();
-        }
-            
-        request.onsuccess = () => {
-            console.log("Database was successful created.");
-        }
+  request.onsuccess = async () => {
+    const db = request.result;
 
-        request.onerror = () => {
-            console.log("An error occurred initDatabase() function.");
-        }
-    }
+    const sitesFeed = (await getAll(db, SiteFeedParams.Name)) as SiteFeed[];
 
-    async function getSitesFeed(setState: Function) {
-        const request = indexedDB.open(databaseName, databaseVersion);
+    setState(sitesFeed);
 
-        request.onsuccess = async () => {
-            const db = request.result;
+    db.close();
+  };
 
-            const sitesFeed = await getAll(db, SiteFeedParams.Name) as SiteFeed[];
+  request.onerror = async () => {
+    console.log("An error occurred getSitesFeed() function.");
+  };
+}
 
-            setState(sitesFeed);
+export async function insertSiteFeed(siteFeed: SiteFeed) {
+  const request = indexedDB.open(databaseName, databaseVersion);
 
-            db.close();
-        }
+  request.onsuccess = async () => {
+    const db = request.result;
 
-        request.onerror = async () => {
-            console.log("An error occurred getSitesFeed() function.");
-        }
-    }
+    await insert(db, SiteFeedParams.Name, [siteFeed]);
 
-    async function insertSiteFeed(siteFeed: SiteFeed) {
+    db.close();
+  };
 
-        const request = indexedDB.open(databaseName, databaseVersion);
+  request.onerror = async () => {
+    console.log("An error occurred insertSiteFeed() function.");
+  };
+}
 
-        request.onsuccess = async () => {
-            const db = request.result;
+// siteFeed must contain entire class, both old and new visited sites !!
+export async function updateSiteFeed(siteFeed: SiteFeed) {
+  const request = indexedDB.open(databaseName, databaseVersion);
 
-            await insert(db, SiteFeedParams.Name, [siteFeed]);
+  request.onsuccess = async () => {
+    const db = request.result;
 
-            db.close();
-        }
+    await update(db, SiteFeedParams.Name, siteFeed);
 
-        request.onerror = async () => {
-            console.log("An error occurred insertSiteFeed() function.");
-        }
-    }
+    db.close();
+  };
 
-    // siteFeed must contain entire class, both old and new visited sites !!
-    async function updateSiteFeed(siteFeed: SiteFeed) {
-        
-        const request = indexedDB.open(databaseName, databaseVersion);
+  request.onerror = async () => {
+    console.log("An error occurred updateSiteFeed() function.");
+  };
+}
 
-        request.onsuccess = async () => {
-            const db = request.result;
+export async function deleteSiteFeed(siteName: string) {
+  const request = indexedDB.open(databaseName, databaseVersion);
 
-            await update(db, SiteFeedParams.Name, siteFeed)
+  request.onsuccess = async () => {
+    const db = request.result;
 
-            db.close();
-        }
+    await deleteByName(db, SiteFeedParams.Name, siteName);
 
-        request.onerror = async () => {
-            console.log("An error occurred updateSiteFeed() function.");
-        }
-    }
+    db.close();
+  };
 
-    async function deleteSiteFeed(siteName: string) {
-
-        const request = indexedDB.open(databaseName, databaseVersion);
-
-        request.onsuccess = async () => {
-            const db = request.result;
-
-            await deleteByName(db, SiteFeedParams.Name, siteName)
-
-            db.close();
-        }
-
-        request.onerror = async () => {
-            console.log("An error occurred deleteSiteFeed() function.");
-        }
-    }
-
-    return {
-        initDatabase,
-        getSitesFeed,
-        insertSiteFeed,
-        updateSiteFeed,
-        deleteSiteFeed
-    }
+  request.onerror = async () => {
+    console.log("An error occurred deleteSiteFeed() function.");
+  };
 }

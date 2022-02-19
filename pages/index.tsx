@@ -1,10 +1,9 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-
-import {ExternalLink, NewFeedForm, Footer, Header, HeadMeta, ProgressLoader } from "../components";
+import { ExternalLink, Footer, Header, HeadMeta, NewFeedForm, ProgressLoader } from "../components";
+import { initDatabase } from "../services/indexeddbService";
 import { Feed } from "../types";
-import { indexeddbService } from "../services";
-import { SiteFeed } from "../models";
+
 
 const rssParser = new RSSParser();
 
@@ -22,16 +21,13 @@ function allStorage(): FeedArchiveType {
       archive[key] = JSON.parse(item);
     }
   }
-  
+
   return archive;
 }
 
 type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
-
-  const {initDatabase, getSitesFeed, insertSiteFeed, updateSiteFeed, deleteSiteFeed } = indexeddbService();
-
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
     total: number;
@@ -93,8 +89,8 @@ export default function Home() {
           ...feed,
           visited: {},
         };
-        
-        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd)); 
+
+        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
       }
     }
     if (errors.length) {
@@ -154,7 +150,7 @@ export default function Home() {
     }
   }, [loadedFeeds]);
 
-  
+
   return (
     <>
       <HeadMeta />
