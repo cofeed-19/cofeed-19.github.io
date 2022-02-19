@@ -1,10 +1,10 @@
-import { SiteFeedParams } from "../../constants";
+import { SiteFeedTable } from "../../constants";
 import { SiteFeed } from "../../models";
 import { createTable } from "../indexeddbCRUD";
 import { insertSiteFeed } from "../indexeddbService";
 
 export async function V1_init_database(db: IDBDatabase) {
-  await createTable(db, SiteFeedParams);
+  await createTable(db, SiteFeedTable);
 
   const localStorageData = extractFromLocalStorage();
   localStorageData.forEach((data) => insertSiteFeed(data));
@@ -38,7 +38,7 @@ function extractFromLocalStorage(): SiteFeed[] {
       (visitedLink) => (visited[visitedLink] = true)
     );
 
-    userFeedCollection.push({ Url: key, Visited: visited });
+    userFeedCollection.push({ url: key, visited: visited });
   }
   return userFeedCollection;
 }

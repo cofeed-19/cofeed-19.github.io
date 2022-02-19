@@ -1,4 +1,9 @@
-export async function createIndexedTable(db: IDBDatabase, tableEnum: any) {
+import { SiteFeedTable } from "../constants";
+
+export async function createIndexedTable(
+  db: IDBDatabase,
+  tableEnum: typeof SiteFeedTable
+) {
   const objectStore = db.createObjectStore(tableEnum.Name, {
     keyPath: "ID",
     autoIncrement: true,
@@ -11,8 +16,11 @@ export async function createIndexedTable(db: IDBDatabase, tableEnum: any) {
   });
 }
 
-export async function createTable(db: IDBDatabase, tableEnum: any) {
-  db.createObjectStore(tableEnum.Name, { keyPath: Object.keys(tableEnum)[1] });
+export async function createTable(
+  db: IDBDatabase,
+  tableEnum: typeof SiteFeedTable
+) {
+  db.createObjectStore(tableEnum.Name, { keyPath: tableEnum.Key });
 }
 
 export async function insert(

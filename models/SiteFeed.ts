@@ -1,4 +1,4 @@
 export interface SiteFeed {
-    Url: string;
-    Visited?: Record<string, boolean>;
+    url: string;
+    visited?: Record<string, boolean>;
 }
