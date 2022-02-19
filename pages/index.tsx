@@ -6,7 +6,9 @@ import {
   Header,
   HeadMeta,
   NewFeedForm,
+  NewItemsList,
   ProgressLoader,
+  VisitedItemsList,
 } from "../components";
 import { SiteFeed, Feed } from "../models";
 import {
@@ -179,53 +181,18 @@ export default function Home() {
                   X
                 </button>
               </h2>
-              <ul>
-                {newItems?.map((item) =>
-                  item.link ? (
-                    <li key={item.link}>
-                      <ExternalLink
-                        title={item.title || item.link}
-                        link={item.link}
-                        onClick={(e) => onLinkClick(e, feedUrl, item.link)}
-                      />
-                    </li>
-                  ) : null
-                )}
-              </ul>
-              {newItems.length ? (
-                <button
-                  onClick={() => {
-                    if (
-                      confirm(`Mark all ${feed?.title || feedUrl} as visited?`)
-                    ) {
-                      newItems.forEach((item) =>
-                        onLinkClick(undefined, feedUrl, item.link)
-                      );
-                      updateFeeds();
-                    }
-                  }}
-                >
-                  Mark all as visited
-                </button>
-              ) : null}
-              {Object.keys(feed.visited || {}).length ? (
-                <details>
-                  <summary>Visited from {feed?.title || feedUrl}</summary>
-                  <ul>
-                    {vizitedItems?.map((item) =>
-                      item.link ? (
-                        <li key={item.link}>
-                          <ExternalLink
-                            title={item.title || item.link}
-                            link={item.link}
-                            onClick={(e) => onLinkClick(e, feedUrl, item.link)}
-                          />
-                        </li>
-                      ) : null
-                    )}
-                  </ul>
-                </details>
-              ) : null}
+              <NewItemsList
+                feed={feed}
+                feedUrl={feedUrl}
+                newItems={newItems}
+                onLinkClick={onLinkClick}
+                updateFeeds={updateFeeds}
+              />
+              <VisitedItemsList
+                feed={feed}
+                feedUrl={feedUrl}
+                visitedItems={vizitedItems}
+              />
             </section>
           );
         })}
