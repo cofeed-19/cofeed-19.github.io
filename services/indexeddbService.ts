@@ -1,4 +1,4 @@
-import { databaseName, databaseVersion, SiteFeedParams } from "../constants";
+import { databaseName, databaseVersion, SiteFeedTable } from "../constants";
 import { SiteFeed } from "../models";
 import { deleteByName, getAll, insert, update } from "./indexeddbCRUD";
 import { executeMigrations } from "./migrations";
@@ -39,7 +39,7 @@ export async function getSitesFeed(setState: Function) {
   request.onsuccess = async () => {
     const db = request.result;
 
-    const sitesFeed = (await getAll(db, SiteFeedParams.Name)) as SiteFeed[];
+    const sitesFeed = (await getAll(db, SiteFeedTable.Name)) as SiteFeed[];
 
     setState(sitesFeed);
 
@@ -57,7 +57,7 @@ export async function insertSiteFeed(siteFeed: SiteFeed) {
   request.onsuccess = async () => {
     const db = request.result;
 
-    await insert(db, SiteFeedParams.Name, [siteFeed]);
+    await insert(db, SiteFeedTable.Name, [siteFeed]);
 
     db.close();
   };
@@ -74,7 +74,7 @@ export async function updateSiteFeed(siteFeed: SiteFeed) {
   request.onsuccess = async () => {
     const db = request.result;
 
-    await update(db, SiteFeedParams.Name, siteFeed);
+    await update(db, SiteFeedTable.Name, siteFeed);
 
     db.close();
   };
@@ -90,7 +90,7 @@ export async function deleteSiteFeed(siteName: string) {
   request.onsuccess = async () => {
     const db = request.result;
 
-    await deleteByName(db, SiteFeedParams.Name, siteName);
+    await deleteByName(db, SiteFeedTable.Name, siteName);
 
     db.close();
   };
