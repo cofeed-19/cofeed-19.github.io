@@ -1,9 +1,9 @@
 import { databaseName, databaseVersion, SiteFeedTable } from "../constants";
 import { SiteFeed } from "../models";
-import { deleteByName, getAll, insert, update } from "./indexeddbCRUD";
+import { deleteByName, getAll, getOne, insert, update } from "./indexeddbCRUD";
 import { executeMigrations } from "./migrations";
 
-export async function initDatabase() {
+export async function initDatabase(): Promise<boolean> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(databaseName, databaseVersion);
 
@@ -15,7 +15,6 @@ export async function initDatabase() {
       const db = request.result;
 
       executeMigrations(event.oldVersion, db).then((done: boolean) => {
-        console.log({ done });
         resolve(done);
         db.close();
       });
@@ -33,22 +32,48 @@ export async function initDatabase() {
   });
 }
 
-export async function getSitesFeed(setState: Function) {
-  const request = indexedDB.open(databaseName, databaseVersion);
+export async function getSiteFeeds(): Promise<SiteFeed[]> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(databaseName, databaseVersion);
 
-  request.onsuccess = async () => {
-    const db = request.result;
+    request.onsuccess = async () => {
+      const db = request.result;
 
-    const sitesFeed = (await getAll(db, SiteFeedTable.Name)) as SiteFeed[];
+      const siteFeeds = (await getAll(db, SiteFeedTable.Name)) as SiteFeed[];
 
-    setState(sitesFeed);
+      resolve(siteFeeds);
+      db.close();
+    };
 
-    db.close();
-  };
+    request.onerror = async () => {
+      console.log("An error occurred getSiteFeeds() function.");
+      reject("An error occurred getSiteFeeds() function.");
+    };
+  });
+}
 
-  request.onerror = async () => {
-    console.log("An error occurred getSitesFeed() function.");
-  };
+export async function getSiteFeed(feedUrl: string): Promise<SiteFeed> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(databaseName, databaseVersion);
+
+    request.onsuccess = async () => {
+      const db = request.result;
+
+      const siteFeeds = (await getOne(
+        db,
+        SiteFeedTable.Name,
+        feedUrl
+      )) as SiteFeed;
+
+      resolve(siteFeeds);
+      db.close();
+    };
+
+    request.onerror = async () => {
+      console.log("An error occurred getSiteFeeds() function.");
+      reject("An error occurred getSiteFeeds() function.");
+    };
+  });
 }
 
 export async function insertSiteFeed(siteFeed: SiteFeed) {
@@ -84,13 +109,13 @@ export async function updateSiteFeed(siteFeed: SiteFeed) {
   };
 }
 
-export async function deleteSiteFeed(siteName: string) {
+export async function deleteSiteFeed(feedUrl: string) {
   const request = indexedDB.open(databaseName, databaseVersion);
 
   request.onsuccess = async () => {
     const db = request.result;
 
-    await deleteByName(db, SiteFeedTable.Name, siteName);
+    await deleteByName(db, SiteFeedTable.Name, feedUrl);
 
     db.close();
   };

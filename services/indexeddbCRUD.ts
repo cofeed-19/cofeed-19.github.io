@@ -34,22 +34,14 @@ export async function insert(
   values.forEach(async (value) => await objectStore.add(value));
 }
 
-export async function getByColumnName(
-  db: IDBDatabase,
-  tableName: string,
-  fieldNameToSearch: string,
-  value: any
-) {
-  var result = await new Promise((resolve) => {
+export async function getOne(db: IDBDatabase, tableName: string, key: string) {
+  return new Promise((resolve) => {
     const transaction = db.transaction([tableName], "readonly");
     const objectStore = transaction.objectStore(tableName);
 
-    var indexDb = objectStore.index(fieldNameToSearch);
-    var getRequest = indexDb.get(value);
+    const getRequest = objectStore.get(key);
     getRequest.onsuccess = () => resolve(getRequest.result);
   });
-
-  return result;
 }
 
 export async function getAll(db: IDBDatabase, tableName: string) {

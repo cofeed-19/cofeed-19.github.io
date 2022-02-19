@@ -1,25 +1,40 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import { ExternalLink, Footer, Header, HeadMeta, NewFeedForm, ProgressLoader } from "../components";
-import { initDatabase } from "../services/indexeddbService";
-import { Feed } from "../types";
+import {
+  ExternalLink,
+  Footer,
+  Header,
+  HeadMeta,
+  NewFeedForm,
+  ProgressLoader,
+} from "../components";
+import { SiteFeed, Feed } from "../models";
+import {
+  deleteSiteFeed,
+  getSiteFeed,
+  getSiteFeeds,
+  initDatabase,
+  insertSiteFeed,
+  updateSiteFeed,
+} from "../services/indexeddbService";
 
+declare global {
+  interface Window {
+    dbPromise: Promise<boolean>;
+  }
+}
 
 const rssParser = new RSSParser();
 
 const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/";
 
-function allStorage(): FeedArchiveType {
-  const archive: FeedArchiveType = {};
+async function allStorage(): Promise<Record<string, SiteFeed>> {
+  await initDatabase();
+  const siteFeeds = await getSiteFeeds();
+  const archive: Record<string, SiteFeed> = {};
 
-  for (const key of Object.keys(localStorage)) {
-    if (!key.startsWith("http")) {
-      continue;
-    }
-    const item = localStorage.getItem(key);
-    if (item) {
-      archive[key] = JSON.parse(item);
-    }
+  for (const siteFeed of siteFeeds) {
+    archive[siteFeed.url] = siteFeed;
   }
 
   return archive;
@@ -35,7 +50,7 @@ export default function Home() {
   }>({ total: 0, loaded: 0 });
 
   async function updateFeeds() {
-    const storage = allStorage();
+    const storage = await allStorage();
     const feedsCount = Object.keys(storage).length;
 
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
@@ -54,9 +69,9 @@ export default function Home() {
       if (feed) {
         const feedToUpdate: Feed = {
           ...feed,
+          url: feedUrl,
           visited: storage[feedUrl].visited || {},
         };
-        localStorage.setItem(feedUrl, JSON.stringify(feedToUpdate));
         storage[feedUrl] = feedToUpdate;
       }
       setLoadedFeeds((s) => ({
@@ -64,7 +79,7 @@ export default function Home() {
         loaded: s.loaded + 1,
       }));
     }
-    setFeedArchive(storage);
+    setFeedArchive(storage as FeedArchiveType);
   }
 
   async function onSubmit(newFeed: string): Promise<void> {
@@ -84,13 +99,8 @@ export default function Home() {
           errors.push(feedUrl);
         }
       }
-      if (feed && !localStorage.getItem(feedUrl)) {
-        const feedToAdd: Feed = {
-          ...feed,
-          visited: {},
-        };
-
-        localStorage.setItem(feedUrl, JSON.stringify(feedToAdd));
+      if (feed && !(await getSiteFeed(feedUrl))) {
+        await insertSiteFeed({ url: feedUrl, visited: {} });
       }
     }
     if (errors.length) {
@@ -104,7 +114,7 @@ export default function Home() {
     updateFeeds();
   }
 
-  function onLinkClick(
+  async function onLinkClick(
     e: MouseEvent<HTMLAnchorElement> | undefined,
     feedUrl: string,
     itemLink?: string
@@ -112,22 +122,19 @@ export default function Home() {
     if (!feedUrl || !itemLink) {
       return;
     }
-    const rawFeed: string | null = localStorage.getItem(feedUrl);
-    if (rawFeed) {
-      const feed: Feed = JSON.parse(rawFeed);
-      if (feed.visited) {
-        feed.visited[itemLink] = true;
-      }
-      localStorage.setItem(feedUrl, JSON.stringify(feed));
-      if (e) {
-        e.currentTarget.style.color = "var(--link-visited-color)";
-      }
+    if (e) {
+      e.currentTarget.style.color = "var(--link-visited-color)";
     }
+    const siteFeed = await getSiteFeed(feedUrl);
+    if (siteFeed.visited) {
+      siteFeed.visited[itemLink] = true;
+    }
+    await updateSiteFeed(siteFeed);
   }
 
   function onRemoveClick(feedUrl: string, feedTitle?: string) {
     if (confirm(`Delete ${feedTitle} from feeds?`)) {
-      localStorage.removeItem(feedUrl);
+      deleteSiteFeed(feedUrl);
       updateFeeds();
     }
   }
@@ -141,7 +148,6 @@ export default function Home() {
 
   useEffect(() => {
     updateFeeds();
-    initDatabase();
   }, []);
 
   useEffect(() => {
@@ -149,7 +155,6 @@ export default function Home() {
       setLoadedFeeds({ ...loadedFeeds, loaded: loadedFeeds.total });
     }
   }, [loadedFeeds]);
-
 
   return (
     <>
