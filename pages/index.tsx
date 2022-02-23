@@ -1,7 +1,6 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import {
-  ExternalLink,
   Footer,
   Header,
   HeadMeta,
@@ -10,7 +9,7 @@ import {
   ProgressLoader,
   VisitedItemsList,
 } from "../components";
-import { SiteFeed, Feed } from "../models";
+import { Feed, SiteFeed } from "../models";
 import {
   deleteSiteFeed,
   getSiteFeed,
@@ -116,24 +115,6 @@ export default function Home() {
     updateFeeds();
   }
 
-  async function onLinkClick(
-    e: MouseEvent<HTMLAnchorElement> | undefined,
-    feedUrl: string,
-    itemLink?: string
-  ) {
-    if (!feedUrl || !itemLink) {
-      return;
-    }
-    if (e) {
-      e.currentTarget.style.color = "var(--link-visited-color)";
-    }
-    const siteFeed = await getSiteFeed(feedUrl);
-    if (siteFeed.visited) {
-      siteFeed.visited[itemLink] = true;
-    }
-    await updateSiteFeed(siteFeed);
-  }
-
   function onRemoveClick(feedUrl: string, feedTitle?: string) {
     if (confirm(`Delete ${feedTitle} from feeds?`)) {
       deleteSiteFeed(feedUrl);
@@ -185,7 +166,6 @@ export default function Home() {
                 feed={feed}
                 feedUrl={feedUrl}
                 newItems={newItems}
-                onLinkClick={onLinkClick}
                 updateFeeds={updateFeeds}
               />
               <VisitedItemsList
