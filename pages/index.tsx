@@ -1,6 +1,7 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import {
+  ExternalLink,
   Footer,
   Header,
   HeadMeta,
@@ -148,17 +149,21 @@ export default function Home() {
         <ProgressLoader loadedFeeds={loadedFeeds} />
         {Object.keys(feedArchive).map((feedUrl) => {
           const feed = feedArchive[feedUrl];
-          const newItems = feed?.items.filter(
+          const newItems = feed.items.filter(
             (item) => item.link && (!feed.visited || !feed.visited[item.link])
           );
-          const vizitedItems = feed?.items.filter(
+          const vizitedItems = feed.items.filter(
             (item) => item.link && feed.visited && feed.visited[item.link]
           );
           return (
             <section key={feedUrl}>
               <h2>
-                {feed?.title || feedUrl}{" "}
-                <button onClick={() => onRemoveClick(feedUrl, feed?.title)}>
+                {feed.link ? (
+                  <ExternalLink link={feed.link} title={feed.title} />
+                ) : (
+                  feed.title || feedUrl
+                )}{" "}
+                <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
                   X
                 </button>
               </h2>
