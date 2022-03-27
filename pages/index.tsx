@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
@@ -17,7 +17,6 @@ import {
   getSiteFeeds,
   initDatabase,
   insertSiteFeed,
-  updateSiteFeed,
 } from "../services/indexeddbService";
 
 declare global {
@@ -27,8 +26,6 @@ declare global {
 }
 
 const rssParser = new RSSParser();
-
-const CORS_PROXY = "https://thingproxy.freeboard.io/fetch/";
 
 async function allStorage(): Promise<Record<string, SiteFeed>> {
   await initDatabase();
@@ -61,12 +58,7 @@ export default function Home() {
       try {
         feed = await rssParser.parseURL(feedUrl);
       } catch (_e) {
-        try {
-          console.warn("Trying CORS_PROXY");
-          feed = await rssParser.parseURL(CORS_PROXY + feedUrl);
-        } catch (_e) {
-          console.error(`Could not update feed for ${feedUrl}`);
-        }
+        console.error(`Could not update feed for ${feedUrl}`);
       }
       if (feed) {
         const feedToUpdate: Feed = {
@@ -94,12 +86,7 @@ export default function Home() {
       try {
         feed = await rssParser.parseURL(feedUrl);
       } catch (_e) {
-        try {
-          console.warn("Trying CORS_PROXY");
-          feed = await rssParser.parseURL(CORS_PROXY + feedUrl);
-        } catch (_e) {
-          errors.push(feedUrl);
-        }
+        errors.push(feedUrl);
       }
       if (feed && !(await getSiteFeed(feedUrl))) {
         await insertSiteFeed({ url: feedUrl, visited: {} });
