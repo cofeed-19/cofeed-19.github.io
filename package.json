@@ -2,6 +2,10 @@
   "name": "free-web-feed",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "npm": "please-use-yarn",
+    "yarn": ">= 1.22.17"
+  },
   "scripts": {
     "dev": "next dev -p 4605",
     "build": "next build",
