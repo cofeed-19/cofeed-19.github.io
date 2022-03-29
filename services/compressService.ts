@@ -1,5 +1,4 @@
-
-export async function compress(uncompressedData: string){
+export function compress(uncompressedData: string): string{
     try {
         var dict = {} as any
         var data = (uncompressedData + '').split('')
@@ -22,16 +21,16 @@ export async function compress(uncompressedData: string){
         for (var j = 0; j < out.length; j++) {
           out[j] = String.fromCharCode(out[j])
         }
-        return utoa(out.join(''))
+        return encodeBase64(out.join(''))
     } catch (e) {
     console.log('Failed to compress string return empty string', e)
     return ''
     }
 }
 
-export async function decompress(compressedData: any){
+export function decompress(compressedData: any): string{
     try {
-        var s = atou(compressedData)
+        var s = decodeBase64(compressedData)
         var dict = {} as any
         var data = (s + '').split('')
         var currChar = data[0]
@@ -59,10 +58,10 @@ export async function decompress(compressedData: any){
     }
 }
 
-function utoa (str: string) {
+function encodeBase64 (str: string) {
     return window.btoa(unescape(encodeURIComponent(str)))
 }
 
-function atou (str: string) {
+function decodeBase64 (str: string) {
     return decodeURIComponent(escape(window.atob(str)))
 }
