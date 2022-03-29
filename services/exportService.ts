@@ -4,7 +4,7 @@ import { databaseVersion } from "../constants";
 import { compress, decompress}  from "./compressService";
 import { siteDomain } from "../constants";
 
-export async function exportFeed(): Promise<string>{
+export async function exportFeed(): Promise<string | undefined>{
 
     let transferFeed: TransferFeed[] = [];
     const feedStore = await getSiteFeeds() as SiteFeed[];
@@ -13,14 +13,19 @@ export async function exportFeed(): Promise<string>{
     const transferData: TransferData = {db: databaseVersion, feed: transferFeed}; 
 
     const compressedData: string =  compress(JSON.stringify(transferData));
+    const linkToExport = siteDomain + compressedData;
 
-    return siteDomain + compressedData;
+    // method to download data as .* file
+    // if(linkToExport.length > 2048){
+    //     return;
+    // }
+
+    return linkToExport;
 }
 
 export async function importFeed(link: string){
 
     const transferString = decompress(link.replace(siteDomain, ""));
-    console.log(transferString)
 
     const transferData = JSON.parse(transferString) as TransferData;
 
