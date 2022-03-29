@@ -18,6 +18,7 @@ import {
   insertSiteFeed,
   updateSiteFeed,
 } from "../services/indexeddbService";
+import { exportFeed } from "../services/exportService";
 
 declare global {
   interface Window {
@@ -129,6 +130,10 @@ export default function Home() {
     });
   }
 
+  async function onExportClick() {
+    const exportedData = await exportFeed();
+    console.log(exportedData);
+  }
   useEffect(() => {
     updateFeeds();
   }, []);
@@ -145,6 +150,7 @@ export default function Home() {
       <Header />
       <main>
         <NewFeedForm onSubmit={onSubmit} />
+        <button onClick={onExportClick}>ExportLink</button>
         <ProgressLoader loadedFeeds={loadedFeeds} />
         {Object.keys(feedArchive).map((feedUrl) => {
           const feed = feedArchive[feedUrl];
