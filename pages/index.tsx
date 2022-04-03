@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
+  ExportImportForm,
   Footer,
   Header,
   HeadMeta,
@@ -111,17 +112,6 @@ export default function Home() {
     }
   }
 
-  function onCopyClick() {
-    const feedUrls = Object.keys(feedArchive);
-    navigator.clipboard.writeText(feedUrls.join(",")).then(() => {
-      alert("Feed urls copied to clipboard");
-    });
-  }
-
-  async function onExportClick() {
-    const exportedData = await exportFeed();
-    console.log(exportedData);
-  }
   useEffect(() => {
     updateFeeds();
   }, []);
@@ -138,7 +128,7 @@ export default function Home() {
       <Header />
       <main>
         <NewFeedForm onSubmit={onSubmit} />
-        <button onClick={onExportClick}>ExportLink</button>
+        <ExportImportForm />
         <ProgressLoader loadedFeeds={loadedFeeds} />
         {Object.keys(feedArchive).map((feedUrl) => {
           const feed = feedArchive[feedUrl];
@@ -174,7 +164,6 @@ export default function Home() {
             </section>
           );
         })}
-        <button onClick={onCopyClick}>Copy feed urls</button>
       </main>
       <Footer />
     </>
