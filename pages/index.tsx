@@ -140,7 +140,7 @@ export default function Home() {
           );
           return (
             <section key={feedUrl}>
-              <h2>
+              <h3>
                 {feed.link ? (
                   <ExternalLink link={feed.link} title={feed.title} />
                 ) : (
@@ -149,7 +149,7 @@ export default function Home() {
                 <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
                   X
                 </button>
-              </h2>
+              </h3>
               <NewItemsList
                 feed={feed}
                 feedUrl={feedUrl}

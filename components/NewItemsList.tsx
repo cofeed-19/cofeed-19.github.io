@@ -1,5 +1,6 @@
 import React, { MouseEvent } from "react";
 import RSSParser from "rss-parser";
+import { DateComponent } from ".";
 import { Feed } from "../models";
 import { getSiteFeed, updateSiteFeed } from "../services/indexeddbService";
 import { ExternalLink } from "./ExternalLink";
@@ -51,6 +52,7 @@ export function NewItemsList(props: Props) {
         {newItems?.map((item) =>
           item.link ? (
             <li key={item.link}>
+              <DateComponent date={item.pubDate} />
               <ExternalLink
                 title={item.title || item.link}
                 link={item.link}
