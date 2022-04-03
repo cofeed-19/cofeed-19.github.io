@@ -1,5 +1,6 @@
 import React from "react";
 import RSSParser from "rss-parser";
+import { DateComponent } from ".";
 import { Feed } from "../models";
 import { ExternalLink } from "./ExternalLink";
 
@@ -19,6 +20,7 @@ export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
             {visitedItems?.map((item) =>
               item.link ? (
                 <li key={item.link}>
+                  <DateComponent date={item.pubDate} />
                   <ExternalLink
                     title={item.title || item.link}
                     link={item.link}

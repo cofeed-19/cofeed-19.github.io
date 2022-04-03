@@ -65,15 +65,15 @@ h1 {
   user-select: none;
 }
 
-h2 {
+h3 {
   display: flex;
 }
 
-h2 button {
+h3 button {
   display: none;
 }
 
-h2:hover button {
+h3:hover button {
   display: inline-block;
 }
 
@@ -105,4 +105,17 @@ dialog {
   top: 50%;
   background-color: var(--body-bg-color);
   color: var(--body-color);
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  display: flex;
+  list-style-type: none;
+}
+
+li span {
+  flex: 0 0 7rem; 
 }
