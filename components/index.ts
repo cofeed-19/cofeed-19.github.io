@@ -3,6 +3,7 @@ export * from "./Footer";
 export * from "./Header";
 export * from "./HeadMeta";
 export * from "./NewFeedForm";
+export * from "./ExportImportForm";
 export * from "./ProgressLoader";
 export * from "./NewItemsList";
 export * from "./VisitedItemsList";
