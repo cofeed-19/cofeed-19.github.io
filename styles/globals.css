@@ -107,15 +107,15 @@ dialog {
   color: var(--body-color);
 }
 
-ul {
+main ul {
   padding: 0;
 }
 
-li {
+main li {
   display: flex;
   list-style-type: none;
 }
 
-li span {
+main li span {
   flex: 0 0 7rem; 
 }
