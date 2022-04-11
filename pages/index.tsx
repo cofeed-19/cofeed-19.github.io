@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
-  ExportImportForm,
   Footer,
   Header,
   HeadMeta,
@@ -19,7 +18,6 @@ import {
   initDatabase,
   insertSiteFeed,
 } from "../services/indexeddbService";
-import { exportFeed } from "../services/exportService";
 
 declare global {
   interface Window {
@@ -128,7 +126,6 @@ export default function Home() {
       <Header />
       <main>
         <NewFeedForm onSubmit={onSubmit} />
-        <ExportImportForm />
         <ProgressLoader loadedFeeds={loadedFeeds} />
         {Object.keys(feedArchive).map((feedUrl) => {
           const feed = feedArchive[feedUrl];

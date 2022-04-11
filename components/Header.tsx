@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
+import { ExportImportForm } from "./ExportImportForm";
 import { setDarkMode, setLightMode } from "../utils";
 import { ExternalLink } from "./ExternalLink";
 
@@ -19,7 +20,11 @@ export function Header() {
   }
 
   useEffect(() => {
-    const isDarkMode = (!localStorage.getItem("dark-mode") && (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)) || localStorage.getItem("dark-mode") === "true";
+    const isDarkMode =
+      (!localStorage.getItem("dark-mode") &&
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches) ||
+      localStorage.getItem("dark-mode") === "true";
     if (isDarkMode) {
       setDarkMode();
       setIsDarkMode(true);
@@ -49,14 +54,18 @@ export function Header() {
         <ul>
           <li style={{ color: "red" }}>
             Because we do cross-origin requests some web feeds are blocked by
-            CORS policy😢. But you can install <a href="https://mybrowseraddon.com/access-control-allow-origin.html">a browser extension that allow CORS</a>😊.
+            CORS policy😢. But you can install{" "}
+            <a href="https://mybrowseraddon.com/access-control-allow-origin.html">
+              a browser extension that allow CORS
+            </a>
+            😊.
           </li>
           <li>Supports RSS and Atom feeds</li>
           <li>
             Try <u>http</u> and <u>https</u>
           </li>
           <li>
-            If it's a personal blog, maybe ask the owner to{" "}
+            If it&apos;s a personal blog, maybe ask the owner to{" "}
             <ExternalLink
               link={"https://enable-cors.org/server.html"}
               title={"enable CORS"}
@@ -80,7 +89,7 @@ export function Header() {
           <summary>Why to use?</summary>
           <div>
             <ul>
-              <li>It's Free</li>
+              <li>It&apos;s Free</li>
               <li>No account</li>
               <li>No tracking</li>
               <li>Minimalist</li>
@@ -98,6 +107,7 @@ export function Header() {
             </ul>
           </div>
         </details>
+        <ExportImportForm />
       </details>
       <hr />
     </header>
