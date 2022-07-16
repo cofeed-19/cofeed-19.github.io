@@ -1,5 +1,9 @@
 import { useState, ChangeEvent, FormEvent } from "react";
-import { exportFeed, importFeed } from "../services/exportService";
+import {
+  exportFeed,
+  importFeed,
+  importFeedFromFile,
+} from "../services/exportService";
 
 export function ExportImportForm() {
   const [importFeeds, setImportFeeds] = useState("");
@@ -14,13 +18,20 @@ export function ExportImportForm() {
   }
 
   async function onExportClick() {
-    const exportedData = await exportFeed();
-    if (exportedData) {
-      await navigator.clipboard.writeText(exportedData);
-      alert(
-        "Encoded export data was copied to clipboard. Go to a new browser or device and paste it into import input."
-      );
-    }
+    exportFeed();
+    // const exportedData = await exportFeed();
+    // if (exportedData) {
+    //   await navigator.clipboard.writeText(exportedData);
+    //   alert(
+    //     "Encoded export data was copied to clipboard. Go to a new browser or device and paste it into import input."
+    //   );
+    // }
+  }
+
+  async function onFileLoad(e: ChangeEvent<HTMLInputElement>) {
+    const feedFile = e.target.files?.[0];
+    const text = await feedFile?.text();
+    text && importFeedFromFile(text);
   }
 
   return (
@@ -31,15 +42,21 @@ export function ExportImportForm() {
         export the current state of your feeds:
       </p>
       <button onClick={onExportClick}>Export feeds</button>
-      <form onSubmit={onFormSubmit}>
-        <input
-          placeholder="https://cofeed-19.github.io/eyJkYiI6MSwiZmVlZMSEW8SA"
-          type="text"
-          value={importFeeds}
-          onChange={onInputChange}
-        />
-        <button type="submit">Import feeds</button>
-      </form>
+      {/* <form onSubmit={onFormSubmit}> */}
+      {/*   <input */}
+      {/*     placeholder="https://cofeed-19.github.io/eyJkYiI6MSwiZmVlZMSEW8SA" */}
+      {/*     type="text" */}
+      {/*     value={importFeeds} */}
+      {/*     onChange={onInputChange} */}
+      {/*   /> */}
+      {/*   <button type="submit">Import feeds</button> */}
+      {/* </form> */}
+      <hr />
+      <label>
+        Import from file
+        <br />
+        <input type="file" name="my_files[]" onChange={onFileLoad} />
+      </label>
     </details>
   );
 }
