@@ -4,6 +4,22 @@ import { databaseVersion } from "../constants";
 import { compress, decompress } from "./compressService";
 import { siteDomain } from "../constants";
 
+function download(filename: string, text: string) {
+  var element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+  );
+  element.setAttribute("download", filename);
+
+  element.style.display = "none";
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 export async function exportFeed(): Promise<string | undefined> {
   let transferFeed: TransferFeed[] = [];
   const feedStore = (await getSiteFeeds()) as SiteFeed[];
@@ -13,6 +29,11 @@ export async function exportFeed(): Promise<string | undefined> {
     db: databaseVersion,
     feed: transferFeed,
   };
+
+  download(
+    new Date().toLocaleDateString("uk-en") + "-cofeed.json",
+    JSON.stringify(transferData, undefined, 2)
+  );
 
   const compressedData: string = compress(JSON.stringify(transferData));
   const linkToExport = siteDomain + compressedData;
@@ -35,6 +56,21 @@ export async function importFeed(link: string) {
     alert("Feed is empty");
   }
 }
+
+export async function importFeedFromFile(jsonFromFile: string) {
+  const transferData = JSON.parse(jsonFromFile) as TransferData;
+
+  if (transferData.feed) {
+    transferData.feed.forEach((feed) =>
+      insertSiteFeed(refactorExportToFeed(feed))
+    );
+    console.log("Database updated successfully");
+    window.location.reload();
+  } else {
+    alert("Feed is empty");
+  }
+}
+
 
 function refactorExportToFeed(feed: TransferFeed): SiteFeed {
   const url = feed.domain + feed.url;
