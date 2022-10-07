@@ -59,7 +59,7 @@ export default function Home() {
       let feedFavicon;
       try {
         feed = await rssParser.parseURL(feedUrl);
-        feedFavicon = (await favecon.getBestIcons(feed.link))[0].href;
+        feedFavicon = feed.link && (await favecon.getBestIcons(feed.link))[0].href;
       } catch (_e) {
         console.error(`Could not update feed for ${feedUrl}`);
       }
