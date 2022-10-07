@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
+import favecon from "favecon";
 import {
   ExternalLink,
   Footer,
@@ -55,8 +56,10 @@ export default function Home() {
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
     for (const feedUrl of Object.keys(storage)) {
       let feed;
+      let feedFavicon;
       try {
         feed = await rssParser.parseURL(feedUrl);
+        feedFavicon = (await favecon.getBestIcons(feed.link))[0].href;
       } catch (_e) {
         console.error(`Could not update feed for ${feedUrl}`);
       }
@@ -64,6 +67,7 @@ export default function Home() {
         const feedToUpdate: Feed = {
           ...feed,
           url: feedUrl,
+          favicon: feedFavicon,
           visited: storage[feedUrl].visited || {},
         };
         storage[feedUrl] = feedToUpdate;
@@ -139,7 +143,18 @@ export default function Home() {
             <section key={feedUrl}>
               <h3>
                 {feed.link ? (
-                  <ExternalLink link={feed.link} title={feed.title} />
+                  <>
+                    {feed.favicon && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        alt={feed.title}
+                        src={feed.favicon}
+                        width={16}
+                        height={16}
+                      />
+                    )}
+                    <ExternalLink link={feed.link} title={feed.title} />
+                  </>
                 ) : (
                   feed.title || feedUrl
                 )}{" "}
