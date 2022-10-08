@@ -1,3 +1,5 @@
+import favecon from "favecon";
+
 export function setDarkMode() {
   document.documentElement.style.setProperty("--body-bg-color", "#1A202C");
       document.documentElement.style.setProperty("--body-color", "#FFF");
@@ -16,4 +18,14 @@ export function setLightMode() {
         "--link-visited-color",
         "#551A8B"
       );
+}
+
+export async function getFavicon(link?: string): Promise<string | undefined> {
+  const feedFavicon =
+    (link && (await favecon.getBestIcons(link))[0]?.href) ??
+    (await fetch(`${link}/favicon.ico`, { method: "HEAD" }).then((res) =>
+      res.ok ? `${link}/favicon.ico` : undefined
+    ));
+
+  return feedFavicon;
 }
