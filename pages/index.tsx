@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import favecon from "favecon";
 import {
   ExternalLink,
   Footer,
@@ -19,6 +18,7 @@ import {
   initDatabase,
   insertSiteFeed,
 } from "../services/indexeddbService";
+import { getFavicon } from "../utils";
 
 declare global {
   interface Window {
@@ -55,15 +55,9 @@ export default function Home() {
 
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
     for (const feedUrl of Object.keys(storage)) {
-      let feed;
-      let feedFavicon;
       try {
-        feed = await rssParser.parseURL(feedUrl);
-        feedFavicon = feed.link && (await favecon.getBestIcons(feed.link))[0].href;
-      } catch (_e) {
-        console.error(`Could not update feed for ${feedUrl}`);
-      }
-      if (feed) {
+        const feed = await rssParser.parseURL(feedUrl);
+        const feedFavicon = await getFavicon(feed.link);
         const feedToUpdate: Feed = {
           ...feed,
           url: feedUrl,
@@ -71,6 +65,8 @@ export default function Home() {
           visited: storage[feedUrl].visited || {},
         };
         storage[feedUrl] = feedToUpdate;
+      } catch (_e) {
+        console.error(`Could not update feed for ${feedUrl}`);
       }
       setLoadedFeeds((s) => ({
         ...s,
