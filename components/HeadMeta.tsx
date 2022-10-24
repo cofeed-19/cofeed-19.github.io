@@ -3,6 +3,11 @@ import Head from "next/head";
 export function HeadMeta() {
   return (
     <Head>
+      <meta charSet="UTF-8"></meta>
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+      ></meta>
       <title>Client-only Feed Reader</title>
       <meta
         name="description"
@@ -45,6 +50,7 @@ export function HeadMeta() {
         href="https://cofeed-19.github.io/favicon-16x16.png"
       />
       <link rel="manifest" href="/site.webmanifest" />
+      <meta name="theme-color" content="#EE802f"></meta>
     </Head>
   );
 }
