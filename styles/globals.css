@@ -121,3 +121,17 @@ main li {
 main li span {
   flex: 0 0 7rem; 
 }
+
+.favorite-pin {
+  opacity: 0.5;
+}
+
+.favorite-pin:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.favorite-pin.pinned {
+  opacity: 1;
+  transform: rotate(-45deg);
+}

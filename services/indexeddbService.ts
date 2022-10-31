@@ -124,3 +124,34 @@ export async function deleteSiteFeed(feedUrl: string) {
     console.log("An error occurred deleteSiteFeed() function.");
   };
 }
+
+export async function updateSiteFeedFavorite(
+  feedUrl: string,
+  favorite: boolean
+) {
+  const request = indexedDB.open(databaseName, databaseVersion);
+
+  request.onsuccess = async () => {
+    const db = request.result;
+
+    const siteFeed = (await getOne(
+      db,
+      SiteFeedTable.Name,
+      feedUrl
+    )) as SiteFeed;
+
+    siteFeed.favorite = favorite;
+
+    await update(db, SiteFeedTable.Name, siteFeed);
+
+    db.close();
+
+    return;
+  };
+
+  request.onerror = async () => {
+    console.log("An error occurred updateSiteFeedFavorite() function.");
+
+    return;
+  };
+}

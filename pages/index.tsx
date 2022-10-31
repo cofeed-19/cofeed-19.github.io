@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
@@ -11,6 +11,7 @@ import {
   ProgressLoader,
   VisitedItemsList,
 } from "../components";
+import { FavoritePin } from "../components/FavoritePin";
 import { Feed, SiteFeed } from "../models";
 import {
   deleteSiteFeed,
@@ -18,6 +19,7 @@ import {
   getSiteFeeds,
   initDatabase,
   insertSiteFeed,
+  updateSiteFeedFavorite,
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
 
@@ -64,6 +66,7 @@ export default function Home() {
           url: feedUrl,
           favicon: feedFavicon,
           visited: storage[feedUrl].visited || {},
+          favorite: storage[feedUrl].favorite || false,
         };
         storage[feedUrl] = feedToUpdate;
       } catch (_e) {
@@ -74,6 +77,7 @@ export default function Home() {
         loaded: s.loaded + 1,
       }));
     }
+
     setFeedArchive(storage as FeedArchiveType);
   }
 
@@ -111,6 +115,11 @@ export default function Home() {
     }
   }
 
+  const onFavoriteClick = useCallback(async (feed: Feed) => {
+    await updateSiteFeedFavorite(feed.url, !feed.favorite);
+    updateFeeds();
+  }, []);
+
   useEffect(() => {
     updateFeeds();
   }, []);
@@ -121,6 +130,22 @@ export default function Home() {
     }
   }, [loadedFeeds]);
 
+  const sortedArchive = useMemo(() => {
+    const keys = Object.keys(feedArchive);
+
+    keys.sort((a, b) => {
+      if (feedArchive[a].favorite && !feedArchive[b].favorite) {
+        return -1;
+      }
+      if (!feedArchive[a].favorite && feedArchive[b].favorite) {
+        return 1;
+      }
+      return 0;
+    });
+
+    return keys;
+  }, [feedArchive]);
+
   return (
     <>
       <HeadMeta />
@@ -128,7 +153,7 @@ export default function Home() {
       <main>
         <NewFeedForm onSubmit={onSubmit} />
         <ProgressLoader loadedFeeds={loadedFeeds} />
-        {Object.keys(feedArchive).map((feedUrl) => {
+        {sortedArchive.map((feedUrl) => {
           const feed = feedArchive[feedUrl];
           const newItems = feed.items.filter(
             (item) => item.link && (!feed.visited || !feed.visited[item.link])
@@ -139,6 +164,7 @@ export default function Home() {
           return (
             <section key={feedUrl}>
               <h3>
+                <FavoritePin feed={feed} onClick={onFavoriteClick} />
                 {feed.link ? (
                   <>
                     {feed.favicon && (
