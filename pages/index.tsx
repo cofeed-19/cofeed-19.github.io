@@ -155,7 +155,7 @@ export default function Home() {
                   feed.title || feedUrl
                 )}{" "}
                 <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
-                  X
+                  ❌
                 </button>
               </h3>
               <NewItemsList
