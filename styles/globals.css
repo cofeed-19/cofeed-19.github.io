@@ -123,15 +123,26 @@ main li span {
 }
 
 .favorite-pin {
-  opacity: 0.5;
+  will-change: opacity, width;
+  opacity: 0;
+  width: 0;
+
+  transition: opacity 300ms ease-in-out, width 300ms ease-in-out;
 }
 
-.favorite-pin:hover {
+h3:hover .favorite-pin {
+  opacity: 0.5;
+  width: 16px;
+
+  position: relative;
+  top: 3px;
+}
+
+h3:hover .favorite-pin:hover {
   opacity: 1;
   cursor: pointer;
 }
 
 .favorite-pin.pinned {
-  opacity: 1;
   transform: rotate(-45deg);
 }
