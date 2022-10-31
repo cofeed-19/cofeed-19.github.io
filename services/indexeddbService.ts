@@ -94,23 +94,25 @@ export async function insertSiteFeed(siteFeed: SiteFeed) {
 
 // siteFeed must contain entire class, both old and new visited sites !!
 export async function updateSiteFeed(siteFeed: SiteFeed) {
-  const request = indexedDB.open(databaseName, databaseVersion);
+  return new Promise<void>((resolve, reject) => {
+    const request = indexedDB.open(databaseName, databaseVersion);
 
-  request.onsuccess = async () => {
-    const db = request.result;
+    request.onsuccess = async () => {
+      const db = request.result;
 
-    await update(db, SiteFeedTable.Name, siteFeed);
+      await update(db, SiteFeedTable.Name, siteFeed);
 
-    db.close();
+      db.close();
 
-    return;
-  };
+      resolve();
+    };
 
-  request.onerror = async () => {
-    console.log("An error occurred updateSiteFeed() function.");
+    request.onerror = async () => {
+      console.log("An error occurred updateSiteFeed() function.");
 
-    return;
-  };
+      reject();
+    };
+  });
 }
 
 export async function deleteSiteFeed(feedUrl: string) {
