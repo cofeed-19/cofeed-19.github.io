@@ -30,11 +30,13 @@ export default function Feeds({ list }: Props) {
       setAddedFeed(url);
 
       if (dialogRef.current) {
-        dialogRef.current.showModal();
-        setTimeout(() => dialogRef.current?.close(), 2000);
+        const dialog = dialogRef.current;
+
+        dialog.showModal();
+        setTimeout(() => dialog.close(), 2000);
       }
     },
-    [dialogRef.current]
+    [dialogRef]
   );
 
   return (
