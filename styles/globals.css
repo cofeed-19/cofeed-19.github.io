@@ -126,6 +126,7 @@ main li span {
   will-change: opacity, width;
   opacity: 0;
   width: 0;
+  text-decoration: none;
 
   transition: opacity 300ms ease-in-out, width 300ms ease-in-out;
 }

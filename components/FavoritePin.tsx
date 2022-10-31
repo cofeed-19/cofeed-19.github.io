@@ -17,9 +17,11 @@ export function FavoritePin({ feed, onClick }: FavoritePinProps) {
     return baseClass;
   }, [feed.favorite]);
 
+  const title = feed.favorite ? "Unpin" : "Pin";
+
   return (
-    <span className={className} onClick={() => onClick(feed)}>
+    <abbr title={title} className={className} onClick={() => onClick(feed)}>
       📌
-    </span>
+    </abbr>
   );
 }
