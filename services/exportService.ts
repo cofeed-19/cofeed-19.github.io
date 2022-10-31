@@ -21,13 +21,10 @@ function download(filename: string, text: string) {
 }
 
 export async function exportFeed(): Promise<string | undefined> {
-  let transferFeed: TransferFeed[] = [];
-  const feedStore = (await getSiteFeeds()) as SiteFeed[];
-  feedStore.forEach((feed) => transferFeed.push(refactorFeedToExport(feed)));
-
+  const feed = (await getSiteFeeds()).map((feed) => refactorFeedToExport(feed));
   const transferData: TransferData = {
     db: databaseVersion,
-    feed: transferFeed,
+    feed,
   };
 
   download(
@@ -71,39 +68,38 @@ export async function importFeedFromFile(jsonFromFile: string) {
   }
 }
 
-
 function refactorExportToFeed(feed: TransferFeed): SiteFeed {
-  const url = feed.domain + feed.url;
+  const { domain } = feed;
+  const url = domain + feed.url;
 
-  const visited =
-    feed.visited?.reduce<Record<string, boolean>>((acc, path) => {
-      acc[feed.domain + path] = true;
-      return acc;
-    }, {}) || {};
-  return { url: url, visited: visited };
+  const visited = (feed.visited ?? []).reduce((acc, path) => {
+    return { ...acc, [domain + path]: true };
+  }, {});
+
+  return { url, visited, favorite: feed.favorite ?? false };
 }
 
 function refactorFeedToExport(feed: SiteFeed): TransferFeed {
+  const { url, favorite } = feed;
+
   let domain: string = "";
   let urlPath: string = "";
-  let visited: string[] = [];
 
-  // regex pattern to extract domain extensions as "com", "md", "org"
+  // // regex pattern to extract domain extensions as "com", "md", "org"
   const pattern = /(?<=\.).*?(?=\/)/;
-
-  const domainExtension = pattern.exec(feed.url);
+  const domainExtension = pattern.exec(url)?.[0];
 
   if (domainExtension) {
-    var splittedUrl = feed.url.split(domainExtension[0] + "/");
-    domain = splittedUrl[0] + domainExtension[0] + "/";
-    urlPath = splittedUrl[1];
+    const [feedDomain, path] = url.split(`${domainExtension}/`);
+    domain = `${feedDomain}${domainExtension}/`;
+    urlPath = path;
   } else {
-    domain = feed.url + "/";
+    domain = `${url}/`;
   }
 
-  for (let link in feed.visited) {
-    visited.push(link.replace(domain, ""));
-  }
+  const visited: string[] = Object.keys(feed.visited ?? {}).map((path) =>
+    path.replace(domain, "")
+  );
 
-  return { domain: domain, url: urlPath, visited: visited };
+  return { domain, url: urlPath, visited, favorite };
 }
