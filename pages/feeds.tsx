@@ -1,32 +1,43 @@
-import { useEffect, useState } from "react";
-import RSSParser from "rss-parser";
+import { useCallback, useRef, useState } from "react";
 import { ExternalLink, Footer, Header, HeadMeta } from "../components";
 import JSONFeeds from "../data/feeds.json";
 import { insertSiteFeed } from "../services/indexeddbService";
+import Style from "../styles/feeds.module.css";
 
-const rssParser = new RSSParser();
+interface JSONFeed {
+  siteUrl: string;
+  feedUrl: string;
+  description: string;
+}
 
 interface Props {
-  list: { siteUrl: string; feedUrl: string; description: string }[];
+  list: JSONFeed[];
+}
+
+interface DialogElement extends HTMLElement {
+  showModal: () => void;
+  close: () => void;
+  open: boolean;
 }
 
 export default function Feeds({ list }: Props) {
-  const [added, setAdded] = useState("");
+  const dialogRef = useRef<DialogElement>(null);
+  const [addedFeed, setAddedFeed] = useState<string>("");
 
-  useEffect(() => {
-    if (!added) {
-      return;
-    }
+  const onAddButtonClick = useCallback(
+    async (url: string) => {
+      await insertSiteFeed({ url, visited: {} });
+      setAddedFeed(url);
 
-    setTimeout(() => {
-      setAdded("");
-    }, 1500);
-  }, [added]);
+      if (dialogRef.current) {
+        const dialog = dialogRef.current;
 
-  async function onAdd(feedUrl: string) {
-    await insertSiteFeed({ url: feedUrl, visited: {} });
-    setAdded(feedUrl);
-  }
+        dialog.showModal();
+        setTimeout(() => dialog.close(), 2000);
+      }
+    },
+    [dialogRef]
+  );
 
   return (
     <>
@@ -35,15 +46,18 @@ export default function Feeds({ list }: Props) {
       <main>
         <h2>Feeds suggested by users</h2>
         <ExternalLink
-          link="https://github.com/cofeed-19/cofeed-19.github.io/edit/main/data/feeds.json"
+          link="https://github.com/cofeed-19/cofeed-19.github.io/edit/master/data/feeds.json"
           title="Suggest a feed"
         />
-        <dialog open={!!added}>{added} added to your feeds</dialog>
-        <ul>
-          {list.map((e) => (
-            <li key={e.feedUrl}>
-              <button onClick={() => onAdd(e.feedUrl)}>Add</button>
-              <ExternalLink link={e.siteUrl} /> - {e.description}
+        <dialog ref={dialogRef}>{addedFeed} was added to your feeds</dialog>
+        <ul className={Style.feedsList}>
+          {list.map(({ feedUrl, siteUrl, description }) => (
+            <li key={feedUrl}>
+              <button onClick={() => onAddButtonClick(feedUrl)}>➕</button>
+              <div>
+                <ExternalLink link={siteUrl} />
+                <p>{description}</p>
+              </div>
             </li>
           ))}
         </ul>
