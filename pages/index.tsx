@@ -19,7 +19,7 @@ import {
   getSiteFeeds,
   initDatabase,
   insertSiteFeed,
-  updateSiteFeedFavorite,
+  updateSiteFeed,
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
 
@@ -116,7 +116,7 @@ export default function Home() {
   }
 
   const onFavoriteClick = useCallback(async (feed: Feed) => {
-    await updateSiteFeedFavorite(feed.url, !feed.favorite);
+    await updateSiteFeed({ ...feed, favorite: !feed.favorite });
     updateFeeds();
   }, []);
 
