@@ -83,9 +83,9 @@ export default function Home() {
         ...s,
         loaded: s.loaded + 1,
       }));
-      setHighestPriority(highestPriority);
     }
 
+    setHighestPriority(highestPriority);
     setFeedArchive(storage as FeedArchiveType);
   }
 
@@ -191,7 +191,7 @@ export default function Home() {
 
       updateFeeds();
     },
-    [highestPriority, sortedArchive]
+    [highestPriority, sortedArchive, feedArchive]
   );
 
   useEffect(() => {
