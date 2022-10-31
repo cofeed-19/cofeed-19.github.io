@@ -72,11 +72,16 @@ h3 {
 }
 
 h3 button {
-  display: none;
+  will-change: opacity;
+
+  opacity: 0;
+  border-radius: 50%;
+
+  transition: opacity 300ms ease-in-out;
 }
 
 h3:hover button {
-  display: inline-block;
+  opacity: 1;
 }
 
 button {
