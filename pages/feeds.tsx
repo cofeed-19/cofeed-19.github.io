@@ -44,7 +44,7 @@ export default function Feeds({ list }: Props) {
       <main>
         <h2>Feeds suggested by users</h2>
         <ExternalLink
-          link="https://github.com/cofeed-19/cofeed-19.github.io/edit/main/data/feeds.json"
+          link="https://github.com/cofeed-19/cofeed-19.github.io/edit/master/data/feeds.json"
           title="Suggest a feed"
         />
         <dialog ref={dialogRef}>{addedFeed} was added to your feeds</dialog>
