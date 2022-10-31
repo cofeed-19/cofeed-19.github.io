@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import {
@@ -141,12 +142,12 @@ export default function Home() {
                 {feed.link ? (
                   <>
                     {feed.favicon && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         alt={feed.title}
                         src={feed.favicon}
                         width={16}
                         height={16}
+                        unoptimized
                       />
                     )}
                     <ExternalLink link={feed.link} title={feed.title} />
