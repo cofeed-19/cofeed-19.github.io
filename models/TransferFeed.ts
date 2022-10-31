@@ -1,11 +1,11 @@
+import { SiteFeed } from "./SiteFeed";
+
 export interface TransferData {
   db: number;
   feed?: TransferFeed[];
 }
 
-export interface TransferFeed {
+export interface TransferFeed extends Omit<SiteFeed, "visited"> {
   domain: string;
-  url: string;
   visited?: string[];
-  favorite?: boolean;
 }

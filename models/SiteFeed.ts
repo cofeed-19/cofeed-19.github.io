@@ -7,6 +7,6 @@ export interface Feed extends RSSParser.Output<RSSParser.Item>, SiteFeed {
 
 export interface SiteFeed {
   url: string;
-  favorite?: boolean;
+  priority?: number;
   visited?: Record<string, boolean>;
 }
