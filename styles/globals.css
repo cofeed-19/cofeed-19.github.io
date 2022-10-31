@@ -73,10 +73,7 @@ h3 {
 
 h3 button {
   will-change: opacity;
-
   opacity: 0;
-  border-radius: 50%;
-
   transition: opacity 300ms ease-in-out;
 }
 
