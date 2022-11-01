@@ -69,6 +69,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.5em;
+  position: relative;
 }
 
 h3 button {
@@ -123,20 +124,19 @@ main li span {
 }
 
 .favorite-pin {
-  will-change: opacity, width;
+  will-change: opacity;
   opacity: 0;
-  width: 0;
   text-decoration: none;
 
-  transition: opacity 300ms ease-in-out, width 300ms ease-in-out;
+  position: absolute;
+  left: -1.5rem;
+
+  transition: opacity 300ms ease-in-out;
 }
 
-h3:hover .favorite-pin {
-  opacity: 0.5;
-  width: 16px;
-
-  position: relative;
-  top: 3px;
+.favorite-pin.pinned {
+  opacity: 1;
+  transform: rotate(-45deg);
 }
 
 h3:hover .favorite-pin:hover {
@@ -144,6 +144,6 @@ h3:hover .favorite-pin:hover {
   cursor: pointer;
 }
 
-.favorite-pin.pinned {
-  transform: rotate(-45deg);
+h3:hover .favorite-pin {
+  opacity: 0.5;
 }
