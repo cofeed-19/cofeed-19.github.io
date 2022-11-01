@@ -69,6 +69,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.5em;
+  position: relative;
 }
 
 h3 button {
@@ -120,4 +121,29 @@ main li {
 
 main li span {
   flex: 0 0 7rem; 
+}
+
+.favorite-pin {
+  will-change: opacity;
+  opacity: 0;
+  text-decoration: none;
+
+  position: absolute;
+  left: -1.5rem;
+
+  transition: opacity 300ms ease-in-out;
+}
+
+.favorite-pin.pinned {
+  opacity: 1;
+  transform: rotate(-45deg);
+}
+
+h3:hover .favorite-pin:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+h3:hover .favorite-pin {
+  opacity: 0.5;
 }

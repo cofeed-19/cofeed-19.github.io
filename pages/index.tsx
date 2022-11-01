@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
@@ -11,6 +11,7 @@ import {
   ProgressLoader,
   VisitedItemsList,
 } from "../components";
+import { FavoritePin } from "../components/FavoritePin";
 import { Feed, SiteFeed } from "../models";
 import {
   deleteSiteFeed,
@@ -18,6 +19,7 @@ import {
   getSiteFeeds,
   initDatabase,
   insertSiteFeed,
+  updateSiteFeed,
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
 
@@ -44,6 +46,7 @@ async function allStorage(): Promise<Record<string, SiteFeed>> {
 type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
+  const [highestPriority, setHighestPriority] = useState<number>(0);
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
     total: number;
@@ -51,6 +54,7 @@ export default function Home() {
   }>({ total: 0, loaded: 0 });
 
   async function updateFeeds() {
+    let highestPriority = 0;
     const storage = await allStorage();
     const feedsCount = Object.keys(storage).length;
 
@@ -64,7 +68,13 @@ export default function Home() {
           url: feedUrl,
           favicon: feedFavicon,
           visited: storage[feedUrl].visited || {},
+          priority: storage[feedUrl].priority,
         };
+
+        if (feedToUpdate.priority && feedToUpdate.priority > highestPriority) {
+          highestPriority = feedToUpdate.priority;
+        }
+
         storage[feedUrl] = feedToUpdate;
       } catch (_e) {
         console.error(`Could not update feed for ${feedUrl}`);
@@ -74,6 +84,8 @@ export default function Home() {
         loaded: s.loaded + 1,
       }));
     }
+
+    setHighestPriority(highestPriority);
     setFeedArchive(storage as FeedArchiveType);
   }
 
@@ -111,6 +123,77 @@ export default function Home() {
     }
   }
 
+  const sortedArchive = useMemo(() => {
+    const keys = Object.keys(feedArchive);
+
+    keys.sort((a, b) => {
+      const feedA = feedArchive[a];
+      const feedB = feedArchive[b];
+
+      const feedAPriority = feedA.priority ?? 0;
+      const feedBPriority = feedB.priority ?? 0;
+
+      if (feedAPriority > feedBPriority) {
+        return -1;
+      }
+      if (feedAPriority < feedBPriority) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    return keys;
+  }, [feedArchive]);
+
+  const onFavoriteClick = useCallback(
+    async (feed: Feed) => {
+      const resortedArchive = sortedArchive
+        .map((k) => feedArchive[k])
+        .map((f) => {
+          if (f.url === feed.url) {
+            return {
+              ...f,
+              priority: feed.priority ? undefined : highestPriority + 1,
+            };
+          }
+          return f;
+        });
+
+      resortedArchive.sort((a, b) => {
+        if (a.priority && b.priority) {
+          return a.priority - b.priority;
+        }
+        if (a.priority) {
+          return -1;
+        }
+        if (b.priority) {
+          return 1;
+        }
+        return 0;
+      });
+
+      const updatedArchive = resortedArchive.map((feed, index) => {
+        if (feed.priority) {
+          return {
+            ...feed,
+            priority: index + 1,
+          };
+        }
+        return feed;
+      });
+
+      for (const feed of updatedArchive) {
+        await updateSiteFeed(feed);
+      }
+
+      setHighestPriority(updatedArchive.length);
+
+      updateFeeds();
+    },
+    [highestPriority, sortedArchive, feedArchive]
+  );
+
   useEffect(() => {
     updateFeeds();
   }, []);
@@ -128,7 +211,7 @@ export default function Home() {
       <main>
         <NewFeedForm onSubmit={onSubmit} />
         <ProgressLoader loadedFeeds={loadedFeeds} />
-        {Object.keys(feedArchive).map((feedUrl) => {
+        {sortedArchive.map((feedUrl) => {
           const feed = feedArchive[feedUrl];
           const newItems = feed.items.filter(
             (item) => item.link && (!feed.visited || !feed.visited[item.link])
@@ -139,6 +222,7 @@ export default function Home() {
           return (
             <section key={feedUrl}>
               <h3>
+                <FavoritePin feed={feed} onClick={onFavoriteClick} />
                 {feed.link ? (
                   <>
                     {feed.favicon && (
