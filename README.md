@@ -1,4 +1,6 @@
 # [cofeed-19.github.io](https://cofeed-19.github.io) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcofeed-19%2Fcofeed-19.github.io&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+[![gh-pages](https://github.com/cofeed-19/cofeed-19.github.io/actions/workflows/gh-pages.yml/badge.svg)](https://cofeed-19.github.io/)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
