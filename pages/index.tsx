@@ -60,6 +60,10 @@ export default function Home() {
 
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
     for (const feedUrl of Object.keys(storage)) {
+      if (feedUrl in feedArchive) {
+        storage[feedUrl] = feedArchive[feedUrl];
+        continue;
+      }
       try {
         const feed = await rssParser.parseURL(feedUrl);
         const feedFavicon = await getFavicon(feed.link);
