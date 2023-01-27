@@ -10,27 +10,22 @@ type Props = {
   visitedItems: RSSParser.Item[];
 };
 
+import Styles from "../styles/VisitedItemsList.module.css";
+
 export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
-  return (
-    <>
-      {Object.keys(feed.visited || {}).length ? (
-        <details>
-          <summary>Visited from {feed?.title || feedUrl}</summary>
-          <ul>
-            {visitedItems?.map((item) =>
-              item.link ? (
-                <li key={item.link}>
-                  <DateComponent date={item.pubDate} />
-                  <ExternalLink
-                    title={item.title || item.link}
-                    link={item.link}
-                  />
-                </li>
-              ) : null
-            )}
-          </ul>
-        </details>
-      ) : null}
-    </>
-  );
+  return Object.keys(feed.visited || {}).length ? (
+    <details className={Styles.container}>
+      <summary>Visited from {feed?.title || feedUrl}</summary>
+      <ul>
+        {visitedItems?.map((item) =>
+          item.link ? (
+            <li key={item.link}>
+              <DateComponent date={item.pubDate} />
+              <ExternalLink title={item.title || item.link} link={item.link} />
+            </li>
+          ) : null
+        )}
+      </ul>
+    </details>
+  ) : null;
 }

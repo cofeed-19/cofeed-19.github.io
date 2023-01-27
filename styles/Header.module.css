@@ -1,0 +1,49 @@
+.header {
+  max-width: 60ch;
+
+  h1 {
+    cursor: pointer;
+    user-select: none;
+
+    span {
+      color: #ee802f;
+    }
+  }
+
+  iframe {
+    width: 80px;
+    height: 20px;
+
+    border: 0;
+    overflow: hidden;
+  }
+}
+
+.iframeContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details {
+  margin: 1em;
+
+  & > div {
+    padding-left: 1em;
+  }
+
+  & > summary {
+    cursor: pointer;
+    margin-bottom: 1em;
+  }
+
+  & a {
+    color: var(--link-visited-color);
+  }
+}
+
+.usage {
+  & li:first-child {
+    color: red;
+  }
+}

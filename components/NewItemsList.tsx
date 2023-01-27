@@ -1,9 +1,10 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useCallback } from "react";
 import RSSParser from "rss-parser";
 import { DateComponent } from ".";
 import { Feed } from "../models";
 import { getSiteFeed, updateSiteFeed } from "../services/indexeddbService";
 import { ExternalLink } from "./ExternalLink";
+import Styles from "../styles/NewItemsList.module.css";
 
 type Props = {
   feed: Feed;
@@ -12,43 +13,40 @@ type Props = {
   updateFeeds(): Promise<void>;
 };
 
+const onLinkClick = async (feedUrl?: string, itemLink?: string) => {
+  if (!feedUrl || !itemLink) {
+    return;
+  }
+
+  const siteFeed = await getSiteFeed(feedUrl);
+  if (siteFeed.visited) {
+    siteFeed.visited[itemLink] = true;
+  }
+
+  await updateSiteFeed(siteFeed);
+};
+
+const markAllAsVisited = async (feedUrl: string, itemLinks: string[]) => {
+  if (!feedUrl || !itemLinks.length) {
+    return;
+  }
+
+  const siteFeed = await getSiteFeed(feedUrl);
+  if (siteFeed.visited) {
+    for (const itemLink of itemLinks) {
+      siteFeed.visited[itemLink] = true;
+    }
+  }
+
+  await updateSiteFeed(siteFeed);
+};
+
 export function NewItemsList(props: Props) {
   const { feed, feedUrl, newItems, updateFeeds } = props;
 
-  async function onLinkClick(
-    e: MouseEvent<HTMLAnchorElement> | undefined,
-    feedUrl: string,
-    itemLink?: string
-  ) {
-    if (!feedUrl || !itemLink) {
-      return;
-    }
-    if (e) {
-      e.currentTarget.style.color = "var(--link-visited-color)";
-    }
-    const siteFeed = await getSiteFeed(feedUrl);
-    if (siteFeed.visited) {
-      siteFeed.visited[itemLink] = true;
-    }
-    await updateSiteFeed(siteFeed);
-  }
-
-  async function markAllAsVisited(feedUrl: string, itemLinks: string[]) {
-    if (!feedUrl || !itemLinks.length) {
-      return;
-    }
-    const siteFeed = await getSiteFeed(feedUrl);
-    if (siteFeed.visited) {
-      for (const itemLink of itemLinks) {
-        siteFeed.visited[itemLink] = true;
-      }
-    }
-    await updateSiteFeed(siteFeed);
-  }
-
   return (
     <>
-      <ul>
+      <ul className={Styles.list}>
         {newItems?.map((item) =>
           item.link ? (
             <li key={item.link}>
@@ -56,7 +54,7 @@ export function NewItemsList(props: Props) {
               <ExternalLink
                 title={item.title || item.link}
                 link={item.link}
-                onClick={(e) => onLinkClick(e, feedUrl, item.link)}
+                onClick={() => onLinkClick(feedUrl, item.link)}
               />
             </li>
           ) : null

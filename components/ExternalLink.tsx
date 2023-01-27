@@ -1,4 +1,5 @@
 import { MouseEvent } from "react";
+import Styles from "../styles/ExternalLink.module.css";
 
 export interface Props {
   link: string;
@@ -8,8 +9,13 @@ export interface Props {
 
 export function ExternalLink({ title, link, onClick }: Props) {
   return (
-    // eslint-disable-next-line react/jsx-no-target-blank
-    <a href={link} rel="noopener" target="_blank" onClick={onClick}>
+    <a
+      className={Styles.link}
+      href={link}
+      rel="noopener noreferrer"
+      target="_blank"
+      onClick={onClick}
+    >
       {title || link}
     </a>
   );

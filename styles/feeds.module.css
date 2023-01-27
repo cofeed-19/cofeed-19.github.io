@@ -1,3 +1,7 @@
+.container {
+  max-width: 60ch;
+}
+
 .feedsList {
   display: flex;
   flex-direction: column;
@@ -34,4 +38,9 @@
   cursor: pointer;
 
   opacity: 1;
+}
+
+.dialog {
+  background-color: var(--body-bg-color);
+  color: var(--body-color);
 }

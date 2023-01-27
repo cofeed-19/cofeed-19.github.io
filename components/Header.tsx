@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { ExportImportForm } from "./ExportImportForm";
 import { setDarkMode, setLightMode } from "../utils";
 import { ExternalLink } from "./ExternalLink";
+import Styles from "../styles/Header.module.css";
 
 export function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -32,27 +33,23 @@ export function Header() {
   }, []);
 
   return (
-    <header>
+    <header className={Styles.header}>
       <Link href="/">
         <h1>
           <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
         </h1>
       </Link>
-      <p>
+      <div className={Styles.iframeContainer}>
         No backend! All your feeds are stored in this browser!
         <iframe
           src="https://ghbtns.com/github-btn.html?user=cofeed-19&repo=cofeed-19.github.io&type=star&count=true"
-          frameBorder="0"
-          scrolling="0"
-          width="110"
-          height="20"
           title="GitHub"
-        ></iframe>
-      </p>
-      <details>
+        />
+      </div>
+      <details className={Styles.details}>
         <summary>Usage</summary>
-        <ul>
-          <li style={{ color: "red" }}>
+        <ul className={Styles.usage}>
+          <li>
             Because we do cross-origin requests some web feeds are blocked by
             CORS policy😢. But you can install{" "}
             <a href="https://mybrowseraddon.com/access-control-allow-origin.html">
@@ -85,7 +82,7 @@ export function Header() {
             </label>
           </li>
         </ul>
-        <details>
+        <details className={Styles.details}>
           <summary>Why to use?</summary>
           <div>
             <ul>
@@ -97,7 +94,7 @@ export function Header() {
             </ul>
           </div>
         </details>
-        <details>
+        <details className={Styles.details}>
           <summary>Why NOT to use?</summary>
           <div>
             <ul>

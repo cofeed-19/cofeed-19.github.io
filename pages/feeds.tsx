@@ -14,14 +14,8 @@ interface Props {
   list: JSONFeed[];
 }
 
-interface DialogElement extends HTMLElement {
-  showModal: () => void;
-  close: () => void;
-  open: boolean;
-}
-
 export default function Feeds({ list }: Props) {
-  const dialogRef = useRef<DialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [addedFeed, setAddedFeed] = useState<string>("");
 
   const onAddButtonClick = useCallback(
@@ -43,13 +37,15 @@ export default function Feeds({ list }: Props) {
     <>
       <HeadMeta />
       <Header />
-      <main>
+      <main className={Style.container}>
         <h2>Feeds suggested by users</h2>
         <ExternalLink
           link="https://github.com/cofeed-19/cofeed-19.github.io/edit/master/data/feeds.json"
           title="Suggest a feed"
         />
-        <dialog ref={dialogRef}>{addedFeed} was added to your feeds</dialog>
+        <dialog className={Style.dialog} ref={dialogRef}>
+          {addedFeed} was added to your feeds
+        </dialog>
         <ul className={Style.feedsList}>
           {list.map(({ feedUrl, siteUrl, description }) => (
             <li key={feedUrl}>

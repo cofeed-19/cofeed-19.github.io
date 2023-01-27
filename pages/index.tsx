@@ -22,6 +22,7 @@ import {
   updateSiteFeed,
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
+import Styles from "../styles/index.module.css";
 
 declare global {
   interface Window {
@@ -212,7 +213,7 @@ export default function Home() {
     <>
       <HeadMeta />
       <Header />
-      <main>
+      <main className={Styles.container}>
         <NewFeedForm onSubmit={onSubmit} />
         <ProgressLoader loadedFeeds={loadedFeeds} />
         {sortedArchive.map((feedUrl) => {
@@ -224,7 +225,7 @@ export default function Home() {
             (item) => item.link && feed.visited && feed.visited[item.link]
           );
           return (
-            <section key={feedUrl}>
+            <section key={feedUrl} className={Styles.feed}>
               <h3>
                 <FavoritePin feed={feed} onClick={onFavoriteClick} />
                 {feed.link ? (
