@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Feed } from "../models";
+import Styles from "../styles/FavoritePin.module.css";
 
 interface FavoritePinProps {
   feed: Feed;
@@ -8,10 +9,10 @@ interface FavoritePinProps {
 
 export function FavoritePin({ feed, onClick }: FavoritePinProps) {
   const className = useMemo(() => {
-    const baseClass = "favorite-pin";
+    const baseClass = Styles.pin;
 
     if (feed.priority) {
-      return `${baseClass} pinned`;
+      return `${baseClass} ${Styles.pinned}`;
     }
 
     return baseClass;

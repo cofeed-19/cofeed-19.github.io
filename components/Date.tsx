@@ -1,6 +1,8 @@
+import Styles from "../styles/Date.module.css";
+
 export function DateComponent({ date }: { date?: string }) {
   return (
-    <span>
+    <span className={Styles.container}>
       <i>
         {date
           ? new Date(date).toLocaleDateString(undefined, {

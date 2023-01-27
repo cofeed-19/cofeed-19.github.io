@@ -1,0 +1,26 @@
+.pin {
+  will-change: opacity;
+  opacity: 0;
+  text-decoration: none;
+
+  position: absolute;
+  left: -2rem;
+
+  transition: opacity 0.3s ease-in-out;
+}
+
+.pinned {
+  opacity: 1;
+  transform: rotate(-45deg);
+}
+
+h3:hover:has(.pin) {
+  .pin {
+    opacity: 0.5;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+    }
+  }
+}

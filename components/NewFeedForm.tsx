@@ -1,4 +1,5 @@
 import { useState, ChangeEvent, FormEvent } from "react";
+import Styles from "../styles/NewFeedForm.module.css";
 
 type Props = {
   onSubmit: (newFeed: string) => void;
@@ -17,7 +18,7 @@ export function NewFeedForm({ onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={onFormSubmit}>
+    <form className={Styles.form} onSubmit={onFormSubmit}>
       <input
         placeholder="https://strdr4605.com/feed/rss.xml,http://example.com/atom.xml"
         type="text"
