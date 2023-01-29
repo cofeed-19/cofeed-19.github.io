@@ -1,0 +1,32 @@
+name: PR check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pr_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          node-version: '16.x'
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          node-version: '16.x'
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: yarn
+      - run: yarn build
+      - run: yarn export
