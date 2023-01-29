@@ -3,10 +3,12 @@
   --body-color: #000;
   --link-color: #00e;
   --link-visited-color: #551a8b;
+  --rss-orange: #ee802f;
   /* --body-bg-color: #1A202C;
   --body-color: #FFF;
   --link-color: #FFC400;
-  --link-visited-color: #C27DC0; */
+  --link-visited-color: #C27DC0;
+  --rss-orange: #ee802f; */
 }
 
 body {

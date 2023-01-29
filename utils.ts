@@ -5,6 +5,7 @@ export function setDarkMode() {
   document.documentElement.style.setProperty("--body-color", "#FFF");
   document.documentElement.style.setProperty("--link-color", "#FFC400");
   document.documentElement.style.setProperty("--link-visited-color", "#C27DC0");
+  document.documentElement.style.setProperty("--rss-orange", "#ee802f");
 }
 
 export function setLightMode() {
@@ -12,6 +13,7 @@ export function setLightMode() {
   document.documentElement.style.setProperty("--body-color", "#000");
   document.documentElement.style.setProperty("--link-color", "#00E");
   document.documentElement.style.setProperty("--link-visited-color", "#551A8B");
+  document.documentElement.style.setProperty("--rss-orange", "#ee802f");
 }
 
 export async function getFavicon(link?: string): Promise<string | undefined> {
