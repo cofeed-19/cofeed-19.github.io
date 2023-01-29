@@ -1,16 +1,15 @@
 import React from "react";
 import RSSParser from "rss-parser";
-import { DateComponent } from ".";
-import { Feed } from "../models";
-import { ExternalLink } from "./ExternalLink";
+import { DateComponent } from "../Date/Date";
+import { Feed } from "../../models";
+import { ExternalLink } from "../ExternalLink/ExternalLink";
+import Styles from "./VisitedItemsList.module.css";
 
 type Props = {
   feed: Feed;
   feedUrl: string;
   visitedItems: RSSParser.Item[];
 };
-
-import Styles from "../styles/VisitedItemsList.module.css";
 
 export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
   return Object.keys(feed.visited || {}).length ? (

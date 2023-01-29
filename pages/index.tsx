@@ -11,7 +11,7 @@ import {
   ProgressLoader,
   VisitedItemsList,
 } from "../components";
-import { FavoritePin } from "../components/FavoritePin";
+import { FavoritePin } from "../components/FavoritePin/FavoritePin";
 import { Feed, SiteFeed } from "../models";
 import {
   deleteSiteFeed,
