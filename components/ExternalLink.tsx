@@ -12,7 +12,7 @@ export function ExternalLink({ title, link, onClick }: Props) {
     <a
       className={Styles.link}
       href={link}
-      rel="noopener noreferrer"
+      rel="noopener"
       target="_blank"
       onClick={onClick}
     >
