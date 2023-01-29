@@ -14,14 +14,8 @@ interface Props {
   list: JSONFeed[];
 }
 
-interface DialogElement extends HTMLElement {
-  showModal: () => void;
-  close: () => void;
-  open: boolean;
-}
-
 export default function Feeds({ list }: Props) {
-  const dialogRef = useRef<DialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [addedFeed, setAddedFeed] = useState<string>("");
 
   const onAddButtonClick = useCallback(

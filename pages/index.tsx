@@ -196,11 +196,13 @@ export default function Home() {
 
       updateFeeds();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [highestPriority, sortedArchive, feedArchive]
   );
 
   useEffect(() => {
     updateFeeds();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -232,7 +234,7 @@ export default function Home() {
                   <>
                     {feed.favicon && (
                       <Image
-                        alt={feed.title}
+                        alt={feed.title || feedUrl}
                         src={feed.favicon}
                         width={16}
                         height={16}

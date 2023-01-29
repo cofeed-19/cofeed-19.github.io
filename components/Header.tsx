@@ -34,6 +34,7 @@ export function Header() {
 
   return (
     <header className={Styles.header}>
+      {/* eslint-disable-next-line @next/next/link-passhref */}
       <Link href="/">
         <h1>
           <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
