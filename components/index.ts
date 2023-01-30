@@ -8,3 +8,4 @@ export * from "./ProgressLoader/ProgressLoader";
 export * from "./NewItemsList/NewItemsList";
 export * from "./VisitedItemsList/VisitedItemsList";
 export * from "./Date/Date";
+export * from "./FavoritePin/FavoritePin";

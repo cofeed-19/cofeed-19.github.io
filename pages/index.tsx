@@ -10,8 +10,8 @@ import {
   NewItemsList,
   ProgressLoader,
   VisitedItemsList,
+  FavoritePin,
 } from "../components";
-import { FavoritePin } from "../components/FavoritePin/FavoritePin";
 import { Feed, SiteFeed } from "../models";
 import {
   deleteSiteFeed,
