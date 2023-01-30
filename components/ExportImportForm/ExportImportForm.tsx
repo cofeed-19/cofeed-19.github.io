@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
-import { exportFeed, importFeedFromFile } from "../services/exportService";
-import Styles from "../styles/ExportImportForm.module.css";
+import { exportFeed, importFeedFromFile } from "../../services/exportService";
+import Styles from "./ExportImportForm.module.css";
 
 async function onExportClick() {
   exportFeed();

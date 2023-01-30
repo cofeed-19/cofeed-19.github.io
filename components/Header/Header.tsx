@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ExportImportForm } from "./ExportImportForm";
-import { setDarkMode, setLightMode } from "../utils";
-import { ExternalLink } from "./ExternalLink";
-import Styles from "../styles/Header.module.css";
+import { ExportImportForm } from "../ExportImportForm/ExportImportForm";
+import { setDarkMode, setLightMode } from "../../utils";
+import { ExternalLink } from "../ExternalLink/ExternalLink";
+import Styles from "./Header.module.css";
 
 export function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);

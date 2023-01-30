@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Feed } from "../models";
-import Styles from "../styles/FavoritePin.module.css";
+import { Feed } from "../../models";
+import Styles from "./FavoritePin.module.css";
 
 interface FavoritePinProps {
   feed: Feed;

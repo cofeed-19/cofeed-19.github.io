@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import Styles from "../styles/ExternalLink.module.css";
+import Styles from "./ExternalLink.module.css";
 
 export interface Props {
   link: string;

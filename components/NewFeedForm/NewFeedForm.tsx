@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, FormEvent } from "react";
-import Styles from "../styles/NewFeedForm.module.css";
+import Styles from "./NewFeedForm.module.css";
 
 type Props = {
   onSubmit: (newFeed: string) => void;

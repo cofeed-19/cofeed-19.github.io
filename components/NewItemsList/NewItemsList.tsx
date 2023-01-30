@@ -1,10 +1,10 @@
-import React, { MouseEvent, useCallback } from "react";
+import React from "react";
 import RSSParser from "rss-parser";
-import { DateComponent } from ".";
-import { Feed } from "../models";
-import { getSiteFeed, updateSiteFeed } from "../services/indexeddbService";
-import { ExternalLink } from "./ExternalLink";
-import Styles from "../styles/NewItemsList.module.css";
+import { DateComponent } from "../Date/Date";
+import { Feed } from "../../models";
+import { getSiteFeed, updateSiteFeed } from "../../services/indexeddbService";
+import { ExternalLink } from "../ExternalLink/ExternalLink";
+import Styles from "./NewItemsList.module.css";
 
 type Props = {
   feed: Feed;

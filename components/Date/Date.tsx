@@ -1,4 +1,4 @@
-import Styles from "../styles/Date.module.css";
+import Styles from "./Date.module.css";
 
 export function DateComponent({ date }: { date?: string }) {
   return (

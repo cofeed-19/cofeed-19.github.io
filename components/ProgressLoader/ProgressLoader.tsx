@@ -1,4 +1,4 @@
-import Styles from "../styles/ProgressLoader.module.css";
+import Styles from "./ProgressLoader.module.css";
 
 type Props = {
   loadedFeeds: { loaded: number; total: number };
