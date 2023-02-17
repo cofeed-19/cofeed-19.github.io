@@ -62,7 +62,10 @@ export default function Home() {
     setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {
-        storage[feedUrl] = feedArchive[feedUrl];
+        storage[feedUrl] = {
+          ...feedArchive[feedUrl],
+          visited: storage[feedUrl].visited,
+        };
         continue;
       }
       try {
@@ -91,7 +94,7 @@ export default function Home() {
     }
 
     setHighestPriority(highestPriority);
-    setFeedArchive(storage as FeedArchiveType);
+    setFeedArchive(() => storage as FeedArchiveType);
   }
 
   async function onSubmit(newFeed: string): Promise<void> {

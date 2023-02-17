@@ -67,8 +67,7 @@ export function NewItemsList(props: Props) {
               markAllAsVisited(
                 feedUrl,
                 newItems.map((item) => item.link || "").filter(Boolean)
-              );
-              updateFeeds();
+              ).then(() => updateFeeds());
             }
           }}
         >
