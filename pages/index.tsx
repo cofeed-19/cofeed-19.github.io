@@ -54,7 +54,7 @@ export default function Home() {
     loaded: number;
   }>({ total: 0, loaded: 0 });
 
-  async function updateFeeds() {
+  const updateFeeds = useCallback(async () => {
     let highestPriority = 0;
     const storage = await allStorage();
     const feedsCount = Object.keys(storage).length;
@@ -94,8 +94,8 @@ export default function Home() {
     }
 
     setHighestPriority(highestPriority);
-    setFeedArchive(() => storage as FeedArchiveType);
-  }
+    setFeedArchive(storage as FeedArchiveType);
+  }, [feedArchive]);
 
   async function onSubmit(newFeed: string): Promise<void> {
     const newFeeds = newFeed.trim().split(",").filter(Boolean);
