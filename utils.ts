@@ -17,11 +17,15 @@ export function setLightMode() {
 }
 
 export async function getFavicon(link?: string): Promise<string | undefined> {
-  const feedFavicon =
-    (link && (await favecon.getBestIcons(link))[0]?.href) ??
-    (await fetch(`${link}/favicon.ico`, { method: "HEAD" }).then((res) =>
-      res.ok ? `${link}/favicon.ico` : undefined
-    ));
+  try {
+    const feedFavicon =
+      (link && (await favecon.getBestIcons(link))[0]?.href) ??
+      (await fetch(`${link}/favicon.ico`, { method: "HEAD" }).then((res) =>
+        res.ok ? `${link}/favicon.ico` : undefined
+      ));
 
-  return feedFavicon;
+    return feedFavicon;
+  } catch (e) {
+    return undefined;
+  }
 }
