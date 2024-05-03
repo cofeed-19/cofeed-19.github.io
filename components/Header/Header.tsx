@@ -41,7 +41,7 @@ export function Header() {
         </h1>
       </Link>
       <div className={Styles.iframeContainer}>
-        No backend! All your feeds are stored in this browser!
+        No back-end! All your feeds are stored in this browser!
         <iframe
           src="https://ghbtns.com/github-btn.html?user=cofeed-19&repo=cofeed-19.github.io&type=star&count=true"
           title="GitHub"
