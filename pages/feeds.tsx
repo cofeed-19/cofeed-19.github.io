@@ -3,6 +3,7 @@ import { ExternalLink, Footer, Header, HeadMeta } from "../components";
 import JSONFeeds from "../data/feeds.json";
 import { insertSiteFeed } from "../services/indexeddbService";
 import Style from "../styles/feeds.module.css";
+import { getFavicon } from "../utils";
 
 interface JSONFeed {
   siteUrl: string;
@@ -20,7 +21,8 @@ export default function Feeds({ list }: Props) {
 
   const onAddButtonClick = useCallback(
     async (url: string) => {
-      await insertSiteFeed({ url, visited: {} });
+      const feedFavicon = await getFavicon(url);
+      await insertSiteFeed({ url, visited: {}, priority: 0 , favicon: feedFavicon, title: "", items: []  });
       setAddedFeed(url);
 
       if (dialogRef.current) {
