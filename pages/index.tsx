@@ -23,6 +23,7 @@ import {
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
 import Styles from "../styles/index.module.css";
+import { getAll } from "../services/indexeddbCRUD";
 
 declare global {
   interface Window {
@@ -35,11 +36,20 @@ const rssParser = new RSSParser();
 async function allStorage(): Promise<Record<string, SiteFeed>> {
   await initDatabase();
   const siteFeeds = await getSiteFeeds();
-  const archive: Record<string, SiteFeed> = {};
+  console.log("siteFeeds", siteFeeds);
+  var archive: Record<string, Feed> = {};
 
-  for (const siteFeed of siteFeeds) {
+  for (var siteFeed of siteFeeds) {
     archive[siteFeed.url] = siteFeed;
   }
+
+  //console.log("archive", archive);
+  //console.log(archive["https://www.yegor256.com/rss.xml"].priority);
+  for (const feedUrl of Object.keys(archive)) {
+    //console.log(feedUrl, archive[feedUrl].priority);
+  }
+  
+  //console.log("archive", archive);
 
   return archive;
 }
@@ -59,7 +69,13 @@ export default function Home() {
     const storage = await allStorage();
     const feedsCount = Object.keys(storage).length;
 
-    setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
+    console.log("storage", storage);
+    for (const feedUrl of Object.keys(storage)) {
+      console.log(feedUrl, storage[feedUrl].priority);
+    }
+    setFeedArchive(storage as FeedArchiveType);
+
+    setLoadedFeeds((s) => ({ ...s, total: feedsCount, loaded: feedsCount}));
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {
         storage[feedUrl] = {
@@ -87,10 +103,11 @@ export default function Home() {
       } catch (_e) {
         console.error(`Could not update feed for ${feedUrl}`);
       }
-      setLoadedFeeds((s) => ({
+
+      /*setLoadedFeeds((s) => ({
         ...s,
         loaded: s.loaded + 1,
-      }));
+      }));*/
     }
 
     setHighestPriority(highestPriority);
@@ -110,7 +127,8 @@ export default function Home() {
         errors.push(feedUrl);
       }
       if (feed && !(await getSiteFeed(feedUrl))) {
-        await insertSiteFeed({ url: feedUrl, visited: {} });
+        const feedFavicon = await getFavicon(feed.link);
+        await insertSiteFeed({ url: feedUrl, visited: {}, favicon: feedFavicon, priority:0, ...feed});
       }
     }
     if (errors.length) {
@@ -134,12 +152,23 @@ export default function Home() {
   const sortedArchive = useMemo(() => {
     const keys = Object.keys(feedArchive);
 
+    console.log("sortedArchive", feedArchive);
+
+    for (const feedUrl of keys) {
+      console.log(feedUrl, feedArchive[feedUrl].priority);
+    }
+
     keys.sort((a, b) => {
       const feedA = feedArchive[a];
       const feedB = feedArchive[b];
 
+      console.log("feedA", feedA.priority);
       const feedAPriority = feedA.priority ?? 0;
+      console.log("feedAPriority", feedAPriority);
+      console.log("feedB", feedB.priority);
       const feedBPriority = feedB.priority ?? 0;
+      console.log("feedBPriority", feedBPriority);
+
 
       if (feedAPriority > feedBPriority) {
         return -1;
