@@ -1,5 +1,5 @@
 import { getSiteFeeds, insertSiteFeed } from "../services/indexeddbService";
-import { SiteFeed, TransferData, TransferFeed } from "../models";
+import { Feed, SiteFeed, TransferData, TransferFeed } from "../models";
 import { databaseVersion } from "../constants";
 import { compress, decompress } from "./compressService";
 import { siteDomain } from "../constants";
@@ -46,7 +46,7 @@ export async function importFeed(link: string) {
 
   if (transferData.feed) {
     transferData.feed.forEach((feed) =>
-      insertSiteFeed(refactorExportToFeed(feed))
+      insertSiteFeed(refactorExportToFeed(feed) as Feed)
     );
     console.log("Database updated successfully");
     window.location.reload();
@@ -60,7 +60,7 @@ export async function importFeedFromFile(jsonFromFile: string) {
 
   if (transferData.feed) {
     transferData.feed.forEach((feed) =>
-      insertSiteFeed(refactorExportToFeed(feed))
+      insertSiteFeed(refactorExportToFeed(feed) as Feed)
     );
     console.log("Database updated successfully");
     window.location.reload();
@@ -69,22 +69,22 @@ export async function importFeedFromFile(jsonFromFile: string) {
   }
 }
 
-function refactorExportToFeed(feed: TransferFeed): SiteFeed {
+function refactorExportToFeed(feed: TransferFeed): Feed {
   const { domain, priority } = feed;
-  const url = domain + feed.url;
+  const url = feed.url;
 
   const visited =
     feed.visited?.reduce<Record<string, boolean>>((acc, path) => {
       const link = domain + path;
 
-      acc[link] = true;
+      acc[feed.url] = true;
 
       return acc;
     }, {}) || {};
-  return { url, visited, priority };
+  return { url, visited, priority, items: [] };
 }
 
-function refactorFeedToExport(feed: SiteFeed): TransferFeed {
+function refactorFeedToExport(feed: Feed): TransferFeed {
   const { url, priority } = feed;
 
   let domain: string = "";
@@ -106,5 +106,6 @@ function refactorFeedToExport(feed: SiteFeed): TransferFeed {
     path.replace(domain, "")
   );
 
-  return { domain, url: urlPath, visited, priority };
+
+  return { domain, url: feed.url, visited, priority };
 }
