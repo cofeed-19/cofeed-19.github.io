@@ -36,20 +36,11 @@ const rssParser = new RSSParser();
 async function allStorage(): Promise<Record<string, SiteFeed>> {
   await initDatabase();
   const siteFeeds = await getSiteFeeds();
-  console.log("siteFeeds", siteFeeds);
   var archive: Record<string, Feed> = {};
 
   for (var siteFeed of siteFeeds) {
     archive[siteFeed.url] = siteFeed;
   }
-
-  //console.log("archive", archive);
-  //console.log(archive["https://www.yegor256.com/rss.xml"].priority);
-  for (const feedUrl of Object.keys(archive)) {
-    //console.log(feedUrl, archive[feedUrl].priority);
-  }
-  
-  //console.log("archive", archive);
 
   return archive;
 }
@@ -69,18 +60,16 @@ export default function Home() {
     const storage = await allStorage();
     const feedsCount = Object.keys(storage).length;
 
-    console.log("storage", storage);
-    for (const feedUrl of Object.keys(storage)) {
-      console.log(feedUrl, storage[feedUrl].priority);
-    }
     setFeedArchive(storage as FeedArchiveType);
 
     setLoadedFeeds((s) => ({ ...s, total: feedsCount, loaded: feedsCount}));
+
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {
         storage[feedUrl] = {
           ...feedArchive[feedUrl],
           visited: storage[feedUrl].visited,
+          priority: storage[feedUrl].priority
         };
         continue;
       }
@@ -104,10 +93,10 @@ export default function Home() {
         console.error(`Could not update feed for ${feedUrl}`);
       }
 
-      /*setLoadedFeeds((s) => ({
+      setLoadedFeeds((s) => ({
         ...s,
         loaded: s.loaded + 1,
-      }));*/
+      }));
     }
 
     setHighestPriority(highestPriority);
@@ -152,23 +141,12 @@ export default function Home() {
   const sortedArchive = useMemo(() => {
     const keys = Object.keys(feedArchive);
 
-    console.log("sortedArchive", feedArchive);
-
-    for (const feedUrl of keys) {
-      console.log(feedUrl, feedArchive[feedUrl].priority);
-    }
-
     keys.sort((a, b) => {
       const feedA = feedArchive[a];
       const feedB = feedArchive[b];
 
-      console.log("feedA", feedA.priority);
       const feedAPriority = feedA.priority ?? 0;
-      console.log("feedAPriority", feedAPriority);
-      console.log("feedB", feedB.priority);
       const feedBPriority = feedB.priority ?? 0;
-      console.log("feedBPriority", feedBPriority);
-
 
       if (feedAPriority > feedBPriority) {
         return -1;

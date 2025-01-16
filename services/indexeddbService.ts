@@ -52,7 +52,7 @@ export async function getSiteFeeds(): Promise<Feed[]> {
   });
 }
 
-export async function getSiteFeed(feedUrl: string): Promise<SiteFeed> {
+export async function getSiteFeed(feedUrl: string): Promise<Feed> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(databaseName, databaseVersion);
 
@@ -63,7 +63,7 @@ export async function getSiteFeed(feedUrl: string): Promise<SiteFeed> {
         db,
         SiteFeedTable.Name,
         feedUrl
-      )) as SiteFeed;
+      )) as Feed;
 
       resolve(siteFeeds);
       db.close();
