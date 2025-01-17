@@ -23,7 +23,6 @@ import {
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
 import Styles from "../styles/index.module.css";
-import { getAll } from "../services/indexeddbCRUD";
 
 declare global {
   interface Window {
