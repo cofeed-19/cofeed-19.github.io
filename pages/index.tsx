@@ -37,7 +37,7 @@ async function allStorage(): Promise<Record<string, SiteFeed>> {
   const siteFeeds = await getSiteFeeds();
   var archive: Record<string, Feed> = {};
 
-  for (var siteFeed of siteFeeds) {
+  for (const siteFeed of siteFeeds) {
     archive[siteFeed.url] = siteFeed;
   }
 
