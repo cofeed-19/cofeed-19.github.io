@@ -32,7 +32,7 @@ declare global {
 
 const rssParser = new RSSParser();
 
-async function allStorage(): Promise<Record<string, SiteFeed>> {
+async function allStorage(): Promise<Record<string, Feed>> {
   await initDatabase();
   const siteFeeds = await getSiteFeeds();
   var archive: Record<string, Feed> = {};
