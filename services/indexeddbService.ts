@@ -1,5 +1,5 @@
 import { databaseName, databaseVersion, SiteFeedTable } from "../constants";
-import { SiteFeed } from "../models";
+import { Feed, SiteFeed } from "../models";
 import { deleteByName, getAll, getOne, insert, update } from "./indexeddbCRUD";
 import { executeMigrations } from "./migrations";
 
@@ -32,14 +32,14 @@ export async function initDatabase(): Promise<boolean> {
   });
 }
 
-export async function getSiteFeeds(): Promise<SiteFeed[]> {
+export async function getSiteFeeds(): Promise<Feed[]> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(databaseName, databaseVersion);
 
     request.onsuccess = async () => {
       const db = request.result;
 
-      const siteFeeds = (await getAll(db, SiteFeedTable.Name)) as SiteFeed[];
+      const siteFeeds = (await getAll(db, SiteFeedTable.Name)) as Feed[];
 
       resolve(siteFeeds);
       db.close();
@@ -52,18 +52,14 @@ export async function getSiteFeeds(): Promise<SiteFeed[]> {
   });
 }
 
-export async function getSiteFeed(feedUrl: string): Promise<SiteFeed> {
+export async function getSiteFeed(feedUrl: string): Promise<Feed> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(databaseName, databaseVersion);
 
     request.onsuccess = async () => {
       const db = request.result;
 
-      const siteFeeds = (await getOne(
-        db,
-        SiteFeedTable.Name,
-        feedUrl
-      )) as SiteFeed;
+      const siteFeeds = (await getOne(db, SiteFeedTable.Name, feedUrl)) as Feed;
 
       resolve(siteFeeds);
       db.close();
@@ -76,7 +72,7 @@ export async function getSiteFeed(feedUrl: string): Promise<SiteFeed> {
   });
 }
 
-export async function insertSiteFeed(siteFeed: SiteFeed) {
+export async function insertSiteFeed(siteFeed: Feed) {
   const request = indexedDB.open(databaseName, databaseVersion);
 
   request.onsuccess = async () => {
@@ -93,7 +89,7 @@ export async function insertSiteFeed(siteFeed: SiteFeed) {
 }
 
 // siteFeed must contain entire class, both old and new visited sites !!
-export async function updateSiteFeed(siteFeed: SiteFeed) {
+export async function updateSiteFeed(siteFeed: Feed) {
   return new Promise<void>((resolve, reject) => {
     const request = indexedDB.open(databaseName, databaseVersion);
 

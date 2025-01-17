@@ -32,10 +32,10 @@ declare global {
 
 const rssParser = new RSSParser();
 
-async function allStorage(): Promise<Record<string, SiteFeed>> {
+async function allStorage(): Promise<Record<string, Feed>> {
   await initDatabase();
   const siteFeeds = await getSiteFeeds();
-  const archive: Record<string, SiteFeed> = {};
+  var archive: Record<string, Feed> = {};
 
   for (const siteFeed of siteFeeds) {
     archive[siteFeed.url] = siteFeed;
@@ -59,12 +59,16 @@ export default function Home() {
     const storage = await allStorage();
     const feedsCount = Object.keys(storage).length;
 
-    setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
+    setFeedArchive(storage as FeedArchiveType);
+
+    setLoadedFeeds((s) => ({ ...s, total: feedsCount, loaded: feedsCount }));
+
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {
         storage[feedUrl] = {
           ...feedArchive[feedUrl],
           visited: storage[feedUrl].visited,
+          priority: storage[feedUrl].priority,
         };
         continue;
       }
@@ -87,6 +91,7 @@ export default function Home() {
       } catch (_e) {
         console.error(`Could not update feed for ${feedUrl}`);
       }
+
       setLoadedFeeds((s) => ({
         ...s,
         loaded: s.loaded + 1,
@@ -110,7 +115,14 @@ export default function Home() {
         errors.push(feedUrl);
       }
       if (feed && !(await getSiteFeed(feedUrl))) {
-        await insertSiteFeed({ url: feedUrl, visited: {} });
+        const feedFavicon = await getFavicon(feed.link);
+        await insertSiteFeed({
+          url: feedUrl,
+          visited: {},
+          favicon: feedFavicon,
+          priority: 0,
+          ...feed,
+        });
       }
     }
     if (errors.length) {

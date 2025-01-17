@@ -1,5 +1,5 @@
 import { SiteFeedTable } from "../../constants";
-import { SiteFeed } from "../../models";
+import { Feed, SiteFeed } from "../../models";
 import { createTable } from "../indexeddbCRUD";
 import { insertSiteFeed } from "../indexeddbService";
 
@@ -22,8 +22,8 @@ interface LocalStorageFeed {
   author: string;
 }
 
-function extractFromLocalStorage(): SiteFeed[] {
-  const userFeedCollection: SiteFeed[] = [];
+function extractFromLocalStorage(): Feed[] {
+  const userFeedCollection: Feed[] = [];
 
   for (const key of Object.keys(localStorage)) {
     if (!key.startsWith("http")) {
@@ -38,7 +38,7 @@ function extractFromLocalStorage(): SiteFeed[] {
       (visitedLink) => (visited[visitedLink] = true)
     );
 
-    userFeedCollection.push({ url: key, visited: visited });
+    userFeedCollection.push({ url: key, visited: visited, items: [] });
   }
   return userFeedCollection;
 }
