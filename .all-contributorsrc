@@ -1,7 +1,5 @@
 {
-  "files": [
-    "README.md"
-  ],
+  "files": ["README.md"],
   "imageSize": 100,
   "commit": false,
   "contributors": [
@@ -10,39 +8,28 @@
       "name": "Dragoș Străinu",
       "avatar_url": "https://avatars.githubusercontent.com/u/16056918?v=4",
       "profile": "https://strdr4605.github.io",
-      "contributions": [
-        "ideas",
-        "code",
-        "infra",
-        "mentoring"
-      ]
+      "contributions": ["ideas", "code", "infra", "mentoring"]
     },
     {
       "login": "UmanetAlexandru",
       "name": "Alexandru Umanet",
       "avatar_url": "https://avatars.githubusercontent.com/u/17477765?v=4",
       "profile": "https://github.com/UmanetAlexandru",
-      "contributions": [
-        "design"
-      ]
+      "contributions": ["design"]
     },
     {
       "login": "zvonimirr",
       "name": "Zvonimir Rudinski",
       "avatar_url": "https://avatars.githubusercontent.com/u/18758022?v=4",
       "profile": "http://zvonimirr.github.io",
-      "contributions": [
-        "code"
-      ]
+      "contributions": ["code"]
     },
     {
       "login": "maximvolosenco",
       "name": "maximvolosenco",
       "avatar_url": "https://avatars.githubusercontent.com/u/46067883?v=4",
       "profile": "https://github.com/maximvolosenco",
-      "contributions": [
-        "code"
-      ]
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,
