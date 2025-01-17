@@ -22,7 +22,14 @@ export default function Feeds({ list }: Props) {
   const onAddButtonClick = useCallback(
     async (url: string) => {
       const feedFavicon = await getFavicon(url);
-      await insertSiteFeed({ url, visited: {}, priority: 0 , favicon: feedFavicon, title: "", items: []  });
+      await insertSiteFeed({
+        url,
+        visited: {},
+        priority: 0,
+        favicon: feedFavicon,
+        title: "",
+        items: [],
+      });
       setAddedFeed(url);
 
       if (dialogRef.current) {

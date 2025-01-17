@@ -106,6 +106,5 @@ function refactorFeedToExport(feed: Feed): TransferFeed {
     path.replace(domain, "")
   );
 
-
   return { domain, url: feed.url, visited, priority };
 }

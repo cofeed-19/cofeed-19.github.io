@@ -61,14 +61,14 @@ export default function Home() {
 
     setFeedArchive(storage as FeedArchiveType);
 
-    setLoadedFeeds((s) => ({ ...s, total: feedsCount, loaded: feedsCount}));
+    setLoadedFeeds((s) => ({ ...s, total: feedsCount, loaded: feedsCount }));
 
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {
         storage[feedUrl] = {
           ...feedArchive[feedUrl],
           visited: storage[feedUrl].visited,
-          priority: storage[feedUrl].priority
+          priority: storage[feedUrl].priority,
         };
         continue;
       }
@@ -116,7 +116,13 @@ export default function Home() {
       }
       if (feed && !(await getSiteFeed(feedUrl))) {
         const feedFavicon = await getFavicon(feed.link);
-        await insertSiteFeed({ url: feedUrl, visited: {}, favicon: feedFavicon, priority:0, ...feed});
+        await insertSiteFeed({
+          url: feedUrl,
+          visited: {},
+          favicon: feedFavicon,
+          priority: 0,
+          ...feed,
+        });
       }
     }
     if (errors.length) {

@@ -59,11 +59,7 @@ export async function getSiteFeed(feedUrl: string): Promise<Feed> {
     request.onsuccess = async () => {
       const db = request.result;
 
-      const siteFeeds = (await getOne(
-        db,
-        SiteFeedTable.Name,
-        feedUrl
-      )) as Feed;
+      const siteFeeds = (await getOne(db, SiteFeedTable.Name, feedUrl)) as Feed;
 
       resolve(siteFeeds);
       db.close();
