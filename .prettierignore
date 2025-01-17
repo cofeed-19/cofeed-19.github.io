@@ -1,4 +1,5 @@
 node_modules
 README.md
+.all-contributorsrc
 .github
 types/favecon.d.ts
