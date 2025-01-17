@@ -1,6 +1,6 @@
 .header {
   max-width: 60ch;
-  
+
   a:has(h1) {
     text-decoration: none;
   }

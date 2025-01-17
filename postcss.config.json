@@ -1,8 +1,3 @@
 {
-  "plugins": [
-    "autoprefixer",
-    "postcss-nested",
-    "postcss-sorting",
-    "cssnano"
-  ]
+  "plugins": ["autoprefixer", "postcss-nested", "postcss-sorting", "cssnano"]
 }
