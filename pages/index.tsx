@@ -61,7 +61,7 @@ export default function Home() {
 
     setFeedArchive(storage as FeedArchiveType);
 
-    setLoadedFeeds((s) => ({ ...s, total: feedsCount, loaded: feedsCount }));
+    setLoadedFeeds((s) => ({ ...s, total: feedsCount}));
 
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {

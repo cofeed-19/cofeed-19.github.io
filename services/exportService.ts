@@ -3,6 +3,7 @@ import { Feed, SiteFeed, TransferData, TransferFeed } from "../models";
 import { databaseVersion } from "../constants";
 import { compress, decompress } from "./compressService";
 import { siteDomain } from "../constants";
+import RSSParser from "rss-parser";
 
 function download(filename: string, text: string) {
   var element = document.createElement("a");
@@ -57,11 +58,29 @@ export async function importFeed(link: string) {
 
 export async function importFeedFromFile(jsonFromFile: string) {
   const transferData = JSON.parse(jsonFromFile) as TransferData;
+  const rssParser = new RSSParser();
+  const errors : string[] = [];
 
   if (transferData.feed) {
-    transferData.feed.forEach((feed) =>
-      insertSiteFeed(refactorExportToFeed(feed) as Feed)
-    );
+    for await (const feed of transferData.feed) {
+      try {
+        const parsedFeed = await rssParser.parseURL(feed.url);
+        if (parsedFeed) {
+          insertSiteFeed(refactorExportToFeed(feed) as Feed);
+        }
+      } catch (e) {
+        errors.push(feed.url);
+        console.error(`Could not update feed for ${feed.url} ${e}`);
+      }
+    }
+
+    if (errors.length) {
+      alert(
+        `Could not add:\n${errors.join(
+          "\n"
+        )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!\nOr install browser extension to allow CORS: https://mybrowseraddon.com/access-control-allow-origin.html`
+      );
+    }
     console.log("Database updated successfully");
     window.location.reload();
   } else {
@@ -106,5 +125,5 @@ function refactorFeedToExport(feed: Feed): TransferFeed {
     path.replace(domain, "")
   );
 
-  return { domain, url: feed.url, visited, priority };
+  return { domain, url: feed.url, visited, priority, items: [] };
 }
