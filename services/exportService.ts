@@ -59,7 +59,7 @@ export async function importFeed(link: string) {
 export async function importFeedFromFile(jsonFromFile: string) {
   const transferData = JSON.parse(jsonFromFile) as TransferData;
   const rssParser = new RSSParser();
-  const errors : string[] = [];
+  const errors: string[] = [];
 
   if (transferData.feed) {
     for await (const feed of transferData.feed) {
