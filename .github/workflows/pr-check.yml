@@ -6,27 +6,51 @@ on:
       - master
 
 jobs:
-  pr_check:
+  oxlint:
+    name: Lint JS
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          node-version: '16.x'
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.x'
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
-          node-version: '16.x'
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - run: yarn
-      - run: yarn build
-      - run: yarn export
+      - name: Run Linter
+        run: yarn lint
+
+  pr_check:
+    name: Build and export
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build project
+        run: yarn build
+
+      - name: Export project
+        run: yarn export
+

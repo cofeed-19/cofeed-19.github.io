@@ -1,5 +1,5 @@
 import { SiteFeedTable } from "../../constants";
-import { Feed, SiteFeed } from "../../models";
+import { Feed } from "../../models";
 import { createTable } from "../indexeddbCRUD";
 import { insertSiteFeed } from "../indexeddbService";
 

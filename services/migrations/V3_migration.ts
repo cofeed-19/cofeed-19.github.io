@@ -1,3 +1,3 @@
-export async function V3_migration(db: IDBDatabase) {
+export async function V3_migration() {
   console.log("Third Migration");
 }

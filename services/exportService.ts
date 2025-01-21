@@ -1,5 +1,5 @@
 import { getSiteFeeds, insertSiteFeed } from "../services/indexeddbService";
-import { Feed, SiteFeed, TransferData, TransferFeed } from "../models";
+import { Feed, TransferData, TransferFeed } from "../models";
 import { databaseVersion } from "../constants";
 import { compress, decompress } from "./compressService";
 import { siteDomain } from "../constants";
@@ -89,13 +89,11 @@ export async function importFeedFromFile(jsonFromFile: string) {
 }
 
 function refactorExportToFeed(feed: TransferFeed): Feed {
-  const { domain, priority } = feed;
+  const { priority } = feed;
   const url = feed.url;
 
   const visited =
-    feed.visited?.reduce<Record<string, boolean>>((acc, path) => {
-      const link = domain + path;
-
+    feed.visited?.reduce<Record<string, boolean>>((acc) => {
       acc[feed.url] = true;
 
       return acc;
@@ -107,16 +105,14 @@ function refactorFeedToExport(feed: Feed): TransferFeed {
   const { url, priority } = feed;
 
   let domain: string = "";
-  let urlPath: string = "";
 
   // regex pattern to extract domain extensions as "com", "md", "org"
   const pattern = /(?<=\.).*?(?=\/)/;
   const domainExtension = pattern.exec(feed.url)?.[0];
 
   if (domainExtension) {
-    const [feedDomain, path] = url.split(`.${domainExtension}/`);
+    const [feedDomain] = url.split(`.${domainExtension}/`);
     domain = `${feedDomain}${domainExtension}/`;
-    urlPath = path;
   } else {
     domain = `${url}/`;
   }
