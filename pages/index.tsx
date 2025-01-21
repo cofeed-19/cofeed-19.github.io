@@ -12,7 +12,7 @@ import {
   VisitedItemsList,
   FavoritePin,
 } from "../components";
-import { Feed, SiteFeed } from "../models";
+import { Feed } from "../models";
 import {
   deleteSiteFeed,
   getSiteFeed,
@@ -88,7 +88,7 @@ export default function Home() {
         }
 
         storage[feedUrl] = feedToUpdate;
-      } catch (_e) {
+      } catch {
         console.error(`Could not update feed for ${feedUrl}`);
       }
 
@@ -111,7 +111,7 @@ export default function Home() {
       let feed;
       try {
         feed = await rssParser.parseURL(feedUrl);
-      } catch (_e) {
+      } catch {
         errors.push(feedUrl);
       }
       if (feed && !(await getSiteFeed(feedUrl))) {

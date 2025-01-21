@@ -1,4 +1,4 @@
-import { Feed, SiteFeed } from "./SiteFeed";
+import { Feed } from "./SiteFeed";
 
 export interface TransferData {
   db: number;

@@ -1,5 +1,5 @@
 import { databaseName, databaseVersion, SiteFeedTable } from "../constants";
-import { Feed, SiteFeed } from "../models";
+import { Feed } from "../models";
 import { deleteByName, getAll, getOne, insert, update } from "./indexeddbCRUD";
 import { executeMigrations } from "./migrations";
 

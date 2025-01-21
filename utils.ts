@@ -25,7 +25,7 @@ export async function getFavicon(link?: string): Promise<string | undefined> {
       ));
 
     return feedFavicon;
-  } catch (e) {
+  } catch {
     return undefined;
   }
 }
