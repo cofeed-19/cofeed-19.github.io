@@ -21,8 +21,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Run Linter
+      - name: Install dependencies
         run: yarn
+
+      - name: Run Linter
         run: yarn lint
 
   pr_check:
