@@ -2,7 +2,7 @@
 [![gh-pages](https://github.com/cofeed-19/cofeed-19.github.io/actions/workflows/gh-pages.yml/badge.svg)](https://cofeed-19.github.io/)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 **C**lient-**o**nly **Feed** Reader
@@ -27,12 +27,15 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="https://strdr4605.github.io"><img src="https://avatars.githubusercontent.com/u/16056918?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dragoș Străinu</b></sub></a><br /><a href="#ideas-strdr4605" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=strdr4605" title="Code">💻</a> <a href="#infra-strdr4605" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#mentoring-strdr4605" title="Mentoring">🧑‍🏫</a></td>
-    <td align="center"><a href="https://github.com/UmanetAlexandru"><img src="https://avatars.githubusercontent.com/u/17477765?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alexandru Umanet</b></sub></a><br /><a href="#design-UmanetAlexandru" title="Design">🎨</a></td>
-    <td align="center"><a href="http://zvonimirr.github.io"><img src="https://avatars.githubusercontent.com/u/18758022?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zvonimir Rudinski</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=zvonimirr" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/maximvolosenco"><img src="https://avatars.githubusercontent.com/u/46067883?v=4?s=100" width="100px;" alt=""/><br /><sub><b>maximvolosenco</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=maximvolosenco" title="Code">💻</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://strdr4605.github.io"><img src="https://avatars.githubusercontent.com/u/16056918?v=4?s=100" width="100px;" alt="Dragoș Străinu"/><br /><sub><b>Dragoș Străinu</b></sub></a><br /><a href="#ideas-strdr4605" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=strdr4605" title="Code">💻</a> <a href="#infra-strdr4605" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#mentoring-strdr4605" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/UmanetAlexandru"><img src="https://avatars.githubusercontent.com/u/17477765?v=4?s=100" width="100px;" alt="Alexandru Umanet"/><br /><sub><b>Alexandru Umanet</b></sub></a><br /><a href="#design-UmanetAlexandru" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://zvonimirr.github.io"><img src="https://avatars.githubusercontent.com/u/18758022?v=4?s=100" width="100px;" alt="Zvonimir Rudinski"/><br /><sub><b>Zvonimir Rudinski</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=zvonimirr" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maximvolosenco"><img src="https://avatars.githubusercontent.com/u/46067883?v=4?s=100" width="100px;" alt="maximvolosenco"/><br /><sub><b>maximvolosenco</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=maximvolosenco" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/napalmCore"><img src="https://avatars.githubusercontent.com/u/7546389?v=4?s=100" width="100px;" alt="aymen mejri"/><br /><sub><b>aymen mejri</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=napalmCore" title="Code">💻</a></td>
+    </tr>
+  </tbody>
 </table>
 
 <!-- markdownlint-restore -->
