@@ -1,9 +1,9 @@
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import { DateComponent } from "../Date/Date";
 import { Feed } from "../../models";
+import { addFavorite, getFavorite } from "../../services/favoritesService";
 import { getSiteFeed, updateSiteFeed } from "../../services/indexeddbService";
-import { ExternalLink } from "../ExternalLink/ExternalLink";
+import { FeedItem } from "../FeedItem/FeedItem";
 import Styles from "./NewItemsList.module.css";
 
 type Props = {
@@ -43,20 +43,46 @@ const markAllAsVisited = async (feedUrl: string, itemLinks: string[]) => {
 
 export function NewItemsList(props: Props) {
   const { feed, feedUrl, newItems, updateFeeds } = props;
+  const [favoriteStates, setFavoriteStates] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  useEffect(() => {
+    const checkFavorites = async () => {
+      const states: Record<string, boolean> = {};
+      for (const item of newItems) {
+        if (item.link) {
+          const favorite = await getFavorite(item.link);
+          states[item.link] = !!favorite;
+        }
+      }
+      setFavoriteStates(states);
+    };
+    checkFavorites();
+  }, [newItems]);
+
+  const handleFavoriteClick = useCallback(
+    async (item: RSSParser.Item) => {
+      if (!item.link) return;
+      await addFavorite(item, feed);
+      setFavoriteStates((prev) => ({ ...prev, [item.link!]: true }));
+    },
+    [feed]
+  );
 
   return (
     <>
       <ul className={Styles.list}>
         {newItems?.map((item) =>
           item.link ? (
-            <li key={item.link}>
-              <DateComponent date={item.pubDate} />
-              <ExternalLink
-                title={item.title || item.link}
-                link={item.link}
-                onClick={() => onLinkClick(feedUrl, item.link)}
-              />
-            </li>
+            <FeedItem
+              key={item.link}
+              item={item}
+              feed={feed}
+              onClick={() => onLinkClick(feedUrl, item.link)}
+              onFavoriteClick={() => handleFavoriteClick(item)}
+              isFavorited={favoriteStates[item.link]}
+            />
           ) : null
         )}
       </ul>

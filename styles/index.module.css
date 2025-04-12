@@ -22,3 +22,9 @@
     }
   }
 }
+
+.tabsList {
+  display: flex;
+  gap: 0.75em;
+  margin: 1em 0;
+}

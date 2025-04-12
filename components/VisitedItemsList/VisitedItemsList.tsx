@@ -1,8 +1,8 @@
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
-import { DateComponent } from "../Date/Date";
 import { Feed } from "../../models";
-import { ExternalLink } from "../ExternalLink/ExternalLink";
+import { addFavorite, getFavorite } from "../../services/favoritesService";
+import { FeedItem } from "../FeedItem/FeedItem";
 import Styles from "./VisitedItemsList.module.css";
 
 type Props = {
@@ -12,16 +12,46 @@ type Props = {
 };
 
 export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
+  const [favoriteStates, setFavoriteStates] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  useEffect(() => {
+    const checkFavorites = async () => {
+      const states: Record<string, boolean> = {};
+      for (const item of visitedItems) {
+        if (item.link) {
+          const favorite = await getFavorite(item.link);
+          states[item.link] = !!favorite;
+        }
+      }
+      setFavoriteStates(states);
+    };
+    checkFavorites();
+  }, [visitedItems]);
+
+  const handleFavoriteClick = useCallback(
+    async (item: RSSParser.Item) => {
+      if (!item.link) return;
+      await addFavorite(item, feed);
+      setFavoriteStates((prev) => ({ ...prev, [item.link!]: true }));
+    },
+    [feed]
+  );
+
   return Object.keys(feed.visited || {}).length ? (
     <details className={Styles.container}>
       <summary>Visited from {feed?.title || feedUrl}</summary>
       <ul>
         {visitedItems?.map((item) =>
           item.link ? (
-            <li key={item.link}>
-              <DateComponent date={item.pubDate} />
-              <ExternalLink title={item.title || item.link} link={item.link} />
-            </li>
+            <FeedItem
+              key={item.link}
+              item={item}
+              feed={feed}
+              onFavoriteClick={() => handleFavoriteClick(item)}
+              isFavorited={favoriteStates[item.link]}
+            />
           ) : null
         )}
       </ul>

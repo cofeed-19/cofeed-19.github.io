@@ -1,0 +1,28 @@
+.item {
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+  position: relative;
+  padding-left: 1.25em;
+
+  &:hover .favoriteButton {
+    opacity: 1;
+  }
+}
+
+.favoriteButton {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.5em;
+  color: var(--link-color);
+  position: absolute;
+  left: 0;
+  margin-left: -0.5em;
+  opacity: 0;
+
+  &.favorited {
+    opacity: 1;
+  }
+}

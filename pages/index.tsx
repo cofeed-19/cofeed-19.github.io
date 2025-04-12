@@ -1,8 +1,11 @@
 import Image from "next/image";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
+  FavoritePin,
+  FavoritesList,
   Footer,
   Header,
   HeadMeta,
@@ -10,7 +13,6 @@ import {
   NewItemsList,
   ProgressLoader,
   VisitedItemsList,
-  FavoritePin,
 } from "../components";
 import { Feed } from "../models";
 import {
@@ -21,14 +23,16 @@ import {
   insertSiteFeed,
   updateSiteFeed,
 } from "../services/indexeddbService";
-import { getFavicon } from "../utils";
 import Styles from "../styles/index.module.css";
+import { getFavicon } from "../utils";
 
 declare global {
   interface Window {
     dbPromise: Promise<boolean>;
   }
 }
+
+type Tab = "feeds" | "favorites";
 
 const rssParser = new RSSParser();
 
@@ -47,12 +51,22 @@ async function allStorage(): Promise<Record<string, Feed>> {
 type FeedArchiveType = Record<string, Feed>;
 
 export default function Home() {
+  const router = useRouter();
+  const activeTab = (router.query.tab as Tab) || "feeds";
+
   const [highestPriority, setHighestPriority] = useState<number>(0);
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
   const [loadedFeeds, setLoadedFeeds] = useState<{
     total: number;
     loaded: number;
   }>({ total: 0, loaded: 0 });
+
+  const onTabChange = (tab: Tab) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, tab },
+    });
+  };
 
   const updateFeeds = useCallback(async () => {
     let highestPriority = 0;
@@ -232,53 +246,69 @@ export default function Home() {
       <Header />
       <main className={Styles.container}>
         <NewFeedForm onSubmit={onSubmit} />
+        <div className={Styles.tabsList}>
+          <button
+            onClick={() => onTabChange("feeds")}
+            disabled={activeTab === "feeds"}
+          >
+            Feeds
+          </button>
+          <button
+            onClick={() => onTabChange("favorites")}
+            disabled={activeTab === "favorites"}
+          >
+            Favorites
+          </button>
+        </div>
         <ProgressLoader loadedFeeds={loadedFeeds} />
-        {sortedArchive.map((feedUrl) => {
-          const feed = feedArchive[feedUrl];
-          const newItems = feed.items.filter(
-            (item) => item.link && (!feed.visited || !feed.visited[item.link])
-          );
-          const vizitedItems = feed.items.filter(
-            (item) => item.link && feed.visited && feed.visited[item.link]
-          );
-          return (
-            <section key={feedUrl} className={Styles.feed}>
-              <h3>
-                <FavoritePin feed={feed} onClick={onFavoriteClick} />
-                {feed.link ? (
-                  <>
-                    {feed.favicon && (
-                      <Image
-                        alt={feed.title || feedUrl}
-                        src={feed.favicon}
-                        width={16}
-                        height={16}
-                        unoptimized
-                      />
-                    )}
-                    <ExternalLink link={feed.link} title={feed.title} />
-                  </>
-                ) : (
-                  feed.title || feedUrl
-                )}{" "}
-                <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
-                  ❌
-                </button>
-              </h3>
-              <NewItemsList
-                feed={feed}
-                feedUrl={feedUrl}
-                newItems={newItems}
-                updateFeeds={updateFeeds}
-              />
-              <VisitedItemsList
-                feed={feed}
-                feedUrl={feedUrl}
-                visitedItems={vizitedItems}
-              />
-            </section>
-          );
-        })}
+        {activeTab === "feeds" &&
+          sortedArchive.map((feedUrl) => {
+            const feed = feedArchive[feedUrl];
+            const newItems = feed.items.filter(
+              (item) => item.link && (!feed.visited || !feed.visited[item.link])
+            );
+            const vizitedItems = feed.items.filter(
+              (item) => item.link && feed.visited && feed.visited[item.link]
+            );
+            return (
+              <section key={feedUrl} className={Styles.feed}>
+                <h3>
+                  <FavoritePin feed={feed} onClick={onFavoriteClick} />
+                  {feed.link ? (
+                    <>
+                      {feed.favicon && (
+                        <Image
+                          alt={feed.title || feedUrl}
+                          src={feed.favicon}
+                          width={16}
+                          height={16}
+                          unoptimized
+                        />
+                      )}
+                      <ExternalLink link={feed.link} title={feed.title} />
+                    </>
+                  ) : (
+                    feed.title || feedUrl
+                  )}{" "}
+                  <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
+                    ❌
+                  </button>
+                </h3>
+                <NewItemsList
+                  feed={feed}
+                  feedUrl={feedUrl}
+                  newItems={newItems}
+                  updateFeeds={updateFeeds}
+                />
+                <VisitedItemsList
+                  feed={feed}
+                  feedUrl={feedUrl}
+                  visitedItems={vizitedItems}
+                />
+              </section>
+            );
+          })}
+        {activeTab === "favorites" && <FavoritesList />}
       </main>
       <Footer />
     </>
