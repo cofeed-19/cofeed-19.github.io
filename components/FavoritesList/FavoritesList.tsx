@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { useFavorites } from "../../hooks/useFavorites";
 import { Favorite } from "../../models";
-import { getFavorites, removeFavorite } from "../../services/favoritesService";
+import { getFavorites } from "../../services/favoritesService";
 import { DateComponent } from "../Date/Date";
 import { ExternalLink } from "../ExternalLink/ExternalLink";
 import Styles from "./FavoritesList.module.css";
@@ -20,15 +21,15 @@ export function FavoritesList() {
     loadFavorites();
   }, [loadFavorites]);
 
-  const handleRemove = useCallback(
-    async (favorite: Favorite) => {
-      if (confirm(`Remove "${favorite.title}" from favorites?`)) {
-        await removeFavorite(favorite.url);
-        await loadFavorites();
-      }
+  const { handleFavoriteClick } = useFavorites(favorites, {
+    feed: {
+      url: "",
+      title: "",
+      items: [],
+      visited: {},
     },
-    [loadFavorites]
-  );
+    onRemove: loadFavorites,
+  });
 
   return (
     <div className={Styles.container}>
@@ -49,7 +50,7 @@ export function FavoritesList() {
                   link={favorite.sourceFeedUrl}
                 />
                 <button
-                  onClick={() => handleRemove(favorite)}
+                  onClick={() => handleFavoriteClick(favorite)}
                   className={Styles.removeButton}
                   title="Remove from favorites"
                 >
