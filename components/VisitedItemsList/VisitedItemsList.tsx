@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import RSSParser from "rss-parser";
 import { Feed } from "../../models";
-import { addFavorite, getFavorite } from "../../services/favoritesService";
+import {
+  addFavorite,
+  getFavorite,
+  removeFavorite,
+} from "../../services/favoritesService";
 import { FeedItem } from "../FeedItem/FeedItem";
 import Styles from "./VisitedItemsList.module.css";
 
@@ -33,10 +37,18 @@ export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
   const handleFavoriteClick = useCallback(
     async (item: RSSParser.Item) => {
       if (!item.link) return;
-      await addFavorite(item, feed);
-      setFavoriteStates((prev) => ({ ...prev, [item.link!]: true }));
+
+      if (favoriteStates[item.link]) {
+        if (confirm(`Remove "${item.title}" from favorites?`)) {
+          await removeFavorite(item.link);
+          setFavoriteStates((prev) => ({ ...prev, [item.link!]: false }));
+        }
+      } else {
+        await addFavorite(item, feed);
+        setFavoriteStates((prev) => ({ ...prev, [item.link!]: true }));
+      }
     },
-    [feed]
+    [feed, favoriteStates]
   );
 
   return Object.keys(feed.visited || {}).length ? (

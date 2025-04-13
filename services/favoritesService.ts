@@ -1,7 +1,7 @@
 import RSSParser from "rss-parser";
 import { databaseName, databaseVersion, FavoriteTable } from "../constants";
 import { Favorite, Feed } from "../models";
-import { getAll, getOne, insert } from "./indexeddbCRUD";
+import { deleteByName, getAll, getOne, insert } from "./indexeddbCRUD";
 
 export async function getFavorites(): Promise<Favorite[]> {
   return new Promise((resolve, reject) => {
@@ -65,6 +65,24 @@ export async function addFavorite(
 
     request.onerror = () => {
       console.log("An error occurred addFavorite() function.");
+      reject();
+    };
+  });
+}
+
+export async function removeFavorite(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(databaseName, databaseVersion);
+
+    request.onsuccess = async () => {
+      const db = request.result;
+      await deleteByName(db, FavoriteTable.Name, url);
+      db.close();
+      resolve();
+    };
+
+    request.onerror = () => {
+      console.log("An error occurred removeFavorite() function.");
       reject();
     };
   });
