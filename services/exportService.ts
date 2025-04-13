@@ -1,9 +1,9 @@
-import { getSiteFeeds, insertSiteFeed } from "../services/indexeddbService";
-import { Feed, TransferData, TransferFeed } from "../models";
-import { databaseVersion } from "../constants";
-import { compress, decompress } from "./compressService";
-import { siteDomain } from "../constants";
 import RSSParser from "rss-parser";
+import { databaseVersion, siteDomain } from "../constants";
+import { Feed, TransferData, TransferFeed } from "../models";
+import { getSiteFeeds, insertSiteFeed } from "../services/indexeddbService";
+import { compress, decompress } from "./compressService";
+import { addFavorites, getFavorites } from "./favoritesService";
 
 function download(filename: string, text: string) {
   var element = document.createElement("a");
@@ -21,12 +21,14 @@ function download(filename: string, text: string) {
   document.body.removeChild(element);
 }
 
-export async function exportFeed(): Promise<string | undefined> {
+export async function exportData(): Promise<string | undefined> {
   const feed = (await getSiteFeeds()).map((feed) => refactorFeedToExport(feed));
+  const favorites = await getFavorites();
 
   const transferData: TransferData = {
     db: databaseVersion,
     feed,
+    favorites,
   };
 
   download(
@@ -40,23 +42,25 @@ export async function exportFeed(): Promise<string | undefined> {
   return linkToExport;
 }
 
-export async function importFeed(link: string) {
+export async function importData(link: string) {
   const transferString = decompress(link.replace(siteDomain, ""));
-
   const transferData = JSON.parse(transferString) as TransferData;
 
   if (transferData.feed) {
     transferData.feed.forEach((feed) =>
       insertSiteFeed(refactorExportToFeed(feed) as Feed)
     );
-    console.log("Database updated successfully");
-    window.location.reload();
-  } else {
-    alert("Feed is empty");
   }
+
+  if (transferData.favorites) {
+    await addFavorites(transferData.favorites);
+  }
+
+  console.log("Database updated successfully");
+  window.location.reload();
 }
 
-export async function importFeedFromFile(jsonFromFile: string) {
+export async function importDataFromFile(jsonFromFile: string) {
   const transferData = JSON.parse(jsonFromFile) as TransferData;
   const rssParser = new RSSParser();
   const errors: string[] = [];
@@ -81,11 +85,14 @@ export async function importFeedFromFile(jsonFromFile: string) {
         )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!\nOr install browser extension to allow CORS: https://mybrowseraddon.com/access-control-allow-origin.html`
       );
     }
-    console.log("Database updated successfully");
-    window.location.reload();
-  } else {
-    alert("Feed is empty");
   }
+
+  if (transferData.favorites) {
+    await addFavorites(transferData.favorites);
+  }
+
+  console.log("Database updated successfully");
+  window.location.reload();
 }
 
 function refactorExportToFeed(feed: TransferFeed): Feed {

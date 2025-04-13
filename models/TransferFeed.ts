@@ -1,8 +1,10 @@
-import { Feed } from "./SiteFeed";
+import { Feed } from "../models";
+import { Favorite } from "./Favorite";
 
 export interface TransferData {
   db: number;
   feed?: TransferFeed[];
+  favorites?: Favorite[];
 }
 
 export interface TransferFeed extends Omit<Feed, "visited"> {

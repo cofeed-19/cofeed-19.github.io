@@ -272,7 +272,6 @@ export default function Home() {
             );
             return (
               <section key={feedUrl} className={Styles.feed}>
-                <h2>Feeds</h2>
                 <h3>
                   <FavoritePin feed={feed} onClick={onFavoriteClick} />
                   {feed.link ? (

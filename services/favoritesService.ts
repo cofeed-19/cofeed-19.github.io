@@ -87,3 +87,21 @@ export async function removeFavorite(url: string): Promise<void> {
     };
   });
 }
+
+export async function addFavorites(favorites: Favorite[]): Promise<void> {
+  const request = indexedDB.open(databaseName, databaseVersion);
+
+  return new Promise((resolve, reject) => {
+    request.onsuccess = async () => {
+      const db = request.result;
+      await insert(db, FavoriteTable.Name, favorites);
+      db.close();
+      resolve();
+    };
+
+    request.onerror = () => {
+      console.log("An error occurred addFavorites() function.");
+      reject();
+    };
+  });
+}
