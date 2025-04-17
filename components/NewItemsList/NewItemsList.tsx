@@ -1,5 +1,5 @@
 import RSSParser from "rss-parser";
-import { useFavorites } from "../../hooks/useFavorites";
+import { useFavorites } from "../../hooks";
 import { Feed } from "../../models";
 import { getSiteFeed, updateSiteFeed } from "../../services/indexeddbService";
 import { FeedItem } from "../FeedItem/FeedItem";

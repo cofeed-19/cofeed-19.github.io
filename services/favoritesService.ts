@@ -48,8 +48,8 @@ export async function addFavorite(
   const favorite: Favorite = {
     ...item,
     url: item.link,
-    sourceFeedUrl: feed.url,
-    sourceFeedTitle: feed.title || feed.url,
+    sourceFeedUrl: feed.link,
+    sourceFeedTitle: feed.title || feed.link,
     dateAdded: Date.now(),
   };
 
