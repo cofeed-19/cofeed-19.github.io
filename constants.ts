@@ -4,13 +4,13 @@ export const databaseName = "FeedDb";
 export const databaseVersion = 2;
 export const siteDomain = "https://cofeed-19.github.io/";
 
-export interface TableSchema {
+export type TableSchema = {
   Name: string;
   Key: string;
-}
+};
 
 export const SiteFeedTable: TableSchema = {
-  Name: "SiteFeed",
+  Name: "Site_Feed",
   Key: "url",
 };
 
