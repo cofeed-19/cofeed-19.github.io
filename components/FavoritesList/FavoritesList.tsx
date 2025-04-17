@@ -43,19 +43,19 @@ export function FavoritesList() {
                 title={favorite.title || favorite.link || ""}
                 link={favorite.link || ""}
               />
+              <button
+                onClick={() => handleFavoriteClick(favorite)}
+                className={Styles.removeButton}
+                title="Remove from favorites"
+              >
+                ❌
+              </button>
               <div className={Styles.source}>
                 from{" "}
                 <ExternalLink
                   title={favorite.sourceFeedTitle}
-                  link={favorite.sourceFeedUrl}
+                  link={favorite.sourceFeedUrl || ""}
                 />
-                <button
-                  onClick={() => handleFavoriteClick(favorite)}
-                  className={Styles.removeButton}
-                  title="Remove from favorites"
-                >
-                  ❌
-                </button>
               </div>
             </div>
           </li>
