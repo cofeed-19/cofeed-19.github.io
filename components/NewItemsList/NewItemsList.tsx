@@ -1,9 +1,8 @@
-import React from "react";
 import RSSParser from "rss-parser";
-import { DateComponent } from "../Date/Date";
+import { useFavorites } from "../../hooks";
 import { Feed } from "../../models";
 import { getSiteFeed, updateSiteFeed } from "../../services/indexeddbService";
-import { ExternalLink } from "../ExternalLink/ExternalLink";
+import { FeedItem } from "../FeedItem/FeedItem";
 import Styles from "./NewItemsList.module.css";
 
 type Props = {
@@ -43,20 +42,23 @@ const markAllAsVisited = async (feedUrl: string, itemLinks: string[]) => {
 
 export function NewItemsList(props: Props) {
   const { feed, feedUrl, newItems, updateFeeds } = props;
+  const { favoriteStates, toggleFavorite } = useFavorites(newItems, {
+    feed,
+  });
 
   return (
     <>
       <ul className={Styles.list}>
         {newItems?.map((item) =>
           item.link ? (
-            <li key={item.link}>
-              <DateComponent date={item.pubDate} />
-              <ExternalLink
-                title={item.title || item.link}
-                link={item.link}
-                onClick={() => onLinkClick(feedUrl, item.link)}
-              />
-            </li>
+            <FeedItem
+              key={item.link}
+              item={item}
+              feed={feed}
+              onClick={() => onLinkClick(feedUrl, item.link)}
+              onFavoriteClick={() => toggleFavorite(item)}
+              isFavorited={favoriteStates[item.link]}
+            />
           ) : null
         )}
       </ul>

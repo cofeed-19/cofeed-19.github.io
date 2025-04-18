@@ -1,26 +1,23 @@
-import { SiteFeedTable } from "../constants";
+import { TableSchema } from "../constants";
 
 export async function createIndexedTable(
   db: IDBDatabase,
-  tableEnum: typeof SiteFeedTable
+  tableSchema: TableSchema
 ) {
-  const objectStore = db.createObjectStore(tableEnum.Name, {
+  const objectStore = db.createObjectStore(tableSchema.Name, {
     keyPath: "ID",
     autoIncrement: true,
   });
 
-  const fieldNames = Object.values(tableEnum).splice(1) as string[];
+  const fieldNames = Object.values(tableSchema).splice(1) as string[];
 
   fieldNames.forEach((fieldName) => {
     objectStore.createIndex(fieldName, fieldName, { unique: false });
   });
 }
 
-export async function createTable(
-  db: IDBDatabase,
-  tableEnum: typeof SiteFeedTable
-) {
-  db.createObjectStore(tableEnum.Name, { keyPath: tableEnum.Key });
+export async function createTable(db: IDBDatabase, tableSchema: TableSchema) {
+  db.createObjectStore(tableSchema.Name, { keyPath: tableSchema.Key });
 }
 
 export async function insert(
