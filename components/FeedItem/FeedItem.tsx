@@ -14,7 +14,6 @@ type Props = {
 
 export function FeedItem({
   item,
-  feed,
   onClick,
   onFavoriteClick,
   isFavorited,
