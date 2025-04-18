@@ -2,7 +2,7 @@
 [![gh-pages](https://github.com/cofeed-19/cofeed-19.github.io/actions/workflows/gh-pages.yml/badge.svg)](https://cofeed-19.github.io/)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 **C**lient-**o**nly **Feed** Reader
@@ -34,6 +34,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="http://zvonimirr.github.io"><img src="https://avatars.githubusercontent.com/u/18758022?v=4?s=100" width="100px;" alt="Zvonimir Rudinski"/><br /><sub><b>Zvonimir Rudinski</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=zvonimirr" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/maximvolosenco"><img src="https://avatars.githubusercontent.com/u/46067883?v=4?s=100" width="100px;" alt="maximvolosenco"/><br /><sub><b>maximvolosenco</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=maximvolosenco" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/napalmCore"><img src="https://avatars.githubusercontent.com/u/7546389?v=4?s=100" width="100px;" alt="aymen mejri"/><br /><sub><b>aymen mejri</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=napalmCore" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://danielavornic.com"><img src="https://avatars.githubusercontent.com/u/29648694?v=4?s=100" width="100px;" alt="Daniela Vornic"/><br /><sub><b>Daniela Vornic</b></sub></a><br /><a href="https://github.com/cofeed-19/cofeed-19.github.io/commits?author=danielavornic" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
