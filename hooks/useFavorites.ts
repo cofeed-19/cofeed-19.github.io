@@ -3,13 +3,12 @@ import RSSParser from "rss-parser";
 import { Feed } from "../models";
 import {
   addFavorite,
-  getFavorite,
+  getFavorites,
   removeFavorite,
 } from "../services/favoritesService";
 
 type UseFavoritesConfig = {
   feed: Feed;
-  onRemove?: () => Promise<void>;
 };
 
 export function useFavorites(
@@ -22,40 +21,45 @@ export function useFavorites(
 
   useEffect(() => {
     const checkFavorites = async () => {
+      const allFavorites = await getFavorites();
+      const favoriteUrls = new Set(allFavorites.map((fav) => fav.url));
+
       const states: Record<string, boolean> = {};
       for (const item of items) {
         if (item.link) {
-          const favorite = await getFavorite(item.link);
-          states[item.link] = !!favorite;
+          states[item.link] = favoriteUrls.has(item.link);
         }
       }
       setFavoriteStates(states);
     };
-    checkFavorites();
+    if (items && items.length > 0) {
+      checkFavorites();
+    } else {
+      setFavoriteStates({});
+    }
   }, [items]);
 
-  const handleFavoriteClick = useCallback(
+  const toggleFavorite = useCallback(
     async (item: RSSParser.Item) => {
       if (!item.link) return;
 
-      if (favoriteStates[item.link]) {
+      const isFavorited = favoriteStates[item.link];
+
+      if (isFavorited) {
         if (confirm(`Remove "${item.title}" from favorites?`)) {
           await removeFavorite(item.link);
           setFavoriteStates((prev) => ({ ...prev, [item.link!]: false }));
-          if (config.onRemove) {
-            await config.onRemove();
-          }
         }
       } else {
         await addFavorite(item, config.feed);
         setFavoriteStates((prev) => ({ ...prev, [item.link!]: true }));
       }
     },
-    [config.feed, config.onRemove, favoriteStates]
+    [config.feed, favoriteStates]
   );
 
   return {
     favoriteStates,
-    handleFavoriteClick,
+    toggleFavorite,
   };
 }

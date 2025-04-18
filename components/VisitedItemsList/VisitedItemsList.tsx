@@ -11,7 +11,7 @@ type Props = {
 };
 
 export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
-  const { favoriteStates, handleFavoriteClick } = useFavorites(visitedItems, {
+  const { favoriteStates, toggleFavorite } = useFavorites(visitedItems, {
     feed,
   });
 
@@ -25,7 +25,7 @@ export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
               key={item.link}
               item={item}
               feed={feed}
-              onFavoriteClick={() => handleFavoriteClick(item)}
+              onFavoriteClick={() => toggleFavorite(item)}
               isFavorited={favoriteStates[item.link]}
             />
           ) : null

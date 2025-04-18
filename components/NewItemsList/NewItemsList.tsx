@@ -42,7 +42,7 @@ const markAllAsVisited = async (feedUrl: string, itemLinks: string[]) => {
 
 export function NewItemsList(props: Props) {
   const { feed, feedUrl, newItems, updateFeeds } = props;
-  const { favoriteStates, handleFavoriteClick } = useFavorites(newItems, {
+  const { favoriteStates, toggleFavorite } = useFavorites(newItems, {
     feed,
   });
 
@@ -56,7 +56,7 @@ export function NewItemsList(props: Props) {
               item={item}
               feed={feed}
               onClick={() => onLinkClick(feedUrl, item.link)}
-              onFavoriteClick={() => handleFavoriteClick(item)}
+              onFavoriteClick={() => toggleFavorite(item)}
               isFavorited={favoriteStates[item.link]}
             />
           ) : null
