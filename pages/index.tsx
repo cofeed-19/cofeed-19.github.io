@@ -180,6 +180,8 @@ export default function Home() {
     return keys;
   }, [feedArchive]);
 
+  const isContentLoading = loadedFeeds.loaded !== loadedFeeds.total;
+
   const onFavoriteClick = useCallback(
     async (feed: Feed) => {
       const resortedArchive = sortedArchive
@@ -260,7 +262,6 @@ export default function Home() {
             Favorites
           </button>
         </div>
-        <ProgressLoader loadedFeeds={loadedFeeds} />
         {activeTab === "feeds" &&
           sortedArchive.map((feedUrl) => {
             const feed = feedArchive[feedUrl];
@@ -290,9 +291,22 @@ export default function Home() {
                   ) : (
                     feed.title || feedUrl
                   )}{" "}
+                  {isContentLoading && (
+                    <>
+                    <span className={Styles.loader2}>⏳</span>
+                    <span className={Styles.loader3}>🔄</span>
+                    <span className={Styles.loader4}>🧠</span>
+                    </>
+                  )}
                   <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
                     ❌
                   </button>
+                  {isContentLoading && (
+                    <>
+                    <span className={Styles.loader1}></span>
+                    <span className={Styles.loader5}></span>
+                    </>
+                  )}
                 </h3>
                 <NewItemsList
                   feed={feed}
