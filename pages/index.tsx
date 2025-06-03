@@ -293,20 +293,17 @@ export default function Home() {
                   )}{" "}
                   {isContentLoading && (
                     <>
-                    <span className={Styles.loader2}>⏳</span>
-                    <span className={Styles.loader3}>🔄</span>
-                    <span className={Styles.loader4}>🧠</span>
+                    <span className={Styles.bounceLoader}></span>
+                    <span className={Styles.rotateTimeLoader}>⏳</span>
+                    <span className={Styles.flipTimeLoader}>⏳</span>
+                    <span className={Styles.rotateArrowsLoader}>🔄</span>
+                    <span className={Styles.heartbeatBrainLoader}>🧠</span>
+                    <span className={Styles.typewriteLoader}></span>
                     </>
                   )}
                   <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
                     ❌
                   </button>
-                  {isContentLoading && (
-                    <>
-                    <span className={Styles.loader1}></span>
-                    <span className={Styles.loader5}></span>
-                    </>
-                  )}
                 </h3>
                 <NewItemsList
                   feed={feed}
