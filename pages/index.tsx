@@ -11,7 +11,6 @@ import {
   HeadMeta,
   NewFeedForm,
   NewItemsList,
-  ProgressLoader,
   VisitedItemsList,
 } from "../components";
 import { Feed } from "../models";
@@ -83,6 +82,7 @@ export default function Home() {
           ...feedArchive[feedUrl],
           visited: storage[feedUrl].visited,
           priority: storage[feedUrl].priority,
+          loaded: true
         };
         continue;
       }
@@ -95,13 +95,14 @@ export default function Home() {
           favicon: feedFavicon,
           visited: storage[feedUrl].visited || {},
           priority: storage[feedUrl].priority,
+          loaded: false
         };
 
         if (feedToUpdate.priority && feedToUpdate.priority > highestPriority) {
           highestPriority = feedToUpdate.priority;
         }
 
-        storage[feedUrl] = feedToUpdate;
+        storage[feedUrl] = {...feedToUpdate, loaded: true};
       } catch {
         console.error(`Could not update feed for ${feedUrl}`);
       }
@@ -179,8 +180,6 @@ export default function Home() {
 
     return keys;
   }, [feedArchive]);
-
-  const isContentLoading = loadedFeeds.loaded !== loadedFeeds.total;
 
   const onFavoriteClick = useCallback(
     async (feed: Feed) => {
@@ -291,7 +290,7 @@ export default function Home() {
                   ) : (
                     feed.title || feedUrl
                   )}{" "}
-                  {isContentLoading && (
+                  {!feed.loaded && (
                     <>
                     <span className={Styles.bounceLoader}></span>
                     <span className={Styles.rotateTimeLoader}>⏳</span>
