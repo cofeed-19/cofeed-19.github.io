@@ -82,7 +82,7 @@ export default function Home() {
           ...feedArchive[feedUrl],
           visited: storage[feedUrl].visited,
           priority: storage[feedUrl].priority,
-          loaded: true
+          loaded: true,
         };
         continue;
       }
@@ -95,14 +95,14 @@ export default function Home() {
           favicon: feedFavicon,
           visited: storage[feedUrl].visited || {},
           priority: storage[feedUrl].priority,
-          loaded: false
+          loaded: false,
         };
 
         if (feedToUpdate.priority && feedToUpdate.priority > highestPriority) {
           highestPriority = feedToUpdate.priority;
         }
 
-        storage[feedUrl] = {...feedToUpdate, loaded: true};
+        storage[feedUrl] = { ...feedToUpdate, loaded: true };
       } catch {
         console.error(`Could not update feed for ${feedUrl}`);
       }
@@ -292,12 +292,9 @@ export default function Home() {
                   )}{" "}
                   {!feed.loaded && (
                     <>
-                    <span className={Styles.bounceLoader}></span>
-                    <span className={Styles.rotateTimeLoader}>⏳</span>
-                    <span className={Styles.flipTimeLoader}>⏳</span>
-                    <span className={Styles.rotateArrowsLoader}>🔄</span>
-                    <span className={Styles.heartbeatBrainLoader}>🧠</span>
-                    <span className={Styles.typewriteLoader}></span>
+                      <span className={Styles.bounceLoader}></span>
+                      {/* <span className={Styles.rotateTimeLoader}>⏳</span> */}
+                      {/* <span className={Styles.typewriteLoader}></span> */}
                     </>
                   )}
                   <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
