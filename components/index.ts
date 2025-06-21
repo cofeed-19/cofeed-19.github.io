@@ -9,5 +9,4 @@ export * from "./Header/Header";
 export * from "./HeadMeta/HeadMeta";
 export * from "./NewFeedForm/NewFeedForm";
 export * from "./NewItemsList/NewItemsList";
-export * from "./ProgressLoader/ProgressLoader";
 export * from "./VisitedItemsList/VisitedItemsList";
