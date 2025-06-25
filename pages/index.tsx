@@ -55,10 +55,6 @@ export default function Home() {
 
   const [highestPriority, setHighestPriority] = useState<number>(0);
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
-  const [loadedFeeds, setLoadedFeeds] = useState<{
-    total: number;
-    loaded: number;
-  }>({ total: 0, loaded: 0 });
 
   const onTabChange = (tab: Tab) => {
     router.push({
@@ -70,11 +66,8 @@ export default function Home() {
   const updateFeeds = useCallback(async () => {
     let highestPriority = 0;
     const storage = await allStorage();
-    const feedsCount = Object.keys(storage).length;
 
     setFeedArchive(storage as FeedArchiveType);
-
-    setLoadedFeeds((s) => ({ ...s, total: feedsCount }));
 
     for (const feedUrl of Object.keys(storage)) {
       if (feedUrl in feedArchive) {
@@ -82,7 +75,7 @@ export default function Home() {
           ...feedArchive[feedUrl],
           visited: storage[feedUrl].visited,
           priority: storage[feedUrl].priority,
-          loaded: true,
+          loaded: false,
         };
         continue;
       }
@@ -95,22 +88,18 @@ export default function Home() {
           favicon: feedFavicon,
           visited: storage[feedUrl].visited || {},
           priority: storage[feedUrl].priority,
-          loaded: false,
+          loaded: true,
         };
 
         if (feedToUpdate.priority && feedToUpdate.priority > highestPriority) {
           highestPriority = feedToUpdate.priority;
         }
 
-        storage[feedUrl] = { ...feedToUpdate, loaded: true };
+        storage[feedUrl] = feedToUpdate;
+        setFeedArchive({...storage});
       } catch {
         console.error(`Could not update feed for ${feedUrl}`);
       }
-
-      setLoadedFeeds((s) => ({
-        ...s,
-        loaded: s.loaded + 1,
-      }));
     }
 
     setHighestPriority(highestPriority);
@@ -234,12 +223,6 @@ export default function Home() {
     updateFeeds();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (loadedFeeds.loaded > loadedFeeds.total) {
-      setLoadedFeeds({ ...loadedFeeds, loaded: loadedFeeds.total });
-    }
-  }, [loadedFeeds]);
 
   return (
     <>
