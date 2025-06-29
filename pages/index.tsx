@@ -96,7 +96,7 @@ export default function Home() {
         }
 
         storage[feedUrl] = feedToUpdate;
-        setFeedArchive({...storage});
+        setFeedArchive({ ...storage });
       } catch {
         console.error(`Could not update feed for ${feedUrl}`);
       }
