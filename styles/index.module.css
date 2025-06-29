@@ -28,3 +28,61 @@
   gap: 0.75em;
   margin: 1em 0;
 }
+
+.typewriteLoader::after {
+  content: "...";
+  animation: typewriter 1.5s infinite;
+}
+
+.rotateTimeLoader {
+  animation: rotate 1.5s infinite ease-in-out;
+}
+
+.bounceLoader {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 15px;
+  background: #ee802f;
+  animation: bounce 1.2s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-15px) scale(0.8);
+  }
+}
+
+@keyframes typewriter {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-180deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
