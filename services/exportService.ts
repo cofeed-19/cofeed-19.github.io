@@ -48,7 +48,7 @@ export async function importData(link: string) {
 
   if (transferData.feed) {
     transferData.feed.forEach((feed) =>
-      insertSiteFeed(refactorExportToFeed(feed) as Feed)
+      insertSiteFeed(convertToFeed(feed) as Feed)
     );
   }
 
@@ -70,7 +70,7 @@ export async function importDataFromFile(jsonFromFile: string) {
       try {
         const parsedFeed = await rssParser.parseURL(feed.url);
         if (parsedFeed) {
-          insertSiteFeed(refactorExportToFeed(feed) as Feed);
+          insertSiteFeed(convertToFeed(feed) as Feed);
         }
       } catch (e) {
         errors.push(feed.url);
@@ -95,14 +95,13 @@ export async function importDataFromFile(jsonFromFile: string) {
   window.location.reload();
 }
 
-function refactorExportToFeed(feed: TransferFeed): Feed {
+function convertToFeed(feed: TransferFeed): Feed {
   const { priority } = feed;
   const url = feed.url;
 
   const visited =
-    feed.visited?.reduce<Record<string, boolean>>((acc) => {
-      acc[feed.url] = true;
-
+    feed.visited?.reduce<Record<string, boolean>>((acc, visitedPath) => {
+      acc[feed.domain + visitedPath] = true;
       return acc;
     }, {}) || {};
   return { url, visited, priority, items: [] };
