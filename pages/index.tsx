@@ -248,10 +248,10 @@ export default function Home() {
           sortedArchive.map((feedUrl) => {
             const feed = feedArchive[feedUrl];
             const newItems = feed.items.filter(
-              (item) => item.link && (!feed.visited || !feed.visited[item.link])
+              (item) => item.link && (!feed.visited || !feed.visited[item.link.trim()])
             );
             const vizitedItems = feed.items.filter(
-              (item) => item.link && feed.visited && feed.visited[item.link]
+              (item) => item.link && feed.visited && feed.visited[item.link.trim()]
             );
             return (
               <section key={feedUrl} className={Styles.feed}>

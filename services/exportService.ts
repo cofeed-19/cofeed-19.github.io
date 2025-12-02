@@ -1,12 +1,11 @@
 import RSSParser from "rss-parser";
-import { databaseVersion, siteDomain } from "../constants";
+import { databaseVersion } from "../constants";
 import { Feed, TransferData, TransferFeed } from "../models";
 import { getSiteFeeds, insertSiteFeed } from "../services/indexeddbService";
-import { compress, decompress } from "./compressService";
 import { addFavorites, getFavorites } from "./favoritesService";
 
 function download(filename: string, text: string) {
-  var element = document.createElement("a");
+  const element = document.createElement("a");
   element.setAttribute(
     "href",
     "data:text/plain;charset=utf-8," + encodeURIComponent(text)
@@ -21,8 +20,8 @@ function download(filename: string, text: string) {
   document.body.removeChild(element);
 }
 
-export async function exportData(): Promise<string | undefined> {
-  const feed = (await getSiteFeeds()).map((feed) => refactorFeedToExport(feed));
+export async function exportData() {
+  const feed = (await getSiteFeeds()).map((feed) => convertToTransferFeed(feed));
   const favorites = await getFavorites();
 
   const transferData: TransferData = {
@@ -35,29 +34,6 @@ export async function exportData(): Promise<string | undefined> {
     new Date().toLocaleDateString("uk-en") + "-cofeed.json",
     JSON.stringify(transferData, undefined, 2)
   );
-
-  const compressedData: string = compress(JSON.stringify(transferData));
-  const linkToExport = siteDomain + compressedData;
-
-  return linkToExport;
-}
-
-export async function importData(link: string) {
-  const transferString = decompress(link.replace(siteDomain, ""));
-  const transferData = JSON.parse(transferString) as TransferData;
-
-  if (transferData.feed) {
-    transferData.feed.forEach((feed) =>
-      insertSiteFeed(convertToFeed(feed) as Feed)
-    );
-  }
-
-  if (transferData.favorites) {
-    await addFavorites(transferData.favorites);
-  }
-
-  console.log("Database updated successfully");
-  window.location.reload();
 }
 
 export async function importDataFromFile(jsonFromFile: string) {
@@ -96,36 +72,26 @@ export async function importDataFromFile(jsonFromFile: string) {
 }
 
 function convertToFeed(feed: TransferFeed): Feed {
-  const { priority } = feed;
-  const url = feed.url;
+  const { priority, domain } = feed;
+  // Handle old format where url is relative (e.g., "feed.xml")
+  const url = feed.url.startsWith("http") ? feed.url : (domain || "") + feed.url;
 
   const visited =
-    feed.visited?.reduce<Record<string, boolean>>((acc, visitedPath) => {
-      acc[feed.domain + visitedPath] = true;
+    feed.visited?.reduce<Record<string, boolean>>((acc, link) => {
+      const trimmedLink = link.trim();
+      // Handle both full URLs and relative paths (old format)
+      const fullLink = trimmedLink.startsWith("http")
+        ? trimmedLink
+        : (domain || "") + trimmedLink;
+      acc[fullLink] = true;
       return acc;
     }, {}) || {};
   return { url, visited, priority, items: [] };
 }
 
-function refactorFeedToExport(feed: Feed): TransferFeed {
+function convertToTransferFeed(feed: Feed): TransferFeed {
   const { url, priority } = feed;
+  const visited: string[] = Object.keys(feed.visited ?? {});
 
-  let domain: string = "";
-
-  // regex pattern to extract domain extensions as "com", "md", "org"
-  const pattern = /(?<=\.).*?(?=\/)/;
-  const domainExtension = pattern.exec(feed.url)?.[0];
-
-  if (domainExtension) {
-    const [feedDomain] = url.split(`.${domainExtension}/`);
-    domain = `${feedDomain}${domainExtension}/`;
-  } else {
-    domain = `${url}/`;
-  }
-
-  const visited: string[] = Object.keys(feed.visited ?? {}).map((path) =>
-    path.replace(domain, "")
-  );
-
-  return { domain, url: feed.url, visited, priority, items: [] };
+  return { url, visited, priority, items: [] };
 }

@@ -8,6 +8,6 @@ export interface TransferData {
 }
 
 export interface TransferFeed extends Omit<Feed, "visited"> {
-  domain: string;
+  domain?: string; // deprecated, kept for backwards compatibility
   visited?: string[];
 }
