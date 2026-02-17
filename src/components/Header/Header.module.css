@@ -1,0 +1,54 @@
+.header {
+  max-width: 60ch;
+
+  a:has(h1) {
+    text-decoration: none;
+  }
+
+  h1 {
+    color: var(--body-color);
+    cursor: pointer;
+    user-select: none;
+
+    span {
+      color: var(--rss-orange);
+    }
+  }
+
+  iframe {
+    width: 80px;
+    height: 20px;
+
+    border: 0;
+    overflow: hidden;
+  }
+}
+
+.iframeContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details {
+  margin: 1em;
+
+  & > div {
+    padding-left: 1em;
+  }
+
+  & > summary {
+    cursor: pointer;
+    margin-bottom: 1em;
+  }
+
+  & a {
+    color: var(--link-visited-color);
+  }
+}
+
+.usage {
+  & li:first-child {
+    color: red;
+  }
+}

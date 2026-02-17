@@ -1,0 +1,48 @@
+.container {
+  max-width: 60ch;
+}
+
+.feedsList {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+  padding: 0;
+}
+
+.feedsList li {
+  display: flex;
+  list-style-type: none;
+
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feedsList li div {
+  display: flex;
+  flex-direction: column;
+}
+
+.feedsList li p {
+  margin: 0;
+}
+
+.feedsList li button {
+  will-change: opacity;
+
+  opacity: 0.7;
+
+  transition: opacity 0.2s;
+  margin: auto 0.5em;
+}
+
+.feedsList li button:hover {
+  cursor: pointer;
+
+  opacity: 1;
+}
+
+.dialog {
+  background-color: var(--body-bg-color);
+  color: var(--body-color);
+}
