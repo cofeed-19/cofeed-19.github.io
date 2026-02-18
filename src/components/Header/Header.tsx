@@ -1,11 +1,17 @@
-import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ExportImportForm } from "../ExportImportForm/ExportImportForm";
 import { setDarkMode, setLightMode } from "../../utils";
 import { ExternalLink } from "../ExternalLink/ExternalLink";
 import Styles from "./Header.module.css";
 
-export function Header() {
+type Tab = 'home' | 'feeds'
+
+interface HeaderProps {
+  onTabChange: (tab: Tab) => void
+  currentTab: Tab
+}
+
+export function Header({ onTabChange, currentTab }: HeaderProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   function onDarkModeChange(e: ChangeEvent<HTMLInputElement>) {
@@ -34,12 +40,11 @@ export function Header() {
 
   return (
     <header className={Styles.header}>
-      {/* eslint-disable-next-line @next/next/link-passhref */}
-      <Link href="/">
+      <button onClick={() => onTabChange('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
         <h1>
           <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
         </h1>
-      </Link>
+      </button>
       <div className={Styles.iframeContainer}>
         No back-end! All your feeds are stored in this browser!
         <iframe
@@ -70,7 +75,9 @@ export function Header() {
             />
           </li>
           <li>
-            <Link href="/feeds">Feeds added by users</Link>
+            <button onClick={() => onTabChange('feeds')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', textDecoration: 'underline' }}>
+              Feeds added by users
+            </button>
           </li>
           <li>
             <label>
