@@ -4,14 +4,11 @@ import { setDarkMode, setLightMode } from "../../utils";
 import { ExternalLink } from "../ExternalLink/ExternalLink";
 import Styles from "./Header.module.css";
 
-type Tab = 'home' | 'feeds'
-
 interface HeaderProps {
-  onTabChange: (tab: Tab) => void
-  currentTab: Tab
+  onNavigate?: (page: string) => void
 }
 
-export function Header({ onTabChange, currentTab }: HeaderProps) {
+export function Header({ onNavigate }: HeaderProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   function onDarkModeChange(e: ChangeEvent<HTMLInputElement>) {
@@ -40,7 +37,7 @@ export function Header({ onTabChange, currentTab }: HeaderProps) {
 
   return (
     <header className={Styles.header}>
-      <button onClick={() => onTabChange('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+      <button onClick={() => onNavigate?.('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
         <h1>
           <span>C</span>lient-<span>o</span>nly <span>Feed</span> Reader
         </h1>
@@ -75,7 +72,7 @@ export function Header({ onTabChange, currentTab }: HeaderProps) {
             />
           </li>
           <li>
-            <button onClick={() => onTabChange('feeds')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', textDecoration: 'underline' }}>
+            <button onClick={() => onNavigate?.('feeds')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', textDecoration: 'underline' }}>
               Feeds added by users
             </button>
           </li>

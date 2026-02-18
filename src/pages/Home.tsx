@@ -209,10 +209,26 @@ export default function HomePage() {
     updateFeeds();
   }, []);
 
+  const [activeTab, setActiveTab] = useState<"feeds" | "favorites">("feeds");
+
   return (
     <div className={Styles.container}>
       <NewFeedForm onSubmit={onSubmit} />
-      {sortedArchive.map((feedUrl) => {
+      <div className={Styles.tabsList}>
+        <button
+          onClick={() => setActiveTab("feeds")}
+          disabled={activeTab === "feeds"}
+        >
+          Feeds
+        </button>
+        <button
+          onClick={() => setActiveTab("favorites")}
+          disabled={activeTab === "favorites"}
+        >
+          Favorites
+        </button>
+      </div>
+      {activeTab === "feeds" && sortedArchive.map((feedUrl) => {
         const feed = feedArchive[feedUrl];
         const newItems = feed.items.filter(
           (item) =>
@@ -265,6 +281,7 @@ export default function HomePage() {
           </section>
         );
       })}
+      {activeTab === "favorites" && <FavoritesList />}
     </div>
   );
 }
