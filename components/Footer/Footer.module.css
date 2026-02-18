@@ -1,8 +1,0 @@
-.footer {
-  max-width: 60ch;
-  margin: 1em auto;
-
-  & a {
-    color: var(--link-color);
-  }
-}

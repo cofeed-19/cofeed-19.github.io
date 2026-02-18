@@ -1,8 +1,0 @@
-.form {
-  display: flex;
-
-  input[type="text"] {
-    flex: 1;
-    margin: auto 0.5em;
-  }
-}
