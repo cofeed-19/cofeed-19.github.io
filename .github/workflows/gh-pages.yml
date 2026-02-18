@@ -14,6 +14,10 @@ jobs:
       pages: write
       id-token: write
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -22,8 +26,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install Yarn
-        run: npm install -g yarn@4.9.1
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
         run: yarn install

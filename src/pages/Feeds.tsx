@@ -43,7 +43,7 @@ export default function FeedsPage() {
     <div>
       <h2>Feeds suggested by users</h2>
       <ExternalLink
-        link="https://github.com/cofeed-19/cofeed-19.github.io/edit/master/data/feeds.json"
+        link="https://github.com/cofeed-19/cofeed-19.github.io/edit/master/src/data/feeds.json"
         title="Suggest a feed"
       />
       <dialog className={Style.dialog} ref={dialogRef}>

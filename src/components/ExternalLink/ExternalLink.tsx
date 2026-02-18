@@ -9,7 +9,6 @@ export interface Props {
 
 export function ExternalLink({ title, link, onClick }: Props) {
   return (
-    // eslint-disable-next-line react/jsx-no-target-blank
     <a
       className={Styles.link}
       href={link}
