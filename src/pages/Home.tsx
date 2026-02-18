@@ -21,10 +21,9 @@ import { getFavicon } from "../utils";
 declare global {
   interface Window {
     dbPromise: Promise<boolean>;
+    rssParser?: RSSParser;
   }
 }
-
-const rssParser = new RSSParser();
 
 async function allStorage(): Promise<Record<string, Feed>> {
   await initDatabase();
@@ -67,7 +66,10 @@ export default function HomePage() {
   const addFeed = useCallback(async (url: string) => {
     try {
       setLoading(true);
-      const feed = await rssParser.parseURL(url);
+      if (!window.rssParser) {
+        window.rssParser = new RSSParser();
+      }
+      const feed = await window.rssParser.parseURL(url);
       const newFeed: Feed = {
         url,
         title: feed.title || url,
