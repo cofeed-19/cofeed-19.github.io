@@ -19,6 +19,13 @@ yarn dev
 
 Open [http://localhost:4605](http://localhost:4605) with your browser to see the result.
 
+### Technology Stack
+
+- **Vite** - Fast build tool and dev server
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **IndexedDB** - Client-side data persistence
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
