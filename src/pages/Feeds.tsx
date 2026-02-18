@@ -1,25 +1,62 @@
-import { useCallback, useEffect, useState } from "react";
-import Styles from "../styles/feeds.module.css";
-import { Feed } from "../models";
-import { getSiteFeeds } from "../services/indexeddbService";
+import { useCallback, useRef, useState } from "react";
+import { ExternalLink } from "../components";
+import JSONFeeds from "../data/feeds.json";
+import { insertSiteFeed } from "../services/indexeddbService";
+import Style from "../styles/feeds.module.css";
+import { getFavicon } from "../utils";
+
+interface JSONFeed {
+  siteUrl: string;
+  feedUrl: string;
+  description: string;
+}
 
 export default function FeedsPage() {
-  const [feeds, setFeeds] = useState<Feed[]>([]);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [addedFeed, setAddedFeed] = useState<string>("");
+  const list = JSONFeeds as JSONFeed[];
 
-  useEffect(() => {
-    getSiteFeeds().then(setFeeds).catch(console.error);
-  }, []);
+  const onAddButtonClick = useCallback(
+    async (url: string) => {
+      const feedFavicon = await getFavicon(url);
+      await insertSiteFeed({
+        url,
+        visited: {},
+        priority: 0,
+        favicon: feedFavicon,
+        title: "",
+        items: [],
+      });
+      setAddedFeed(url);
+
+      if (dialogRef.current) {
+        const dialog = dialogRef.current;
+
+        dialog.showModal();
+        setTimeout(() => dialog.close(), 2000);
+      }
+    },
+    [dialogRef]
+  );
 
   return (
-    <div className={Styles.container}>
-      <h1>Feeds</h1>
-      <ul className={Styles.list}>
-        {feeds.map((feed) => (
-          <li key={feed.url} className={Styles.item}>
-            {feed.favicon && (
-              <img src={feed.favicon} alt="" className={Styles.favicon} />
-            )}
-            <span>{feed.title}</span>
+    <div>
+      <h2>Feeds suggested by users</h2>
+      <ExternalLink
+        link="https://github.com/cofeed-19/cofeed-19.github.io/edit/master/data/feeds.json"
+        title="Suggest a feed"
+      />
+      <dialog className={Style.dialog} ref={dialogRef}>
+        {addedFeed} was added to your feeds
+      </dialog>
+      <ul className={Style.feedsList}>
+        {list.map(({ feedUrl, siteUrl, description }) => (
+          <li key={feedUrl}>
+            <button onClick={() => onAddButtonClick(feedUrl)}>➕</button>
+            <div>
+              <ExternalLink link={siteUrl} />
+              <p>{description}</p>
+            </div>
           </li>
         ))}
       </ul>

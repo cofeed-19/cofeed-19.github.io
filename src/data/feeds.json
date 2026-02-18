@@ -1,0 +1,27 @@
+[
+  {
+    "siteUrl": "https://strdr4605.com",
+    "feedUrl": "https://strdr4605.com/feed/rss.xml",
+    "description": "I created CoFeed-19, I write about my experience and thoughts about Software Engineering."
+  },
+  {
+    "siteUrl": "https://www.joshwcomeau.com",
+    "feedUrl": "https://www.joshwcomeau.com/rss.xml",
+    "description": "My goal with this blog is to create helpful content for front-end web devs."
+  },
+  {
+    "siteUrl": "https://www.yegor256.com",
+    "feedUrl": "https://www.yegor256.com/rss.xml",
+    "description": "I’m Yegor Bugayenko, a programmer, founder, investor, and philanthropist."
+  },
+  {
+    "siteUrl": "https://tonsky.me",
+    "feedUrl": "https://tonsky.me/blog/atom.xml",
+    "description": "I’m Nikita. Here I write about programming and UI design."
+  },
+  {
+    "siteUrl": "https://www.nytimes.com/",
+    "feedUrl": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "description": "The New York Times - Top Stories"
+  }
+]
