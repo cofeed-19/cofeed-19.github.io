@@ -1,4 +1,4 @@
-name: github pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -8,33 +8,38 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          node-version: '22.x'
 
-      - name: Setup Node
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '22'
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build with Vite
+        run: yarn build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          node-version: '22.x'
-          path: '**/node_modules'
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          path: 'dist'
 
-      - run: yarn
-      - run: yarn build
-      - run: yarn export
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
-          publish_branch: gh-pages
-          commit_message: ${{ github.event.head_commit.message }}
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3

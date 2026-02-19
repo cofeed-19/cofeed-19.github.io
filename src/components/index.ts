@@ -6,7 +6,6 @@ export * from "./FavoritesList/FavoritesList";
 export * from "./FeedItem/FeedItem";
 export * from "./Footer/Footer";
 export * from "./Header/Header";
-export * from "./HeadMeta/HeadMeta";
 export * from "./NewFeedForm/NewFeedForm";
 export * from "./NewItemsList/NewItemsList";
 export * from "./VisitedItemsList/VisitedItemsList";

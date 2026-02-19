@@ -8,9 +8,8 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+# build output
+/dist/
 
 # production
 /build
@@ -32,3 +31,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# git worktrees
+.worktrees/

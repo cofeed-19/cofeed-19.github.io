@@ -1,14 +1,9 @@
-import Image from "next/image";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import RSSParser from "rss-parser";
 import {
   ExternalLink,
   FavoritePin,
   FavoritesList,
-  Footer,
-  Header,
-  HeadMeta,
   NewFeedForm,
   NewItemsList,
   VisitedItemsList,
@@ -16,7 +11,6 @@ import {
 import { Feed } from "../models";
 import {
   deleteSiteFeed,
-  getSiteFeed,
   getSiteFeeds,
   initDatabase,
   insertSiteFeed,
@@ -28,40 +22,27 @@ import { getFavicon } from "../utils";
 declare global {
   interface Window {
     dbPromise: Promise<boolean>;
+    rssParser?: RSSParser;
   }
 }
-
-type Tab = "feeds" | "favorites";
-
-const rssParser = new RSSParser();
 
 async function allStorage(): Promise<Record<string, Feed>> {
   await initDatabase();
   const siteFeeds = await getSiteFeeds();
-  var archive: Record<string, Feed> = {};
-
-  for (const siteFeed of siteFeeds) {
-    archive[siteFeed.url] = siteFeed;
-  }
-
-  return archive;
+  return siteFeeds.reduce(
+    (acc, feed) => {
+      acc[feed.url] = feed;
+      return acc;
+    },
+    {} as Record<string, Feed>
+  );
 }
 
 type FeedArchiveType = Record<string, Feed>;
 
-export default function Home() {
-  const router = useRouter();
-  const activeTab = (router.query.tab as Tab) || "feeds";
-
+export default function HomePage() {
   const [highestPriority, setHighestPriority] = useState<number>(0);
   const [feedArchive, setFeedArchive] = useState<FeedArchiveType>({});
-
-  const onTabChange = (tab: Tab) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, tab },
-    });
-  };
 
   const updateFeeds = useCallback(async () => {
     let highestPriority = 0;
@@ -80,7 +61,10 @@ export default function Home() {
         continue;
       }
       try {
-        const feed = await rssParser.parseURL(feedUrl);
+        if (!window.rssParser) {
+          window.rssParser = new RSSParser();
+        }
+        const feed = await window.rssParser.parseURL(feedUrl);
         const feedFavicon = await getFavicon(feed.link);
         const feedToUpdate: Feed = {
           ...feed,
@@ -114,11 +98,14 @@ export default function Home() {
     for (const feedUrl of newFeeds) {
       let feed;
       try {
-        feed = await rssParser.parseURL(feedUrl);
+        if (!window.rssParser) {
+          window.rssParser = new RSSParser();
+        }
+        feed = await window.rssParser.parseURL(feedUrl);
       } catch {
         errors.push(feedUrl);
       }
-      if (feed && !(await getSiteFeed(feedUrl))) {
+      if (feed && !(await getSiteFeeds()).some((f) => f.url === feedUrl)) {
         const feedFavicon = await getFavicon(feed.link);
         await insertSiteFeed({
           url: feedUrl,
@@ -215,92 +202,86 @@ export default function Home() {
 
       updateFeeds();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [highestPriority, sortedArchive, feedArchive]
   );
 
   useEffect(() => {
     updateFeeds();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [activeTab, setActiveTab] = useState<"feeds" | "favorites">("feeds");
+
   return (
-    <>
-      <HeadMeta />
-      <Header />
-      <main className={Styles.container}>
-        <NewFeedForm onSubmit={onSubmit} />
-        <div className={Styles.tabsList}>
-          <button
-            onClick={() => onTabChange("feeds")}
-            disabled={activeTab === "feeds"}
-          >
-            Feeds
-          </button>
-          <button
-            onClick={() => onTabChange("favorites")}
-            disabled={activeTab === "favorites"}
-          >
-            Favorites
-          </button>
-        </div>
-        {activeTab === "feeds" &&
-          sortedArchive.map((feedUrl) => {
-            const feed = feedArchive[feedUrl];
-            const newItems = feed.items.filter(
-              (item) => item.link && (!feed.visited || !feed.visited[item.link.trim()])
-            );
-            const vizitedItems = feed.items.filter(
-              (item) => item.link && feed.visited && feed.visited[item.link.trim()]
-            );
-            return (
-              <section key={feedUrl} className={Styles.feed}>
-                <h3>
-                  <FavoritePin feed={feed} onClick={onFavoriteClick} />
-                  {feed.link ? (
-                    <>
-                      {feed.favicon && (
-                        <Image
-                          alt={feed.title || feedUrl}
-                          src={feed.favicon}
-                          width={16}
-                          height={16}
-                          unoptimized
-                        />
-                      )}
-                      <ExternalLink link={feed.link} title={feed.title} />
-                    </>
-                  ) : (
-                    feed.title || feedUrl
-                  )}{" "}
-                  {!feed.loaded && (
-                    <>
-                      <span className={Styles.bounceLoader}></span>
-                      {/* <span className={Styles.rotateTimeLoader}>⏳</span> */}
-                      {/* <span className={Styles.typewriteLoader}></span> */}
-                    </>
+    <div className={Styles.container}>
+      <NewFeedForm onSubmit={onSubmit} />
+      <div className={Styles.tabsList}>
+        <button
+          onClick={() => setActiveTab("feeds")}
+          disabled={activeTab === "feeds"}
+        >
+          Feeds
+        </button>
+        <button
+          onClick={() => setActiveTab("favorites")}
+          disabled={activeTab === "favorites"}
+        >
+          Favorites
+        </button>
+      </div>
+      {activeTab === "feeds" && sortedArchive.map((feedUrl) => {
+        const feed = feedArchive[feedUrl];
+        const newItems = feed.items.filter(
+          (item) =>
+            item.link &&
+            (!feed.visited || !feed.visited[item.link.trim()])
+        );
+        const visitedItems = feed.items.filter(
+          (item) =>
+            item.link && feed.visited && feed.visited[item.link.trim()]
+        );
+        return (
+          <section key={feedUrl} className={Styles.feed}>
+            <h3>
+              <FavoritePin feed={feed} onClick={onFavoriteClick} />
+              {feed.link ? (
+                <>
+                  {feed.favicon && (
+                    <img
+                      alt={feed.title || feedUrl}
+                      src={feed.favicon}
+                      width={16}
+                      height={16}
+                    />
                   )}
-                  <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
-                    ❌
-                  </button>
-                </h3>
-                <NewItemsList
-                  feed={feed}
-                  feedUrl={feedUrl}
-                  newItems={newItems}
-                  updateFeeds={updateFeeds}
-                />
-                <VisitedItemsList
-                  feed={feed}
-                  feedUrl={feedUrl}
-                  visitedItems={vizitedItems}
-                />
-              </section>
-            );
-          })}
-        {activeTab === "favorites" && <FavoritesList />}
-      </main>
-      <Footer />
-    </>
+                  <ExternalLink link={feed.link} title={feed.title} />
+                </>
+              ) : (
+                feed.title || feedUrl
+              )}{" "}
+              {!feed.loaded && (
+                <>
+                  <span className={Styles.bounceLoader}></span>
+                </>
+              )}
+              <button onClick={() => onRemoveClick(feedUrl, feed.title)}>
+                ❌
+              </button>
+            </h3>
+            <NewItemsList
+              feed={feed}
+              feedUrl={feedUrl}
+              newItems={newItems}
+              updateFeeds={updateFeeds}
+            />
+            <VisitedItemsList
+              feed={feed}
+              feedUrl={feedUrl}
+              visitedItems={visitedItems}
+            />
+          </section>
+        );
+      })}
+      {activeTab === "favorites" && <FavoritesList />}
+    </div>
   );
 }
