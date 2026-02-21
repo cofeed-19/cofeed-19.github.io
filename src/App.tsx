@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Header, Footer } from './components'
 import HomePage from './pages/Home'
 import FeedsPage from './pages/Feeds'
@@ -19,6 +20,7 @@ export default function App() {
         {page === 'feeds' && <FeedsPage />}
       </main>
       <Footer />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }
