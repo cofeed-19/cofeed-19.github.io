@@ -4,7 +4,7 @@
 
 **Goal:** Replace manual useState + direct IndexedDB service calls in `Home.tsx` with TanStack Query for caching, automatic refetching, and loading state management.
 
-**Architecture:** Install `@tanstack/react-query`, wrap the app in `QueryClientProvider`, extract all data fetching into a `useFeeds` hook using `useQuery`/`useMutation`, and simplify `Home.tsx` to be a pure rendering component. A separate `useFavorites` refactor brings favorites in line with the same pattern.
+**Architecture:** Install `@tanstack/react-query`, wrap the app in `QueryClientProvider`, extract all data fetching into hooks using `useQuery`/`useMutation`. Each feed URL gets its own `useQuery` via a `useFeedQuery` hook so feeds load in parallel and each renders its own loading state independently. A `useFeeds` hook manages the list (stored URLs + mutations). A separate `useFavorites` refactor brings favorites in line with the same pattern.
 
 **Tech Stack:** `@tanstack/react-query` v5, React 18, IndexedDB via `idb`, `rss-parser`
 
@@ -79,11 +79,16 @@ git commit -m "add QueryClientProvider to app root"
 
 ---
 
-### Task 3: Create useFeeds hook
+### Task 3: Create useFeeds and useFeedQuery hooks
 
 **Files:**
 - Create: `src/hooks/useFeeds.ts`
+- Create: `src/hooks/useFeedQuery.ts`
 - Modify: `src/hooks/index.ts`
+
+**Context:** Two hooks with distinct responsibilities:
+- `useFeeds` — manages the list of stored feed URLs + mutations (add, remove, pin)
+- `useFeedQuery(feedUrl, storedFeed)` — fetches and caches a single feed's RSS data; called per feed in the render loop so each feed is an independent query with its own loading state
 
 **Step 1: Create `src/hooks/useFeeds.ts`**
 
@@ -101,32 +106,6 @@ import { getFavicon } from "../utils";
 
 const rssParser = new RSSParser();
 
-async function parsedFeedsQueryFn(feeds: Feed[]): Promise<Record<string, Feed>> {
-  const feedArchive: Record<string, Feed> = {};
-
-  await Promise.allSettled(
-    feeds.map(async (feed) => {
-      try {
-        const parsedFeed = await rssParser.parseURL(feed.url);
-        const feedFavicon = await getFavicon(parsedFeed.link);
-        feedArchive[feed.url] = {
-          ...parsedFeed,
-          url: feed.url,
-          favicon: feedFavicon,
-          visited: feed.visited || {},
-          priority: feed.priority,
-          loaded: true,
-        };
-      } catch {
-        console.error(`Could not parse feed for ${feed.url}`);
-        feedArchive[feed.url] = { ...feed, loaded: false };
-      }
-    })
-  );
-
-  return feedArchive;
-}
-
 export function useFeeds() {
   const queryClient = useQueryClient();
 
@@ -135,18 +114,7 @@ export function useFeeds() {
     queryFn: getSiteFeeds,
   });
 
-  const { data: parsedFeeds = {} } = useQuery({
-    queryKey: ["feeds", "parsed", storedFeeds.map((f) => f.url).sort()],
-    queryFn: () => parsedFeedsQueryFn(storedFeeds),
-    enabled: storedFeeds.length > 0,
-    staleTime: 5 * 60 * 1000,
-    refetchInterval: 15 * 60 * 1000,
-  });
-
-  const highestPriority = Math.max(
-    0,
-    ...storedFeeds.map((f) => f.priority ?? 0)
-  );
+  const highestPriority = Math.max(0, ...storedFeeds.map((f) => f.priority ?? 0));
 
   const addFeedMutation = useMutation({
     mutationFn: async (feedUrls: string[]) => {
@@ -171,11 +139,6 @@ export function useFeeds() {
 
   const removeFeedMutation = useMutation({
     mutationFn: deleteSiteFeed,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feeds"] }),
-  });
-
-  const updateFeedMutation = useMutation({
-    mutationFn: updateSiteFeed,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feeds"] }),
   });
 
@@ -207,11 +170,8 @@ export function useFeeds() {
 
   return {
     storedFeeds,
-    parsedFeeds,
-    highestPriority,
     addFeed: addFeedMutation.mutateAsync,
     removeFeed: removeFeedMutation.mutateAsync,
-    updateFeed: updateFeedMutation.mutateAsync,
     pinFeed,
     isAddingFeed: addFeedMutation.isPending,
     addFeedError: addFeedMutation.error?.message,
@@ -219,54 +179,144 @@ export function useFeeds() {
 }
 ```
 
-**Step 2: Export from hooks index**
+**Step 2: Create `src/hooks/useFeedQuery.ts`**
+
+```ts
+import { useQuery } from "@tanstack/react-query";
+import RSSParser from "rss-parser";
+import { Feed } from "../models";
+import { getFavicon } from "../utils";
+
+const rssParser = new RSSParser();
+
+export function useFeedQuery(feedUrl: string, storedFeed: Feed) {
+  return useQuery({
+    queryKey: ["feed", feedUrl],
+    queryFn: async (): Promise<Feed> => {
+      const parsedFeed = await rssParser.parseURL(feedUrl);
+      const favicon = await getFavicon(parsedFeed.link);
+      return {
+        ...parsedFeed,
+        url: feedUrl,
+        favicon,
+        visited: storedFeed.visited || {},
+        priority: storedFeed.priority,
+        loaded: true,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 15 * 60 * 1000,
+    // Keep previous data while refetching so UI doesn't flash
+    placeholderData: { ...storedFeed, items: [], loaded: false },
+  });
+}
+```
+
+**Step 3: Export both from hooks index**
 
 Add to `src/hooks/index.ts`:
 ```ts
 export * from "./useFeeds";
+export * from "./useFeedQuery";
 ```
 
-**Step 3: Verify TypeScript compiles**
+**Step 4: Verify TypeScript compiles**
 
 ```bash
 yarn build 2>&1 | head -30
 ```
-Expected: No type errors (or only unrelated pre-existing errors).
+Expected: No type errors.
 
-**Step 4: Commit**
+**Step 5: Commit**
 
 ```bash
-git add src/hooks/useFeeds.ts src/hooks/index.ts
-git commit -m "add useFeeds hook with TanStack Query"
+git add src/hooks/useFeeds.ts src/hooks/useFeedQuery.ts src/hooks/index.ts
+git commit -m "add useFeeds and useFeedQuery hooks with TanStack Query"
 ```
 
 ---
 
-### Task 4: Refactor Home.tsx to use useFeeds
+### Task 4: Refactor Home.tsx to use useFeeds + extract FeedSection component
 
 **Files:**
 - Modify: `src/pages/Home.tsx`
+- Create: `src/components/FeedSection/FeedSection.tsx`
 
-**Step 1: Replace state and data fetching**
+**Context:** Each feed needs to call `useFeedQuery` — but hooks can't be called inside `.map()`. So extract a `FeedSection` component that receives `feedUrl` + `storedFeed` as props and calls `useFeedQuery` at the top level of that component. This is the standard React pattern for per-item hooks.
 
-Replace the entire content of `src/pages/Home.tsx` with:
+**Step 1: Create `src/components/FeedSection/FeedSection.tsx`**
+
+```tsx
+import { useQueryClient } from "@tanstack/react-query";
+import { ExternalLink, FavoritePin, NewItemsList, VisitedItemsList } from "../";
+import { Feed } from "../../models";
+import { useFeedQuery } from "../../hooks";
+import Styles from "../../styles/index.module.css";
+
+type Props = {
+  feedUrl: string;
+  storedFeed: Feed;
+  onRemove: (feedUrl: string, feedTitle?: string) => void;
+  onPin: (feed: Feed) => void;
+};
+
+export function FeedSection({ feedUrl, storedFeed, onRemove, onPin }: Props) {
+  const { data: feed = { ...storedFeed, items: [], loaded: false } } = useFeedQuery(feedUrl, storedFeed);
+
+  const newItems = (feed.items ?? []).filter(
+    (item) => item.link && (!feed.visited || !feed.visited[item.link.trim()])
+  );
+  const visitedItems = (feed.items ?? []).filter(
+    (item) => item.link && feed.visited && feed.visited[item.link.trim()]
+  );
+
+  return (
+    <section className={Styles.feed}>
+      <h3>
+        <FavoritePin feed={storedFeed} onClick={onPin} />
+        {feed.link ? (
+          <>
+            {feed.favicon && (
+              <img alt={feed.title || feedUrl} src={feed.favicon} width={16} height={16} />
+            )}
+            <ExternalLink link={feed.link} title={feed.title} />
+          </>
+        ) : (
+          feed.title || feedUrl
+        )}{" "}
+        {!feed.loaded && <span className={Styles.bounceLoader}></span>}
+        <button onClick={() => onRemove(feedUrl, feed.title)}>❌</button>
+      </h3>
+      <NewItemsList
+        feed={feed}
+        feedUrl={feedUrl}
+        newItems={newItems}
+        updateFeeds={() => Promise.resolve()}
+      />
+      <VisitedItemsList feed={feed} feedUrl={feedUrl} visitedItems={visitedItems} />
+    </section>
+  );
+}
+```
+
+**Step 2: Export FeedSection from components index**
+
+Add to `src/components/index.ts`:
+```ts
+export * from "./FeedSection/FeedSection";
+```
+
+**Step 3: Replace Home.tsx**
 
 ```tsx
 import { useState } from "react";
-import {
-  ExternalLink,
-  FavoritePin,
-  FavoritesList,
-  NewFeedForm,
-  NewItemsList,
-  VisitedItemsList,
-} from "../components";
+import { FavoritesList, FeedSection, NewFeedForm } from "../components";
 import { useFeeds } from "../hooks";
 import Styles from "../styles/index.module.css";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"feeds" | "favorites">("feeds");
-  const { parsedFeeds, storedFeeds, addFeed, removeFeed, pinFeed, addFeedError } = useFeeds();
+  const { storedFeeds, addFeed, removeFeed, pinFeed } = useFeeds();
 
   async function onSubmit(newFeed: string) {
     const feedUrls = newFeed.trim().split(",").filter(Boolean);
@@ -283,14 +333,9 @@ export default function HomePage() {
     }
   }
 
-  const sortedFeedUrls = storedFeeds
+  const sortedFeeds = storedFeeds
     .slice()
-    .sort((a, b) => {
-      const pa = a.priority ?? 0;
-      const pb = b.priority ?? 0;
-      return pb - pa;
-    })
-    .map((f) => f.url);
+    .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
 
   return (
     <div className={Styles.container}>
@@ -304,73 +349,33 @@ export default function HomePage() {
         </button>
       </div>
       {activeTab === "feeds" &&
-        sortedFeedUrls.map((feedUrl) => {
-          const storedFeed = storedFeeds.find((f) => f.url === feedUrl)!;
-          const feed = parsedFeeds[feedUrl] ?? { ...storedFeed, items: [] };
-
-          const newItems = (feed.items ?? []).filter(
-            (item) => item.link && (!feed.visited || !feed.visited[item.link.trim()])
-          );
-          const visitedItems = (feed.items ?? []).filter(
-            (item) => item.link && feed.visited && feed.visited[item.link.trim()]
-          );
-
-          return (
-            <section key={feedUrl} className={Styles.feed}>
-              <h3>
-                <FavoritePin feed={storedFeed} onClick={pinFeed} />
-                {feed.link ? (
-                  <>
-                    {feed.favicon && (
-                      <img
-                        alt={feed.title || feedUrl}
-                        src={feed.favicon}
-                        width={16}
-                        height={16}
-                      />
-                    )}
-                    <ExternalLink link={feed.link} title={feed.title} />
-                  </>
-                ) : (
-                  feed.title || feedUrl
-                )}{" "}
-                {!feed.loaded && <span className={Styles.bounceLoader}></span>}
-                <button onClick={() => onRemoveClick(feedUrl, feed.title)}>❌</button>
-              </h3>
-              <NewItemsList
-                feed={feed}
-                feedUrl={feedUrl}
-                newItems={newItems}
-                updateFeeds={() => Promise.resolve()}
-              />
-              <VisitedItemsList feed={feed} feedUrl={feedUrl} visitedItems={visitedItems} />
-            </section>
-          );
-        })}
+        sortedFeeds.map((storedFeed) => (
+          <FeedSection
+            key={storedFeed.url}
+            feedUrl={storedFeed.url}
+            storedFeed={storedFeed}
+            onRemove={onRemoveClick}
+            onPin={pinFeed}
+          />
+        ))}
       {activeTab === "favorites" && <FavoritesList />}
     </div>
   );
 }
 ```
 
-**Note:** `updateFeeds` is passed as a no-op `() => Promise.resolve()` — the `NewItemsList` calls it after marking visited. In Task 5 we update `NewItemsList` to invalidate the query directly instead.
-
-**Step 2: Run dev server and verify app works**
+**Step 4: Run dev server and verify**
 
 ```bash
 yarn dev
 ```
-Open browser, verify:
-- Feeds load
-- Add new feed works
-- Remove feed works
-- Pin feed works
+Open browser — each feed should appear and load independently (you'll see the bounce loader per feed until its RSS fetch completes).
 
-**Step 3: Commit**
+**Step 5: Commit**
 
 ```bash
-git add src/pages/Home.tsx
-git commit -m "refactor Home.tsx to use useFeeds hook"
+git add src/pages/Home.tsx src/components/FeedSection/FeedSection.tsx src/components/index.ts
+git commit -m "refactor Home.tsx: per-feed useQuery via FeedSection component"
 ```
 
 ---
@@ -676,7 +681,9 @@ After all tasks:
 
 ## Notes
 
-- **Query keys:** `["feeds"]` for stored feeds, `["feeds", "parsed", [...urls]]` for parsed RSS, `["favorites"]` for favorites
+- **Query keys:** `["feeds"]` for stored feed list, `["feed", feedUrl]` per individual RSS feed, `["favorites"]` for favorites
+- **Per-feed queries:** Each `FeedSection` calls `useFeedQuery(feedUrl)` — independent cache entry, loading state, and refetch timer per feed
 - **staleTime 5min / refetchInterval 15min** — feeds auto-refresh every 15 minutes, cached for 5
 - **No breaking changes to models or services** — only hook and component layer changes
 - **`updateFeeds` prop** is kept temporarily in Task 5 (backwards compat) then removed in Task 7
+- **Why FeedSection component:** hooks can't be called inside `.map()` — extracting to a component lets each feed call `useFeedQuery` at the top level
