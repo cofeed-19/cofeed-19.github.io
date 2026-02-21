@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import RSSParser from "rss-parser";
 import { useFavorites } from "../../hooks";
 import { Feed } from "../../models";
@@ -41,10 +42,23 @@ const markAllAsVisited = async (feedUrl: string, itemLinks: string[]) => {
 };
 
 export function NewItemsList(props: Props) {
-  const { feed, feedUrl, newItems, updateFeeds } = props;
+  const { feed, feedUrl, newItems } = props;
+  const queryClient = useQueryClient();
   const { favoriteStates, toggleFavorite } = useFavorites(newItems, {
     feed,
   });
+
+  const markVisitedInCache = (links: string[]) => {
+    queryClient.setQueryData<Feed>(["feed", feedUrl], (old) => {
+      if (!old) return old;
+      const visited = { ...(old.visited ?? {}) };
+      for (const link of links) {
+        visited[link] = true;
+      }
+      return { ...old, visited };
+    });
+    queryClient.invalidateQueries({ queryKey: ["feeds"] });
+  };
 
   return (
     <>
@@ -55,7 +69,11 @@ export function NewItemsList(props: Props) {
               key={item.link}
               item={item}
               feed={feed}
-              onClick={() => onLinkClick(feedUrl, item.link)}
+              onClick={() =>
+                onLinkClick(feedUrl, item.link).then(() =>
+                  markVisitedInCache([item.link!])
+                )
+              }
               onFavoriteClick={() => toggleFavorite(item)}
               isFavorited={favoriteStates[item.link]}
               testId="new-item"
@@ -67,10 +85,12 @@ export function NewItemsList(props: Props) {
         <button
           onClick={() => {
             if (confirm(`Mark all ${feed?.title || feedUrl} as visited?`)) {
-              markAllAsVisited(
-                feedUrl,
-                newItems.map((item) => item.link || "").filter(Boolean)
-              ).then(() => updateFeeds());
+              const links = newItems
+                .map((item) => item.link || "")
+                .filter(Boolean);
+              markAllAsVisited(feedUrl, links).then(() =>
+                markVisitedInCache(links)
+              );
             }
           }}
         >
