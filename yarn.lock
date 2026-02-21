@@ -1308,6 +1308,7 @@ __metadata:
     autoprefixer: "npm:^10.4.13"
     cssnano: "npm:^5.1.14"
     favecon: "npm:^1.0.2"
+    idb: "npm:^8.0.0"
     oxlint: "npm:^0.15.7"
     postcss-nested: "npm:^6.0.0"
     postcss-sorting: "npm:^8.0.1"
@@ -1415,6 +1416,13 @@ __metadata:
   dependencies:
     safer-buffer: "npm:>= 2.1.2 < 3.0.0"
   checksum: 10c0/98102bc66b33fcf5ac044099d1257ba0b7ad5e3ccd3221f34dd508ab4070edff183276221684e1e0555b145fce0850c9f7d2b60a9fcac50fbb4ea0d6e845a3b1
+  languageName: node
+  linkType: hard
+
+"idb@npm:^8.0.0":
+  version: 8.0.3
+  resolution: "idb@npm:8.0.3"
+  checksum: 10c0/421cd9a3281b7564528857031cc33fd9e95753f8191e483054cb25d1ceea7303a0d1462f4f69f5b41606f0f066156999e067478abf2460dfcf9cab80dae2a2b2
   languageName: node
   linkType: hard
 
