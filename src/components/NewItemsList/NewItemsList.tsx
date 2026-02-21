@@ -50,7 +50,7 @@ export function NewItemsList(props: Props) {
   const markVisitedInCache = (links: string[]) => {
     queryClient.setQueryData<Feed>(["feed", feedUrl], (old) => {
       if (!old) return old;
-      const visited = { ...(old.visited ?? {}) };
+      const visited = { ...old.visited };
       for (const link of links) {
         visited[link] = true;
       }
