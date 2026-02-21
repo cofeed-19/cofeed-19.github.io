@@ -27,6 +27,7 @@ export function VisitedItemsList({ feed, feedUrl, visitedItems }: Props) {
               feed={feed}
               onFavoriteClick={() => toggleFavorite(item)}
               isFavorited={favoriteStates[item.link]}
+              testId="visited-item"
             />
           ) : null
         )}

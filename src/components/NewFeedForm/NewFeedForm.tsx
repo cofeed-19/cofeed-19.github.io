@@ -24,6 +24,7 @@ export function NewFeedForm({ onSubmit }: Props) {
         type="text"
         value={newFeed}
         onChange={onInputChange}
+        data-testid="feed-input"
       />
       <button type="submit">Add feeds</button>
     </form>

@@ -10,6 +10,7 @@ type Props = {
   onClick?: () => void;
   onFavoriteClick?: () => void;
   isFavorited?: boolean;
+  testId?: string;
 };
 
 export function FeedItem({
@@ -17,14 +18,16 @@ export function FeedItem({
   onClick,
   onFavoriteClick,
   isFavorited,
+  testId,
 }: Props) {
   return (
-    <li className={Styles.item}>
+    <li className={Styles.item} data-testid={testId}>
       {onFavoriteClick && (
         <button
           onClick={onFavoriteClick}
           className={`${Styles.favoriteButton} ${isFavorited ? Styles.favorited : ""}`}
           title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+          data-testid="favorite-button"
         >
           {isFavorited ? "★" : "☆"}
         </button>
