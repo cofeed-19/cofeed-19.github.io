@@ -10,7 +10,56 @@
 
 ---
 
-### Task 1: Show cached items as placeholder data
+### Task 1: Write failing E2E test for local-first behavior
+
+**Files:**
+- Create: `e2e/localfirst.spec.ts`
+
+**Step 1: Write the failing test**
+
+Create `e2e/localfirst.spec.ts`:
+```ts
+import { test, expect } from "./fixtures";
+import { setupMockFeed, MOCK_FEED_URL } from "./helpers/mockFeeds";
+
+test.describe("Local-first feed loading", () => {
+  test("should show cached items before network fetch completes", async ({ page }) => {
+    // First visit: add feed, let it fetch and persist items
+    await setupMockFeed(page);
+    await page.fill('input[placeholder*="https://"]', MOCK_FEED_URL);
+    await page.click('button:has-text("Add feeds")');
+    await expect(page.locator('a:has-text("Test Article 1")')).toBeVisible();
+    // Wait for items to be persisted to IndexedDB
+    await page.waitForTimeout(500);
+
+    // Second visit: intercept the RSS fetch so it never resolves,
+    // items should still appear from IndexedDB cache
+    await page.route(MOCK_FEED_URL, () => { /* never fulfills */ });
+    await page.reload();
+
+    await expect(page.locator('a:has-text("Test Article 1")')).toBeVisible();
+    await expect(page.locator('a:has-text("Test Article 2")')).toBeVisible();
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+yarn test:e2e e2e/localfirst.spec.ts
+```
+Expected: FAIL — articles not visible because `items: []` is used as placeholder
+
+**Step 3: Commit the failing test**
+
+```bash
+git add e2e/localfirst.spec.ts
+git commit -m "test: failing E2E for local-first feed loading"
+```
+
+---
+
+### Task 2: Show cached items as placeholder data
 
 **Files:**
 - Modify: `src/hooks/useFeedQuery.ts`
@@ -26,14 +75,21 @@ to:
 placeholderData: { ...storedFeed, items: storedFeed.items ?? [], loaded: false },
 ```
 
-**Step 2: Verify build passes**
+**Step 2: Run the E2E test to verify it passes**
+
+```bash
+yarn test:e2e e2e/localfirst.spec.ts
+```
+Expected: PASS
+
+**Step 3: Verify build passes**
 
 ```bash
 yarn build
 ```
 Expected: `✓ built in ...`
 
-**Step 3: Commit**
+**Step 4: Commit**
 
 ```bash
 git add src/hooks/useFeedQuery.ts
@@ -42,7 +98,7 @@ git commit -m "feat: show cached items on load"
 
 ---
 
-### Task 2: Persist fresh items to IndexedDB after fetch
+### Task 3: Persist fresh items to IndexedDB after fetch
 
 **Files:**
 - Modify: `src/hooks/useFeedQuery.ts`
