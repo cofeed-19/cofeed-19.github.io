@@ -23,6 +23,6 @@ export function useFeedQuery(feedUrl: string, storedFeed: Feed) {
     },
     staleTime: 5 * 60 * 1000,
     refetchInterval: 15 * 60 * 1000,
-    placeholderData: { ...storedFeed, items: [], loaded: false },
+    placeholderData: { ...storedFeed, items: storedFeed.items ?? [], loaded: false },
   });
 }

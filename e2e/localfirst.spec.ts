@@ -39,7 +39,7 @@ test.describe("Local-first feed loading", () => {
     await page.route(MOCK_FEED_URL, () => { /* never fulfills */ });
     await page.reload();
 
-    await expect(page.locator(`text=${MOCK_FEED_URL}`)).toBeVisible();
+    await expect(page.locator('h3:has-text("Test Feed")')).toBeVisible();
     await expect(page.locator('a:has-text("Test Article 1")')).toBeVisible();
     await expect(page.locator('a:has-text("Test Article 2")')).toBeVisible();
   });
@@ -82,7 +82,7 @@ test.describe("Local-first feed loading", () => {
     await page.route(MOCK_FEED_URL, () => { /* never fulfills */ });
     await page.reload();
 
-    await expect(page.locator(`text=${MOCK_FEED_URL}`)).toBeVisible();
+    await expect(page.locator('h3:has-text("Test Feed")')).toBeVisible();
     await expect(page.locator('a:has-text("Test Article 3")')).toBeVisible();
   });
 });
