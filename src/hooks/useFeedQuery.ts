@@ -1,21 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
-import RSSParser from "rss-parser";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Feed } from "../models";
+import { rssParser } from "../lib/rssParser";
 import { getFavicon } from "../utils";
 
-const rssParser = new RSSParser();
-
 export function useFeedQuery(feedUrl: string, storedFeed: Feed) {
+  const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: ["feed", feedUrl],
-    queryFn: async (): Promise<Feed> => {
+    queryFn: async ({ queryKey }): Promise<Feed> => {
       const parsedFeed = await rssParser.parseURL(feedUrl);
       const favicon = await getFavicon(parsedFeed.link);
+      const cached = queryClient.getQueryData<Feed>(queryKey as [string, string]);
       return {
         ...parsedFeed,
         url: feedUrl,
         favicon,
-        visited: storedFeed.visited || {},
+        visited: cached?.visited ?? storedFeed.visited ?? {},
         priority: storedFeed.priority,
         loaded: true,
       };

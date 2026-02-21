@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import RSSParser from "rss-parser";
 import { Feed } from "../models";
+import { rssParser } from "../lib/rssParser";
 import {
   deleteSiteFeed,
   getSiteFeeds,
@@ -8,8 +8,6 @@ import {
   updateSiteFeed,
 } from "../services/indexeddbService";
 import { getFavicon } from "../utils";
-
-const rssParser = new RSSParser();
 
 export function useFeeds() {
   const queryClient = useQueryClient();
@@ -47,38 +45,38 @@ export function useFeeds() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feeds"] }),
   });
 
-  const pinFeed = async (feed: Feed) => {
-    const allFeeds = storedFeeds.map((f) => ({
-      ...f,
-      priority: f.url === feed.url
-        ? (feed.priority ? undefined : highestPriority + 1)
-        : f.priority,
-    }));
+  const pinFeedMutation = useMutation({
+    mutationFn: async (feed: Feed) => {
+      const allFeeds = storedFeeds.map((f) => ({
+        ...f,
+        priority: f.url === feed.url
+          ? (feed.priority ? undefined : highestPriority + 1)
+          : f.priority,
+      }));
 
-    allFeeds.sort((a, b) => {
-      if (a.priority && b.priority) return a.priority - b.priority;
-      if (a.priority) return -1;
-      if (b.priority) return 1;
-      return 0;
-    });
+      allFeeds.sort((a, b) => {
+        if (a.priority && b.priority) return a.priority - b.priority;
+        if (a.priority) return -1;
+        if (b.priority) return 1;
+        return 0;
+      });
 
-    const reordered = allFeeds.map((f, i) => ({
-      ...f,
-      priority: f.priority ? i + 1 : undefined,
-    }));
+      const reordered = allFeeds.map((f, i) => ({
+        ...f,
+        priority: f.priority ? i + 1 : undefined,
+      }));
 
-    for (const f of reordered) {
-      await updateSiteFeed(f as Feed);
-    }
-    queryClient.invalidateQueries({ queryKey: ["feeds"] });
-  };
+      for (const f of reordered) {
+        await updateSiteFeed(f as Feed);
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feeds"] }),
+  });
 
   return {
     storedFeeds,
     addFeed: addFeedMutation.mutateAsync,
     removeFeed: removeFeedMutation.mutateAsync,
-    pinFeed,
-    isAddingFeed: addFeedMutation.isPending,
-    addFeedError: addFeedMutation.error?.message,
+    pinFeed: pinFeedMutation.mutate,
   };
 }
