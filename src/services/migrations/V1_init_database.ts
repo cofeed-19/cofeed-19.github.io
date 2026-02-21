@@ -10,13 +10,13 @@ export async function V1_init_database(db: IDBPDatabase) {
   localStorageData.forEach((data) => insertSiteFeed(data));
 }
 
-interface LocalStorage {
+type LocalStorage = {
   items: LocalStorageFeed[];
   title: string;
   visited: any;
 }
 
-interface LocalStorageFeed {
+type LocalStorageFeed = {
   title: string;
   link: string;
   author: string;
