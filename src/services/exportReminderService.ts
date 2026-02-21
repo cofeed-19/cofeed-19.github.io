@@ -1,5 +1,5 @@
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
-const LAST_EXPORT_KEY = "cofeed_last_export_date";
+export const LAST_EXPORT_KEY = "cofeed_last_export_date";
 
 export function shouldShowExportReminder(): boolean {
   const lastExport = localStorage.getItem(LAST_EXPORT_KEY);
