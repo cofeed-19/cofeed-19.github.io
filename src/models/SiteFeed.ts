@@ -1,12 +1,12 @@
 import RSSParser from "rss-parser";
 
-export interface Feed extends RSSParser.Output<RSSParser.Item>, SiteFeed {
+export type Feed = RSSParser.Output<RSSParser.Item> & SiteFeed & {
   favicon?: string;
   visited: Record<string, boolean>;
   loaded?: boolean;
 }
 
-export interface SiteFeed {
+export type SiteFeed = {
   url: string;
   priority?: number;
   visited?: Record<string, boolean>;

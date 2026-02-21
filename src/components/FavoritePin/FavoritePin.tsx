@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Feed } from "../../models";
 import Styles from "./FavoritePin.module.css";
 
-interface FavoritePinProps {
+type FavoritePinProps = {
   feed: Feed;
   onClick: (feed: Feed) => void;
 }

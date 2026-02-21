@@ -1,6 +1,6 @@
 import RSSParser from "rss-parser";
 
-export interface Favorite extends RSSParser.Item {
+export type Favorite = RSSParser.Item & {
   url: string;
   sourceFeedUrl?: string;
   sourceFeedTitle?: string;

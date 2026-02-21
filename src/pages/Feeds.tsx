@@ -5,7 +5,7 @@ import { insertSiteFeed } from "../services/indexeddbService";
 import Style from "../styles/feeds.module.css";
 import { getFavicon } from "../utils";
 
-interface JSONFeed {
+type JSONFeed = {
   siteUrl: string;
   feedUrl: string;
   description: string;

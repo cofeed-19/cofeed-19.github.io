@@ -1,7 +1,7 @@
 import { MouseEvent } from "react";
 import Styles from "./ExternalLink.module.css";
 
-export interface Props {
+export type Props = {
   link: string;
   title?: string;
   onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;

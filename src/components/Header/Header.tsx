@@ -4,7 +4,7 @@ import { setDarkMode, setLightMode } from "../../utils";
 import { ExternalLink } from "../ExternalLink/ExternalLink";
 import Styles from "./Header.module.css";
 
-interface HeaderProps {
+type HeaderProps = {
   onNavigate?: (page: string) => void
 }
 
