@@ -34,6 +34,7 @@ export async function exportData() {
     new Date().toLocaleDateString("uk-en") + "-cofeed.json",
     JSON.stringify(transferData, undefined, 2)
   );
+  localStorage.setItem("cofeed_last_export_date", Date.now().toString());
 }
 
 export async function importDataFromFile(jsonFromFile: string) {
