@@ -1,42 +1,17 @@
 import RSSParser from "rss-parser";
-import { databaseName, databaseVersion, FavoriteTable } from "../constants";
+import { FavoriteTable } from "../constants";
 import { Favorite, Feed } from "../models";
-import { deleteByName, getAll, getOne, insert } from "./indexeddbCRUD";
+import { getDb } from "./db";
 
 export async function getFavorites(): Promise<Favorite[]> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(databaseName, databaseVersion);
-
-    request.onsuccess = async () => {
-      const db = request.result;
-      const favorites = (await getAll(db, FavoriteTable.Name)) as Favorite[];
-      resolve(favorites);
-      db.close();
-    };
-
-    request.onerror = () => {
-      console.log("An error occurred getFavorites() function.");
-      reject([]);
-    };
-  });
+  const db = await getDb();
+  return db.getAll(FavoriteTable.Name);
 }
 
 export async function getFavorite(url: string): Promise<Favorite | null> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(databaseName, databaseVersion);
-
-    request.onsuccess = async () => {
-      const db = request.result;
-      const favorite = (await getOne(db, FavoriteTable.Name, url)) as Favorite;
-      resolve(favorite || null);
-      db.close();
-    };
-
-    request.onerror = () => {
-      console.log("An error occurred getFavorite() function.");
-      reject(null);
-    };
-  });
+  const db = await getDb();
+  const favorite = await db.get(FavoriteTable.Name, url);
+  return favorite || null;
 }
 
 export async function addFavorite(
@@ -53,55 +28,18 @@ export async function addFavorite(
     dateAdded: Date.now(),
   };
 
-  const request = indexedDB.open(databaseName, databaseVersion);
-
-  return new Promise((resolve, reject) => {
-    request.onsuccess = async () => {
-      const db = request.result;
-      await insert(db, FavoriteTable.Name, [favorite]);
-      db.close();
-      resolve();
-    };
-
-    request.onerror = () => {
-      console.log("An error occurred addFavorite() function.");
-      reject();
-    };
-  });
+  const db = await getDb();
+  await db.add(FavoriteTable.Name, favorite);
 }
 
 export async function removeFavorite(url: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(databaseName, databaseVersion);
-
-    request.onsuccess = async () => {
-      const db = request.result;
-      await deleteByName(db, FavoriteTable.Name, url);
-      db.close();
-      resolve();
-    };
-
-    request.onerror = () => {
-      console.log("An error occurred removeFavorite() function.");
-      reject();
-    };
-  });
+  const db = await getDb();
+  await db.delete(FavoriteTable.Name, url);
 }
 
 export async function addFavorites(favorites: Favorite[]): Promise<void> {
-  const request = indexedDB.open(databaseName, databaseVersion);
-
-  return new Promise((resolve, reject) => {
-    request.onsuccess = async () => {
-      const db = request.result;
-      await insert(db, FavoriteTable.Name, favorites);
-      db.close();
-      resolve();
-    };
-
-    request.onerror = () => {
-      console.log("An error occurred addFavorites() function.");
-      reject();
-    };
-  });
+  const db = await getDb();
+  for (const favorite of favorites) {
+    await db.add(FavoriteTable.Name, favorite);
+  }
 }

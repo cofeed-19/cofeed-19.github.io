@@ -12,7 +12,6 @@ import { Feed } from "../models";
 import {
   deleteSiteFeed,
   getSiteFeeds,
-  initDatabase,
   insertSiteFeed,
   updateSiteFeed,
 } from "../services/indexeddbService";
@@ -27,7 +26,6 @@ declare global {
 }
 
 async function allStorage(): Promise<Record<string, Feed>> {
-  await initDatabase();
   const siteFeeds = await getSiteFeeds();
   return siteFeeds.reduce(
     (acc, feed) => {
