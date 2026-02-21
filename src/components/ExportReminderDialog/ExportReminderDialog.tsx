@@ -18,8 +18,10 @@ export const ExportReminderDialog = forwardRef<HTMLDialogElement>(
       <dialog ref={ref}>
         <p>It's been over a month since your last export.</p>
         <p>Export your feeds to avoid losing data if browser storage is cleared.</p>
-        <button onClick={handleExportNow}>Export now</button>
-        <button onClick={handleDismiss}>Remind me next month</button>
+        <div style={{ display: "flex", gap: "0.75em" }}>
+          <button onClick={handleExportNow}>Export now</button>
+          <button onClick={handleDismiss}>Remind me next month</button>
+        </div>
       </dialog>
     );
   }
