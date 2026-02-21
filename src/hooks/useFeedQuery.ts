@@ -21,7 +21,7 @@ export function useFeedQuery(feedUrl: string, storedFeed: Feed) {
         priority: storedFeed.priority,
         loaded: true,
       };
-      await updateSiteFeed(feed);
+      updateSiteFeed(feed).catch(console.error);
       return feed;
     },
     staleTime: 5 * 60 * 1000,
