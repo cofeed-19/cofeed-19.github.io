@@ -1,10 +1,10 @@
+import { IDBPDatabase } from 'idb';
 import { SiteFeedTable } from "../../constants";
 import { Feed } from "../../models";
-import { createTable } from "../indexeddbCRUD";
 import { insertSiteFeed } from "../indexeddbService";
 
-export async function V1_init_database(db: IDBDatabase) {
-  await createTable(db, SiteFeedTable);
+export async function V1_init_database(db: IDBPDatabase) {
+  db.createObjectStore(SiteFeedTable.Name, { keyPath: SiteFeedTable.Key });
 
   const localStorageData = extractFromLocalStorage();
   localStorageData.forEach((data) => insertSiteFeed(data));
