@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Favorite } from "../../models";
 import { getFavorites, removeFavorite } from "../../services/favoritesService";
 import { DateComponent } from "../Date/Date";
@@ -6,32 +6,26 @@ import { ExternalLink } from "../ExternalLink/ExternalLink";
 import Styles from "./FavoritesList.module.css";
 
 export function FavoritesList() {
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const queryClient = useQueryClient();
 
-  const loadFavorites = useCallback(async () => {
-    const favs = await getFavorites();
-    const sortedFavs = [...favs].sort(
-      (a, b) => (b.dateAdded || 0) - (a.dateAdded || 0)
-    );
-    setFavorites(sortedFavs);
-  }, []);
+  const { data: favorites = [] } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: getFavorites,
+    select: (favs) =>
+      [...favs].sort((a, b) => (b.dateAdded || 0) - (a.dateAdded || 0)),
+  });
 
-  const handleRemoveClick = useCallback(
-    async (favorite: Favorite) => {
+  const removeMutation = useMutation({
+    mutationFn: async (favorite: Favorite) => {
       if (
         favorite.link &&
         confirm(`Remove "${favorite.title}" from favorites?`)
       ) {
         await removeFavorite(favorite.link);
-        await loadFavorites();
       }
     },
-    [loadFavorites]
-  );
-
-  useEffect(() => {
-    loadFavorites();
-  }, [loadFavorites]);
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["favorites"] }),
+  });
 
   return (
     <div className={Styles.container}>
@@ -46,7 +40,7 @@ export function FavoritesList() {
                 link={favorite.link || ""}
               />
               <button
-                onClick={() => handleRemoveClick(favorite)}
+                onClick={() => removeMutation.mutate(favorite)}
                 className={Styles.removeButton}
                 title="Remove from favorites"
               >

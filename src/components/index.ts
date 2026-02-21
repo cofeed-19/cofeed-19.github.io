@@ -9,3 +9,4 @@ export * from "./Header/Header";
 export * from "./NewFeedForm/NewFeedForm";
 export * from "./NewItemsList/NewItemsList";
 export * from "./VisitedItemsList/VisitedItemsList";
+export * from "./FeedSection/FeedSection";
