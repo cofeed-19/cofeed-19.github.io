@@ -47,7 +47,6 @@ export function FeedSection({ feedUrl, storedFeed, onRemove, onPin }: Props) {
         feed={feed}
         feedUrl={feedUrl}
         newItems={newItems}
-        updateFeeds={() => Promise.resolve()}
       />
       <VisitedItemsList feed={feed} feedUrl={feedUrl} visitedItems={visitedItems} />
     </section>

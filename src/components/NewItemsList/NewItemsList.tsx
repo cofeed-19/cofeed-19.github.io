@@ -10,7 +10,6 @@ type Props = {
   feed: Feed;
   feedUrl: string;
   newItems: RSSParser.Item[];
-  updateFeeds(): Promise<void>;
 };
 
 const onLinkClick = async (feedUrl?: string, itemLink?: string) => {
