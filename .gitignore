@@ -36,3 +36,8 @@ yarn-error.log*
 
 # git worktrees
 .worktrees/
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -58,6 +58,7 @@ export function NewItemsList(props: Props) {
               onClick={() => onLinkClick(feedUrl, item.link)}
               onFavoriteClick={() => toggleFavorite(item)}
               isFavorited={favoriteStates[item.link]}
+              testId="new-item"
             />
           ) : null
         )}
