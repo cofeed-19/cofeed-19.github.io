@@ -35,10 +35,11 @@ test.describe("Local-first feed loading", () => {
     await page.waitForTimeout(500);
 
     // Second visit: intercept the RSS fetch so it never resolves,
-    // items should still appear from IndexedDB cache
+    // feed header and items should still appear from IndexedDB cache
     await page.route(MOCK_FEED_URL, () => { /* never fulfills */ });
     await page.reload();
 
+    await expect(page.locator(`text=${MOCK_FEED_URL}`)).toBeVisible();
     await expect(page.locator('a:has-text("Test Article 1")')).toBeVisible();
     await expect(page.locator('a:has-text("Test Article 2")')).toBeVisible();
   });
@@ -77,10 +78,11 @@ test.describe("Local-first feed loading", () => {
     await expect(page.locator('a:has-text("Test Article 3")')).toBeVisible();
     await page.waitForTimeout(500);
 
-    // Third visit: block network — updated article must still appear from DB
+    // Third visit: block network — feed header and updated article must still appear from DB
     await page.route(MOCK_FEED_URL, () => { /* never fulfills */ });
     await page.reload();
 
+    await expect(page.locator(`text=${MOCK_FEED_URL}`)).toBeVisible();
     await expect(page.locator('a:has-text("Test Article 3")')).toBeVisible();
   });
 });
