@@ -37,6 +37,62 @@ export async function exportData() {
   localStorage.setItem("cofeed_last_export_date", Date.now().toString());
 }
 
+export async function exportOPML() {
+  const feeds = await getSiteFeeds();
+  const outlines = feeds
+    .map((feed) => {
+      const text = feed.title || feed.url;
+      return `    <outline type="rss" text="${text}" xmlUrl="${feed.url}" />`;
+    })
+    .join("\n");
+
+  const opml = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>cofeed-19 feeds</title></head>
+  <body>
+${outlines}
+  </body>
+</opml>`;
+
+  download(
+    new Date().toLocaleDateString("uk-en") + "-cofeed.opml",
+    opml
+  );
+  localStorage.setItem("cofeed_last_export_date", Date.now().toString());
+}
+
+export async function importOPMLFromFile(opmlText: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(opmlText, "text/xml");
+  const outlines = Array.from(doc.querySelectorAll("outline[xmlUrl]"));
+  const rssParser = new RSSParser();
+  const errors: string[] = [];
+
+  for (const outline of outlines) {
+    const url = outline.getAttribute("xmlUrl")!;
+    try {
+      const parsedFeed = await rssParser.parseURL(url);
+      if (parsedFeed) {
+        insertSiteFeed({ url, visited: {}, priority: undefined, items: [] });
+      }
+    } catch (e) {
+      errors.push(url);
+      console.error(`Could not update feed for ${url} ${e}`);
+    }
+  }
+
+  if (errors.length) {
+    alert(
+      `Could not add:\n${errors.join(
+        "\n"
+      )}\n\nProbable CORS issue😢!\nMaybe ask website owner to enable CORS🤔!\nOr install browser extension to allow CORS: https://mybrowseraddon.com/access-control-allow-origin.html`
+    );
+  }
+
+  console.log("Database updated successfully");
+  window.location.reload();
+}
+
 export async function importDataFromFile(jsonFromFile: string) {
   const transferData = JSON.parse(jsonFromFile) as TransferData;
   const rssParser = new RSSParser();
