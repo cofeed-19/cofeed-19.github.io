@@ -60,7 +60,7 @@ export function Header({ onNavigate }: HeaderProps) {
             </a>
             😊.
           </li>
-          <li>Supports RSS and Atom feeds</li>
+          <li>Supports RSS and Atom feeds (OPML import/export also supported)</li>
           <li>
             Try <u>http</u> and <u>https</u>
           </li>

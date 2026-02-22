@@ -3,6 +3,16 @@
     cursor: pointer;
   }
 
+  .exportButtons {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1em;
+
+    button {
+      margin: 0;
+    }
+  }
+
   button {
     margin: 0;
     margin-bottom: 1em;

@@ -31,6 +31,55 @@ test.describe("Export/Import", () => {
     expect(data.feed[0].url).toBe(MOCK_FEED_URL);
   });
 
+  test("should export data as OPML file", async ({ page }) => {
+    await setupMockFeed(page);
+    await page.fill('input[placeholder*="https://"]', MOCK_FEED_URL);
+    await page.click('button:has-text("Add feeds")');
+    await expect(page.locator('h3:has-text("Test Feed")')).toBeVisible();
+
+    await page.locator('summary:has-text("Usage")').click();
+    await page.locator('summary:has-text("Export/Import")').click();
+
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      page.click('button:has-text("Export OPML")'),
+    ]);
+
+    const downloadPath = await download.path();
+    expect(downloadPath).toBeTruthy();
+
+    const content = fs.readFileSync(downloadPath!, "utf-8");
+    expect(content).toContain('<?xml version="1.0"');
+    expect(content).toContain("<opml");
+    expect(content).toContain(`xmlUrl="${MOCK_FEED_URL}"`);
+  });
+
+  test("should import data from OPML file", async ({ page }) => {
+    const opmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>cofeed-19 feeds</title></head>
+  <body>
+    <outline type="rss" text="Test Feed" xmlUrl="${MOCK_FEED_URL}" />
+  </body>
+</opml>`;
+    const tmpFile = path.join(os.tmpdir(), "cofeed-import-test.opml");
+    fs.writeFileSync(tmpFile, opmlContent);
+
+    await setupMockFeed(page);
+    await page.locator('summary:has-text("Usage")').click();
+    await page.locator('summary:has-text("Export/Import")').click();
+
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles(tmpFile);
+
+    await page.waitForLoadState("networkidle");
+    await setupMockFeed(page);
+
+    await expect(page.locator('h3:has-text("Test Feed")')).toBeVisible();
+
+    fs.unlinkSync(tmpFile);
+  });
+
   test("should import data from JSON file and restore feeds", async ({
     page,
   }) => {
