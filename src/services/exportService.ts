@@ -31,7 +31,7 @@ export async function exportData() {
   };
 
   download(
-    new Date().toLocaleDateString("uk-en") + "-cofeed.json",
+    new Date().toISOString().slice(0, 10) + "-cofeed.json",
     JSON.stringify(transferData, undefined, 2)
   );
   localStorage.setItem("cofeed_last_export_date", Date.now().toString());
@@ -55,7 +55,7 @@ ${outlines}
 </opml>`;
 
   download(
-    new Date().toLocaleDateString("uk-en") + "-cofeed.opml",
+    new Date().toISOString().slice(0, 10) + "-cofeed.opml",
     opml
   );
   localStorage.setItem("cofeed_last_export_date", Date.now().toString());
