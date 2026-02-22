@@ -52,6 +52,7 @@ export function ExportImportForm() {
       </div>
       <hr />
       <p>Import from file</p>
+      <p>Supports JSON (from another cofeed instance) or OPML (from any RSS reader).</p>
       <input type="file" name="my_files[]" accept=".json,.opml" onChange={onFileLoad} />
     </details>
   );
