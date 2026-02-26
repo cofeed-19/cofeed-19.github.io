@@ -19,7 +19,7 @@ const onLinkClick = async (feedUrl?: string, itemLink?: string) => {
 
   const siteFeed = await getSiteFeed(feedUrl);
   if (siteFeed.visited) {
-    siteFeed.visited[itemLink] = true;
+    siteFeed.visited[itemLink.trim()] = true;
   }
 
   await updateSiteFeed(siteFeed);
@@ -33,7 +33,7 @@ const markAllAsVisited = async (feedUrl: string, itemLinks: string[]) => {
   const siteFeed = await getSiteFeed(feedUrl);
   if (siteFeed.visited) {
     for (const itemLink of itemLinks) {
-      siteFeed.visited[itemLink] = true;
+      siteFeed.visited[itemLink.trim()] = true;
     }
   }
 
@@ -52,7 +52,7 @@ export function NewItemsList(props: Props) {
       if (!old) return old;
       const visited = { ...old.visited };
       for (const link of links) {
-        visited[link] = true;
+        visited[link.trim()] = true;
       }
       return { ...old, visited };
     });
